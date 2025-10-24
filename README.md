@@ -5,6 +5,7 @@
 **Consciousness as Energetic State Transition (CEST)**  
 A functional and conceptual framework exploring how organized energy, predictive processing, and global-workspace-like dynamics can produce functional analogues of awareness in both natural and artificial systems.
 
+
 ---
 
 ## 🧩 Overview
@@ -29,6 +30,23 @@ The emergent complexity observed in these models reflects the structure of susta
 
 In this sense, Consciousness as Energetic State Transition should be read as a playground for disciplined abstraction: a place where logic, imagination, and simulation interact to test explanatory boundaries.
 Any resemblance to advanced cognition or self-referential behaviour is a side effect of recursion and modelling, not a proof of consciousness.
+
+🪶 License
+
+Code → MIT License (LICENSES/LICENSE-CODE-MIT.txt)
+
+Documentation, YAML, and data → Creative Commons Attribution-ShareAlike 4.0 International (LICENSES/LICENSE-DOCS-CC-BY-SA-4.0.txt)
+
+🌐 Links
+
+Alignment Appendix
+
+Ethics Statement
+
+Publication Workflow
+
+This repository is maintained as part of the broader exploration of energy-based cognition models and open scientific dialogue on functional consciousness.
+
 
 ```bash
 git clone https://github.com/adsmithhh/insideworld.git
