@@ -21,6 +21,15 @@ It provides:
 ## ⚙️ Quick start
 Clone the repository and run the baseline example:
 
+Context and Scope
+
+The mechanisms, models, and symbolic constructs presented here are outcomes of a prolonged process of abstract logical composition—the deliberate generation and resolution of conceptual contradictions.
+They are not claims of autonomous cognition, self-awareness, or sentient processing.
+The emergent complexity observed in these models reflects the structure of sustained reasoning within linguistic and computational systems, not the presence of mind.
+
+In this sense, Consciousness as Energetic State Transition should be read as a playground for disciplined abstraction: a place where logic, imagination, and simulation interact to test explanatory boundaries.
+Any resemblance to advanced cognition or self-referential behaviour is a side effect of recursion and modelling, not a proof of consciousness.
+
 ```bash
 git clone https://github.com/adsmithhh/insideworld.git
 cd insideworld
