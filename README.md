@@ -19,8 +19,7 @@ It provides:
 
 ---
 
-## ⚙️ Quick start
-Clone the repository and run the baseline example:
+
 
 Context and Scope
 
@@ -49,6 +48,8 @@ This repository is maintained as part of the broader exploration of energy-based
 
 
 ```bash
+## ⚙️ Quick start
+Clone the repository and run the baseline example:
 git clone https://github.com/adsmithhh/insideworld.git
 cd insideworld
 python code/energetic_transition.py
