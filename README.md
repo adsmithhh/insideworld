@@ -38,11 +38,11 @@ Documentation, YAML, and data → Creative Commons Attribution-ShareAlike 4.0 In
 
 🌐 Links
 
-Alignment Appendix
+## 🌐 Links
+- [Alignment Appendix](docs/alignment_appendix.yaml)
+- [Ethics Statement](docs/ethics_statement.md)
+- [Publication Workflow](docs/publication_workflow.yaml)
 
-Ethics Statement
-
-Publication Workflow
 
 This repository is maintained as part of the broader exploration of energy-based cognition models and open scientific dialogue on functional consciousness.
 
