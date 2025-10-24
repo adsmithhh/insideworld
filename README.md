@@ -54,15 +54,3 @@ git clone https://github.com/adsmithhh/insideworld.git
 cd insideworld
 python code/energetic_transition.py
 
-### 🪶 To apply
-
-1. Open `README.md` in VS Code or PowerShell ISE.  
-2. Replace its contents entirely with the block above.  
-3. Save with **UTF-8 (no BOM)**:  
-   - In VS Code → bottom-right encoding label → “Save with Encoding → UTF-8”.  
-4. Commit and push:
-
-```powershell
-git add README.md
-git commit -m "docs: expand README with overview and context note"
-git push
