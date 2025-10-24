@@ -1,0 +1,87 @@
+name: insideworld — Build & Zip
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zip_release:
+    runs-on: ubuntu-latest
+    name: Create insideworld ZIP + manifest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Create dist directory
+        run: mkdir -p dist
+
+      - name: Generate MANIFEST.txt
+        run: |
+          {
+            echo "# insideworld manifest"
+            echo "version: $(date +v%Y.%m.%d-%H%M)"
+            echo "commit: $GITHUB_SHA"
+            echo "built: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            echo ""
+            echo "Included files:"
+            find \
+              core_paper \
+              docs \
+              yaml_models \
+              data \
+              code \
+              visuals \
+              LICENSES \
+              index.yaml \
+              CITATION.cff \
+              CODE_OF_CONDUCT.md \
+              CONTRIBUTING.md \
+              SECURITY.md \
+              .gitattributes \
+              .gitignore \
+              -type f | sort
+          } > dist/MANIFEST.txt
+
+      - name: Compute checksums
+        run: |
+          awk 'NR>8 {print}' dist/MANIFEST.txt | xargs -r sha256sum > dist/CHECKSUMS.sha256
+          echo "Generated checksums:"
+          head -n 10 dist/CHECKSUMS.sha256 || true
+
+      - name: Build ZIP archive
+        run: |
+          VERSION=$(grep version dist/MANIFEST.txt | head -1 | awk '{print $2}')
+          ARCHIVE="insideworld_${VERSION}.zip"
+          zip -r "dist/${ARCHIVE}" \
+            core_paper \
+            docs \
+            yaml_models \
+            data \
+            code \
+            visuals \
+            LICENSES \
+            index.yaml \
+            CITATION.cff \
+            CODE_OF_CONDUCT.md \
+            CONTRIBUTING.md \
+            SECURITY.md \
+            .gitattributes \
+            .gitignore \
+            dist/MANIFEST.txt \
+            dist/CHECKSUMS.sha256
+          echo "Archive created at dist/${ARCHIVE}"
+          ls -lh dist
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: insideworld-build
+          path: dist/
+          if-no-files-found: error
