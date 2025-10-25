@@ -1,0 +1,21 @@
+anchor_id: insideworld
+version: 0.1.0
+created_utc: 2025-10-25
+registry_class: standard
+description: >
+  Canonical registry for insideworld. Stable anchors and doc pointers.
+
+anchors:
+  - id: paper_cest_v1
+    title: Consciousness as Energetic State Transition
+    path: core_paper/Consciousness_as_Energetic_State_Transition.md
+    status: active
+    notes: Initial formalization 2025-10-24
+
+policies:
+  license: repo-local
+  code_of_conduct: null
+
+links:
+  repo: https://github.com/adsmithhh/insideworld
+  core_paper: core_paper/Consciousness_as_Energetic_State_Transition.md

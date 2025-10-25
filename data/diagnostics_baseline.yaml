@@ -1,0 +1,16 @@
+
+baseline_task: ad_hoc.006
+status: success
+simulation:
+  file: code/energetic_transition.py
+  sim_dip: 6.9%
+  points: 201
+  params:
+    k_ex: 20
+    p_b: 0.1
+notes:
+  - Baseline computed
+  - Emergent: 6.9% transfer from exchange flux
+sources:
+  count: 13
+  folder: data/raw_logs/
