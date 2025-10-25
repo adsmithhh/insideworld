@@ -1,0 +1,21 @@
+project: insideworld
+version: 0.1.0
+intent: consciousness_as_energetic_state_transition
+
+io:
+  inputs:
+    - type: document
+      id: cest_paper
+      path: docs/Consciousness as Energetic State Transition.md
+  outputs:
+    - type: registry
+      path: standard_registry/standard_insideworld.yaml
+
+checks:
+  - id: structure_ok
+    rule: "docs exists and contains the CEST paper"
+  - id: license_present
+    rule: "LICENSE file exists"
+
+notes:
+  - seeded minimal YAML for future Multi-Eye integration
