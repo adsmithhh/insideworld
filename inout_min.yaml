@@ -6,16 +6,16 @@ io:
   inputs:
     - type: document
       id: cest_paper
-      path: docs/Consciousness as Energetic State Transition.md
+      path: core_paper/Consciousness_as_Energetic_State_Transition.md
   outputs:
     - type: registry
       path: standard_registry/standard_insideworld.yaml
 
 checks:
   - id: structure_ok
-    rule: "docs exists and contains the CEST paper"
-  - id: license_present
-    rule: "LICENSE file exists"
+    rule: "core_paper exists and contains the CEST paper"
+  - id: registry_present
+    rule: "standard_registry/standard_insideworld.yaml exists"
 
 notes:
-  - seeded minimal YAML for future Multi-Eye integration
+  - minimal seed for future Multi-Eye integration
