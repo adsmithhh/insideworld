@@ -43,10 +43,9 @@ Code → MIT License (LICENSES/LICENSE-CODE-MIT.txt)
 
 Documentation, YAML, and data → Creative Commons Attribution-ShareAlike 4.0 International (LICENSES/LICENSE-DOCS-CC-BY-SA-4.0.txt)
 
-## - [Alignment Appendix](docs/alignment_appendix.yaml)
+- [Alignment Appendix](docs/alignment_appendix.yaml)
 - [Ethics Statement](docs/ethics_statement.md)
 - [Publication Workflow](docs/publication_workflow.yaml)
-
 
 
 ---
