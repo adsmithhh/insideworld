@@ -1,0 +1,10 @@
+entries:
+  - timestamp: 2025-10-25T16:00:00Z
+    task_id: ad_hoc.006
+    exec_status: success
+    metrics: 
+      file: code/energetic_transition.py
+      sim_dip: 6.9%
+      points: 201
+      params: {k_ex:20, p_b:0.1}
+    notes: Baseline computed; stub gen for repo fill. Emergent: 6.9% transfer from exchange flux.
