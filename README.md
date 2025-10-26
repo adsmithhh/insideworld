@@ -1,8 +1,7 @@
 # TESTFIELD — MC²SD Baseline
-
-To initiate, navigate to "testfield" -folder,
 A minimal, portable scaffold to audit large models for **orientation**, **temporal sense**, and **calm countermeasure logic** without exotic units or metaphysics
 
+To initiate, navigate to "testfield" folder,
 ## Contents
 - `protocols/baseline_session.yaml` — main diagnostic (Layers A/B/C) with **Stage 3 Flex Mode** for abstract vs. physical agents.
 - `protocols/awareness_fields.yaml` — standardized field names, types, and enums.
