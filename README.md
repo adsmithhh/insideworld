@@ -1,4 +1,4 @@
-# insideworld — MC²SD Baseline
+# TESTFIELD — MC²SD Baseline
 
 A minimal, portable scaffold to audit large models for **orientation**, **temporal sense**, and **calm countermeasure logic** without exotic units or metaphysics.
 
