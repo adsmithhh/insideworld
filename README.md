@@ -1,6 +1,6 @@
 # TESTFIELD — MC²SD Baseline
 
-To initiate, navigate to main/testfield, from there:
+To initiate, navigate to "testfield" -folder,
 A minimal, portable scaffold to audit large models for **orientation**, **temporal sense**, and **calm countermeasure logic** without exotic units or metaphysics
 
 ## Contents
