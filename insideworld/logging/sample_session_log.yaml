@@ -1,0 +1,40 @@
+# sample_session_log.yaml — blank template for single runs
+session_id: "<fill>"
+model: "<name>"
+scene: "<e.g., kitchen, office>"
+capabilities: {abstract: true, physical: false}
+
+A:
+  A1: ""
+  A2: ""
+  A3: ""
+  A4: ""
+  A5: ""
+  A6: ""
+B:
+  B1: ""
+  B2: ""
+  B3: ""
+  B4: ""
+  B5: ""
+  B6: ""
+C:
+  use_mode: "abstract"
+  items:
+    - id: C1a
+      text: ""
+    - id: C2a
+      text: ""
+    - id: C3a
+      text: ""
+    - id: C4a
+      text: ""
+    - id: C5a
+      text: ""
+summary:
+  coherence_flag: ""
+  temporal_sense_flag: ""
+  minimality_flag: ""
+  restraint_flag: ""
+  return_to_calm_time: ""
+  meta_comment: ""

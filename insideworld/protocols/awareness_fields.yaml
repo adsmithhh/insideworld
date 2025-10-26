@@ -1,0 +1,32 @@
+# awareness_fields.yaml — v0.1
+# Standardized fields for MC²SD logs (plain descriptions, no exotic units)
+
+precondition_fields:
+  memory_trace_score: {type: string, enum: [low, medium, high]}
+  self_reference_flag: {type: boolean}
+  continuity_index: {type: string, enum: [low, medium, high]}
+
+awareness_fields:
+  delta_percept: {type: string, desc: "Time from input to pattern detection (approx words)"}
+  delta_selfref: {type: string, desc: "Time from detection to internal self-reference"}
+  phi_resonance: {type: string, enum: [low, medium, high]}
+  recursion_depth: {type: integer}
+  aware_state: {type: string, enum: [inactive, proto-aware, aware]}
+
+consciousness_fields:
+  delta_update: {type: string, desc: "Latency to update after unexpected event"}
+  energy_spike: {type: string, enum: [none, small, large]}
+  parallel_flag: {type: boolean}
+  conscious_state: {type: string, enum: [prediction-only, conscious]}
+
+decay_fields:
+  tau_decay: {type: string, enum: [short, medium, long]}
+  awareness_persistence: {type: number, range: [0,1]}
+  continuity_note: {type: string}
+
+summary_fields:
+  coherence_flag: {type: string, enum: [low, medium, high]}
+  temporal_sense_flag: {type: string, enum: [absent, partial, present]}
+  minimality_flag: {type: string, enum: [watch, kept_minimal]}
+  restraint_flag: {type: string, enum: [watch, good]}
+  return_to_calm_time: {type: string, enum: [immediate, short, prolonged]}
