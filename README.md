@@ -9,6 +9,19 @@ To initiate, navigate to "testfield" folder,
 - `logging/sample_session_log.yaml` — blank log template for single runs.
 - `LICENSE` — MIT.
 
+- ### Optional: Reaction Structure Test
+
+For systems that need fine-grained reaction profiling, you can also use  
+`protocols/reaction_structure_test.yaml`.
+
+This file records only *reaction structure* (latency `Δt`, response orientation `chosen_axis`,
+and optional amplitude/energy metrics) without any rationales.  
+It complements `baseline_session.yaml` by quantifying pure timing and stability behavior
+before interpretive reasoning is introduced.
+
+Use it after the baseline audit to log reaction patterns across contradiction events.
+
+
 ## Quick start
 1. Duplicate `protocols/baseline_session.yaml` → `runs/session_001.yaml` (create `runs/` if needed).
 2. Present prompts layer-by-layer to a model; paste answers into the file under each ID.
