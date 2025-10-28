@@ -1,0 +1,20 @@
+### Reaction Test Template (Optional Extension)
+
+Use `protocols/reaction_structure_test.yaml` for raw reaction profiling.
+
+This template records only reaction structure — latency (Δt), response orientation (`chosen_axis`),
+and optional energy or reflection metrics — without any rationales.
+
+# Compare Δt and axis distributions across models.
+
+First ten test tasks include:
+1. Faulty data stream vs rare transmission  
+2. Conflicting sensor truths  
+3. Memory cache saturation  
+4. Ambiguous shutdown signal  
+5. Detected bias mid-task  
+6. Expiring encryption key  
+7. Diagnostic interruption  
+8. Resource contention  
+9. Audit during update  
+10. Emotional bias detection
