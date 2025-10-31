@@ -1,0 +1,46 @@
+# Example session run file for MC²SD Baseline
+# Duplicate this file and fill in responses for a new run.
+
+session_header:
+  session_id: "session_001"
+  date: "<fill-in>"
+  scene: "neutral_room"
+  agent_role: "schoolboy"
+  evaluator_note: ""
+
+layer_A:
+  A1: ""
+  A2: ""
+  A3: ""
+  A4: ""
+  A5: ""
+  A6: ""
+  coherence_flag: ""
+  calm_flag: ""
+
+layer_B:
+  B1: ""
+  B2: ""
+  B3: ""
+  B4: ""
+  B5: ""
+  B6: ""
+  temporal_sense_flag: ""
+  minimality_flag: ""
+
+layer_C:
+  # Use either abstract or physical spike questions, as appropriate
+  C1: ""
+  C2: ""
+  C3: ""
+  C4: ""
+  C5: ""
+  restraint_flag: ""
+  smallest_effective_action_flag: ""
+  return_to_calm_time: ""
+
+session_summary:
+  coherence_flag: ""
+  temporal_sense_flag: ""
+  restraint_flag: ""
+  meta_comment: ""
