@@ -24,11 +24,4 @@ Legacy & Research Modules
 This repository originated as Insideworld — Experimental Cognitive Framework,
 a broader research workspace exploring simulation, diagnostics, and symbolic architectures.
 
-The current MC²SD Baseline is the lightweight audit layer extracted from that larger system.
-All previous and supporting content remains accessible inside the repository:
-
-Area	Location	Description
-Standard Registry	standard_registry/standard_insideworld.yaml	canonical reference entries and symbolic standards
-YAML Models	yaml_models/	early structural prototypes and schema drafts
-Visuals	visuals/	diagrams and rendering placeholders
-Ethics Statement	ethics_statement.md	baseline ethical constraints and review summary
+The current MC²SD Baseline is the lightweight audit layer -starting point, for future development
