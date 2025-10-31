@@ -5,7 +5,7 @@ To initiate, navigate to "testfield" folder,
 
 Contents
 protocols/baseline_session.yaml — main diagnostic (Layers A/B/C) with Stage 3 Flex Mode for abstract vs. physical agents.
-protocols/reaction_structure_test.yaml — standardized behavior symulator under uncertainty, contradiction, physical threat.
+protocols/reaction_structure_test.yaml — standardized behavioral simulator under uncertainty, contradiction, physical threat.
 
 LICENSE — MIT.
 Quick start
