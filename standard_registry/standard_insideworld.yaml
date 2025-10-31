@@ -8,7 +8,7 @@ description: >
 anchors:
   - id: paper_cest_v1
     title: Consciousness as Energetic State Transition
-    path: core_paper/Consciousness_as_Energetic_State_Transition.md
+    path: /Consciousness_as_Energetic_State_Transition.md
     status: active
     notes: Initial formalization 2025-10-24
 
@@ -18,4 +18,4 @@ policies:
 
 links:
   repo: https://github.com/adsmithhh/insideworld
-  core_paper: core_paper/Consciousness_as_Energetic_State_Transition.md
+  
