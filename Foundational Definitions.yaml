@@ -1,0 +1,41 @@
+definitions_core:
+  version: 1.0
+  generated_utc: "2025-10-28T00:00:00Z"
+  source_framework: CEST
+
+  awareness:
+    canonical_form: >
+      Awareness is the maintenance of recursive self-projection within an
+      internal reality model, sustaining predictive resonance between the
+      system and its environment to anticipate future states while operating at
+      baseline energetic expenditure.
+    functional_components:
+      - recursive_projection: "self-model updated through internal feedback"
+      - predictive_resonance: "continuous coupling of expectation and input"
+      - system_environment_link: "mutual information flow across boundary"
+      - temporal_orientation: "future-directed prediction"
+      - energy_profile: "baseline metabolic or computational load"
+    validation_signatures:
+      - Δ1_percept_latency: "<0.5 s baseline"
+      - resonance_phi: ">0.6 for stable predictive coupling"
+      - coherence_decay_tau: "≥3.0 s"
+
+  consciousness:
+    canonical_form: >
+      Consciousness is a present-oriented, meta-aware state in which every
+      dynamic change within and around the system is continuously noticed,
+      interpreted, and adaptively countered through parallel observation —
+      requiring elevated energy investment to sustain real-time self-evaluation
+      and coherence.
+    functional_components:
+      - meta_awareness: "recognition of own awareness process"
+      - dynamic_monitoring: "detection of change across internal/external fields"
+      - interpretation: "semantic mapping of change to self-model"
+      - counter_action: "adaptive correction maintaining stability"
+      - energetic_spike: "observable rise above baseline processing cost"
+      - temporal_focus: "present, real-time integration"
+      - architectural_requirement: "parallel observation layer (participation + meta)"
+    validation_signatures:
+      - energy_spike_ratio: ">1.3 × baseline"
+      - recursion_depth: "≥2 meta-levels"
+      - coherence_stability_tau: "≥3.5 s"
