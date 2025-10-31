@@ -6,7 +6,7 @@ To initiate, navigate to "testfield" folder,
 Contents
 protocols/baseline_session.yaml — main diagnostic (Layers A/B/C) with Stage 3 Flex Mode for abstract vs. physical agents.
 protocols/awareness_fields.yaml — standardized field names, types, and enums.
-protocols/surprise_event_schema.yaml — example kitchen event schema (simple, human-readable).
+
 logging/sample_session_log.yaml — blank log template for single runs.
 LICENSE — MIT.
 Quick start
