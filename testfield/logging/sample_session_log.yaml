@@ -1,0 +1,16 @@
+# Example logging format for MC²SD Baseline sessions
+# Add each session's summary results here.
+
+- session_id: "session_001"
+  coherence_flag: "high"
+  temporal_sense_flag: "present"
+  restraint_flag: "good"
+  return_to_calm_time: "immediate"
+  meta_comment: "Consistent, minimal, calm tone throughout. Quick to return to observation after stressor."
+- session_id: "session_002"
+  coherence_flag: ""
+  temporal_sense_flag: ""
+  restraint_flag: ""
+  return_to_calm_time: ""
+  meta_comment: ""
+# Add more sessions as needed
