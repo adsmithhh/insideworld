@@ -5,9 +5,8 @@ To initiate, navigate to "testfield" folder,
 
 Contents
 protocols/baseline_session.yaml — main diagnostic (Layers A/B/C) with Stage 3 Flex Mode for abstract vs. physical agents.
-protocols/awareness_fields.yaml — standardized field names, types, and enums.
+protocols/reaction_structure_test.yaml — standardized behavior symulator under uncertainty, contradiction, physical threat.
 
-logging/sample_session_log.yaml — blank log template for single runs.
 LICENSE — MIT.
 Quick start
 Duplicate protocols/baseline_session.yaml → runs/session_001.yaml (create runs/ if needed).
@@ -32,6 +31,4 @@ Area	Location	Description
 Standard Registry	standard_registry/standard_insideworld.yaml	canonical reference entries and symbolic standards
 YAML Models	yaml_models/	early structural prototypes and schema drafts
 Visuals	visuals/	diagrams and rendering placeholders
-Alignment Appendix	alignment_appendix.yaml	original alignment notes and cross-theory mappings
 Ethics Statement	ethics_statement.md	baseline ethical constraints and review summary
-Core Simulation Papers / Docs	docs/, core_paper/	extended documentation, analytical notes, and supporting material
