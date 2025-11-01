@@ -1,3 +1,17 @@
+# insideworld Research Map
+# Status: active, evolving
+# Location: testfield (not canonical)
+
+purpose: >
+  Define and track conceptual structure, axes, and development
+  path for cognition-continuity research within insideworld.
+
+role: scaffolding
+visibility: internal
+promotion_condition: stability_of_concepts_and_protocols
+
+
+
 research_map:
   axes:
     - ontology
@@ -20,3 +34,4 @@ research_map:
     - repeatable continuity proofs
     - chamber evolution logs
     - reproducible cognitive scaffolds
+
