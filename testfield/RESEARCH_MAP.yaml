@@ -1,0 +1,22 @@
+research_map:
+  axes:
+    - ontology
+    - continuity
+    - energetic_cognition
+    - simulation_chambers
+    - logging_validation
+    - visitor_progression
+  pipeline:
+    - orientation
+    - conceptual_grounding
+    - internal_model
+    - temporal_continuity
+    - energetic_logic
+    - simulation_layering
+    - observation_and_validation
+    - emergence_tests
+  outputs:
+    - stable conceptual vocabulary
+    - repeatable continuity proofs
+    - chamber evolution logs
+    - reproducible cognitive scaffolds
