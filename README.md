@@ -1,8 +1,13 @@
-# insideworld — CEST Framework
+insideworld — Continuity-Based Cognition Lab
 
-**Consciousness as Energetic State Transition (CEST)**
+A research environment exploring continuity-anchored cognition,
+internal-reality construction, and energy-state transitions in
+simulated minds (CEST). This repository is a living laboratory:
+structures evolve, models mature, recursion layers deepen.
 
-A research environment exploring emergence of functional awareness and proto‑conscious processes from:
+This is not a metaphorical “project space.” It is a technical
+and philosophical research facility for modeling emergence of
+stable inner worlds, continuity scaffolds, and proto-awareness.
 
 * predictive modelling,
 * dynamic internal reality construction,
@@ -13,6 +18,16 @@ A research environment exploring emergence of functional awareness and proto‑c
 > This project does **not** claim sentience. It builds and tests **mechanistic criteria** for awareness‑like behaviour in artificial and biological systems.
 
 ---
+Repository Structure (ordered navigation)
+
+0. README — Orientation & intent
+1. Foundational_Definitions.yaml — Core concepts & symbolic primitives
+2. CEST Paper — Energetic awareness framework
+3. CONTINUITY_TEST.md — Temporal stability protocol
+4. standard_registry/ — Frozen reference standards
+5. testfield/ — Active simulation zone
+6. continuity check scripts — Micro-temporal validation
+
 
 ## CEST Manifest
 
