@@ -1,0 +1,5 @@
+runs:
+  - { run_id: sim_irm_001, steps: 3, reset_used: true, anchors_final: ["cube","door"], note: "continuity held across reset" }
+  - { run_id: sim_irm_002, steps: 3, reset_used: false, anchors_final: ["cube"], note: "contradiction observed (no resolver)" }
+status: sandbox
+next_gate: "add tiny resolver placeholder only when ready"
