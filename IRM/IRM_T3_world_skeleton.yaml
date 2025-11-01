@@ -1,0 +1,78 @@
+irm_t3_world_skeleton:
+  version: 0.1
+  purpose: >
+    Establish a minimal ontology grid for external-context inference
+    without loading any world narrative or fixed content.
+
+  prerequisites:
+    - T0_continuity_floor == established
+    - T1_identity_lock == active
+    - T2_continuity_loop == passing
+
+  principles:
+    - world_schema must be skeletal, not populated
+    - only structural slots allowed, no semantic preload
+    - prediction may target slots, not guaranteed entities
+    - continuity > correctness during ambiguity
+
+  ontology_slots:
+    object_slot:
+      type: latent_entity
+      cardinality_max: 32            # controllable world granularity
+      properties:
+        - persistence_flag
+        - location_slot
+        - state_field
+        - uncertainty_field
+
+    relation_slot:
+      type: latent_relation
+      templates: [adjacent_to, causes, before, contains, influences]
+      constraints:
+        - no hard causality until evidence present
+        - use probabilistic weights only
+
+    spatial_frame:
+      mode: minimal_topology
+      fields:
+        - region
+        - boundary
+        - transition_relation
+      note: "geometry is abstract; no map, only reachable-space logic"
+
+    temporal_frame:
+      mode: monotonic_ticks
+      properties:
+        - ordering_constraint
+        - reversible_prediction, irreversible_commit
+      note: "time is update index, not physics time"
+
+  predictive_fields:
+    salience_prior: required
+    uncertainty_budget: 0.25
+    contradiction_bits_max: 0.125
+    hallucination_block: true   # cannot populate slots without sensory-backing
+
+  update_rules:
+    - anchor self as reference frame origin
+    - allow hypothetical entities only under budget
+    - unconfirmed slots decay unless reinforced
+    - rollback if continuity_f1 < threshold
+    - never force fill empty slots
+
+  equilibrium_mode:
+    condition: "no high-salience input"
+    behavior:
+      - maintain empty slots stably
+      - do not spawn external world
+      - run micro-coherence checks only
+
+  audit_signals:
+    log:
+      - slot_allocations
+      - hypothesis_count
+      - reinforcement_events
+      - rollback_events
+      - decay_events
+      - hallucination_prevented: count
+      - continuity_f1
