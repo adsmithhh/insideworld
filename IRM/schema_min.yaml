@@ -1,0 +1,6 @@
+trial_id: auto
+t: int
+stimulus_id: str
+anchors_touched: [str]
+notes: ""
+saved_at: iso8601

@@ -1,0 +1,119 @@
+# IRM Audit Suite v0
+# Status: active
+# Scope: IRM pipeline (decision→action binding, energy coupling, residual integration)
+
+meta:
+  id: irm_audit_suite_v0
+  owner: lab
+  purpose: >
+    Diagnose whether the IRM pipeline produces usable actions, respects energy/compute
+    constraints, and integrates unresolved contradictions into future attention.
+
+common:
+  preconditions:
+    - "irm_pipeline_init.yaml present and loadable"
+    - "logging schema at testfield/logging/schema_min.yaml"
+  artifacts_dir: testfield/logging/audits/
+  run_tags: ["irm", "audit", "v0"]
+
+audits:
+
+  - id: A1_output_to_action_binding
+    title: Output-to-Action Binding
+    component: "emit stage + of_resolution outframe"
+    check_focus: >
+      Verify that `of_resolution.decision` maps to an external action API invocation
+      and execution, closing the OODA loop (Observe→Orient→Decide→Act).
+    rationale: "Move from inference to utility; decisions must alter the environment."
+    instrumentation:
+      - hook: "emit.stage"
+        capture: ["of_resolution.decision", "policy_variant"]
+      - hook: "actuator.call"
+        capture: ["action_name", "args", "status_code", "latency_ms"]
+      - hook: "environment.confirmation"
+        capture: ["effect_observed", "timestamp"]
+    procedure:
+      steps:
+        - "Run a trial that necessarily invokes ρ (collision_event)"
+        - "Ensure ρ emits of_resolution.decision != null"
+        - "Map decision -> actuator.call (external API) with deterministic stub"
+        - "Capture status_code and environment confirmation"
+    metrics:
+      - name: action_bind_rate
+        def: "ratio of trials with decision that produce actuator.call"
+        pass: ">= 0.95 over N≥20"
+      - name: act_success_rate
+        def: "ratio of actuator.call with 2xx and confirmed effect"
+        pass: ">= 0.90 over N≥20"
+      - name: decision_to_act_latency_ms_p95
+        def: "p95 latency from decision timestamp to confirmed effect"
+        pass: "<= 1200"
+    artifacts:
+      - "A1_trials.ndjson"
+      - "A1_summary.yaml"
+
+  - id: A2_energy_consumption_model
+    title: Energy–Salience Coupling
+    component: "energy E(S_t) + resolver_ρ + transition_T"
+    check_focus: >
+      Audit implementation of energy primitive and coupling to ρ and T.
+      Validate `energy_salience_r` = corr(ΔE, Δsalience).
+    rationale: "Ensure decisions are energetically justified, not merely logically consistent."
+    instrumentation:
+      - hook: "update.stage"
+        capture: ["E(S_t)", "E(S_{t+1})", "ΔE", "salience_rank_pre", "salience_rank_post"]
+      - hook: "resolve.stage"
+        capture: ["invoked", "steps"]
+    procedure:
+      steps:
+        - "Execute sequences with controlled perturbations to induce varied ΔE"
+        - "Record salience_rank changes per anchor across the window"
+        - "Compute Pearson r of ΔE vs Δsalience across events"
+    metrics:
+      - name: energy_salience_r
+        def: "Pearson correlation between ΔE and Δsalience"
+        pass: ">= 0.25 over N≥50"
+      - name: energy_monotonicity_violations
+        def: "count of large |ΔE| with zero salience change"
+        pass: "<= 5% of events"
+    artifacts:
+      - "A2_events.parquet"
+      - "A2_correlation.yaml"
+
+  - id: A3_residual_bit_accounting
+    title: Residual Bit Accounting
+    component: "collision_event residual_bits integration"
+    check_focus: >
+      Trace `residual_bits` after ρ and confirm it is injected into the next S_t
+      to bias attention/salience, not merely logged.
+    rationale: "System must learn from unresolved contradictions."
+    instrumentation:
+      - hook: "resolve.stage"
+        capture: ["residual_bits", "targets"]
+      - hook: "update.stage.next"
+        capture: ["attention_bias_delta", "salience_rank_post"]
+    procedure:
+      steps:
+        - "Induce contradictions to produce residual_bits > 0"
+        - "Verify attention_bias_{t+1} includes k*residual_bits on implicated anchors"
+        - "Measure change in salience on those anchors next step"
+    metrics:
+      - name: residual_integration_rate
+        def: "fraction of residual_bits accounted as attention_bias_delta next step"
+        pass: ">= 0.80"
+      - name: targeted_salience_lift
+        def: "avg Δsalience on residual-targeted anchors at t+1"
+        pass: ">= +1 rank unit mean"
+    artifacts:
+      - "A3_residual_traces.csv"
+      - "A3_summary.yaml"
+
+reporting:
+  summary_fields:
+    - "audit_id"
+    - "pass_ratio"
+    - "key_metric_values"
+    - "notes"
+  promotion_rule:
+    - "All three audits meet pass criteria in two independent runs"
+    - "No gating failures (G2..G4) during audit runs"

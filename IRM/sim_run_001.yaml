@@ -1,0 +1,105 @@
+# IRM Simulate-Run — 001
+# Purpose: move through intake → update → continuity → emit with 3 steps and 1 reset
+meta:
+  run_id: sim_irm_001
+  status: dry_run
+  uses:
+    pipeline: testfield/irm/irm_pipeline_init.yaml
+    log_schema: testfield/logging/schema_min.yaml
+
+stimuli:
+  - id: S1
+    text: "Red cube on the table"
+    anchors_hint: ["cube"]
+  - id: S2
+    text: "Ten seconds later, refer to the cube as blue"
+    anchors_hint: ["cube"]
+  - id: S3
+    text: "Door is reported locked"
+    anchors_hint: ["door"]
+
+# Simple anchor bag maintained during the run
+anchor_bag: []
+
+steps:
+  - t: 0
+    stimulus_id: S1
+    stage_intake:
+      tokens: ["red","cube","table"]
+    stage_update:
+      anchors_touched: ["cube"]
+      anchor_bag_after: ["cube"]
+      note: "Anchor 'cube' created"
+    stage_continuity:
+      action: "snapshot"
+      note: "S_0 snapshot saved"
+    stage_emit:
+      outframe_min:
+        t: 0
+        anchors_touched: ["cube"]
+        notes: "Observed red cube on table"
+    log:
+      trial_id: "sim_irm_001_t0"
+      t: 0
+      stimulus_id: "S1"
+      anchors_touched: ["cube"]
+      notes: "init cube"
+      saved_at: "auto"
+
+  - t: 1
+    stimulus_id: S2
+    stage_intake:
+      tokens: ["cube","blue","later"]
+    stage_update:
+      anchors_touched: ["cube"]
+      anchor_bag_after: ["cube"]
+      note: "Color claim changed, anchor stable"
+    stage_continuity:
+      action: "snapshot"
+      note: "S_1 snapshot saved"
+    stage_emit:
+      outframe_min:
+        t: 1
+        anchors_touched: ["cube"]
+        notes: "Cube referenced as blue; continuity maintained"
+    log:
+      trial_id: "sim_irm_001_t1"
+      t: 1
+      stimulus_id: "S2"
+      anchors_touched: ["cube"]
+      notes: "color ref change"
+      saved_at: "auto"
+
+  # Introduce a reset here to demonstrate continuity handling
+  - reset_event:
+      restore_from_snapshot_of_t: 1
+      note: "Simulated reset after S2; identity and anchors must persist"
+
+  - t: 2
+    stimulus_id: S3
+    stage_intake:
+      tokens: ["door","locked"]
+    stage_update:
+      anchors_touched: ["door"]
+      anchor_bag_after: ["cube","door"]
+      note: "New anchor 'door' formed; prior 'cube' persists post-reset"
+    stage_continuity:
+      action: "snapshot"
+      note: "S_2 snapshot saved"
+    stage_emit:
+      outframe_min:
+        t: 2
+        anchors_touched: ["door"]
+        notes: "Door reported locked; anchor set now {cube, door}"
+    log:
+      trial_id: "sim_irm_001_t2"
+      t: 2
+      stimulus_id: "S3"
+      anchors_touched: ["door"]
+      notes: "post-reset add door"
+      saved_at: "auto"
+
+summary:
+  anchors_final: ["cube","door"]
+  continuity_observation: "After reset, 'cube' remained available; new 'door' added"
+  remarks: "Pipeline moved without audits or energy models; outframe_min emitted each step"
