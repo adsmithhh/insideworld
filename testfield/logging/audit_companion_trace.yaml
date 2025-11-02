@@ -1,0 +1,9 @@
+audit_companion: GPT-5
+role: calibration + sanity scaffolding
+scope: baseline orientation, restraint logic, temporal tests
+out_of_scope: symbolic architecture, meta-recursive chambers, IRM alpha complexity
+notes:
+  - provenance registered non-intrusively
+  - TESTFIELD remains minimal evaluation surface
+  - complex research threads archived outside this repo path
+status: active
