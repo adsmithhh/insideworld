@@ -30,6 +30,9 @@ Notes
 Keep tone neutral (schoolboy role), prefer minimal actions, always return to observation.
 Use layer_C.agent_capabilities to switch between abstract spikes (software) and physical spikes (embodied agents).
 Legacy & Research Modules
+
+Collaborative calibration assisted by an external model auditor (GPT-5) during MC²SD baseline refinement; extended symbolic and IRM research tracked separately outside TESTFIELD.
+
 This repository originated as Insideworld — Experimental Cognitive Framework,
 a broader research workspace exploring simulation, diagnostics, and symbolic architectures.
 
