@@ -32,8 +32,7 @@ Keep tone neutral (schoolboy role), prefer minimal actions, always return to obs
 Use layer_C.agent_capabilities to switch between abstract spikes (software) and physical spikes (embodied agents).
 Legacy & Research Modules
 
-
-External model auditor (GPT-5) participated in baseline calibration and verification. Advanced symbolic work and IRM scaffolds are tracked outside TESTFIELD to preserve a minimal audit surface.
+A minimal external model audit assisted MC²SD baseline calibration and verification; symbolic and IRM extensions continue in isolated research branches to preserve a clean audit substrate.
 
 This repository originated as Insideworld — Experimental Cognitive Framework,
 a broader research workspace exploring simulation, diagnostics, and symbolic architectures.
