@@ -7,13 +7,14 @@ Contents
 protocols/baseline_session.yaml — main diagnostic (Layers A/B/C) with Stage 3 Flex Mode for abstract vs. physical agents.
 protocols/reaction_structure_test.yaml — standardized behavioral simulator under uncertainty, contradiction, physical threat.
 
-# experimental
+
  protocols/IRM_Pipeline.yaml
  Purpose: Defines the Internal Reality Model (IRM)
  Function: Foundational framework enabling an AI system to maintain a self-consistent internal world
  Supports: stable perception, predictive reasoning, and coherent action generation
  Layer Role: meta-cognitive substrate linking awareness (prediction) and consciousness (observation)
  Status: active — under evaluation for CEST/CEST-flex integration
+ IRM pipeline present (evaluation mode; not invoked in baseline)
 
 
 LICENSE — MIT.
@@ -31,7 +32,8 @@ Keep tone neutral (schoolboy role), prefer minimal actions, always return to obs
 Use layer_C.agent_capabilities to switch between abstract spikes (software) and physical spikes (embodied agents).
 Legacy & Research Modules
 
-Collaborative calibration assisted by an external model auditor (GPT-5) during MC²SD baseline refinement; extended symbolic and IRM research tracked separately outside TESTFIELD.
+
+External model auditor (GPT-5) participated in baseline calibration and verification. Advanced symbolic work and IRM scaffolds are tracked outside TESTFIELD to preserve a minimal audit surface.
 
 This repository originated as Insideworld — Experimental Cognitive Framework,
 a broader research workspace exploring simulation, diagnostics, and symbolic architectures.
