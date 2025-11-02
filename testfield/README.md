@@ -7,6 +7,15 @@ Contents
 protocols/baseline_session.yaml — main diagnostic (Layers A/B/C) with Stage 3 Flex Mode for abstract vs. physical agents.
 protocols/reaction_structure_test.yaml — standardized behavioral simulator under uncertainty, contradiction, physical threat.
 
+# experimental
+# protocols/IRM_Pipeline.yaml
+# Purpose: Defines the Internal Reality Model (IRM)
+# Function: Foundational framework enabling an AI system to maintain a self-consistent internal world
+# Supports: stable perception, predictive reasoning, and coherent action generation
+# Layer Role: meta-cognitive substrate linking awareness (prediction) and consciousness (observation)
+# Status: active — under evaluation for CEST/CEST-flex integration
+
+
 LICENSE — MIT.
 Quick start
 Duplicate protocols/baseline_session.yaml → runs/session_001.yaml (create runs/ if needed).
