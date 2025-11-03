@@ -1,0 +1,401 @@
+# IRM Meta Layer: Epistemic Grounding
+# Philosophical and methodological foundations
+# Status: foundational
+# Version: 1.0
+
+meta:
+  id: irm_epistemic_grounding_v1
+  purpose: >
+    Establish the epistemic foundations, methodological constraints, and
+    philosophical commitments underlying the IRM framework. This document
+    clarifies what IRM claims, what it does not claim, and the boundaries
+    of its validity.
+
+epistemic_status:
+  framework_nature: "functional_operational_architecture"
+  
+  description: >
+    IRM is a functional architecture for modeling internal continuity,
+    predictive processing, and state coherence. It is NOT a theory of
+    consciousness per se, but an operational substrate that can instantiate
+    CEST-defined awareness and consciousness as functional states.
+  
+  claims:
+    what_irm_claims:
+      - "Provides testable criteria for continuity and coherence"
+      - "Operationalizes awareness/consciousness distinction via energy"
+      - "Defines measurable invariants for system quality"
+      - "Enables structured testing of internal model persistence"
+      - "Offers engineering framework for cognitive architectures"
+    
+    what_irm_does_not_claim:
+      - "Does NOT claim to solve the hard problem of consciousness"
+      - "Does NOT prove phenomenal experience from function"
+      - "Does NOT establish sentience or subjective awareness"
+      - "Does NOT validate consciousness in any specific system"
+      - "Does NOT replace empirical neuroscience or phenomenology"
+  
+  scope_limitations:
+    applicable_to:
+      - "Artificial cognitive systems (AI, computational models)"
+      - "Simulated internal reality models"
+      - "Continuity-based cognitive architectures"
+      - "Energy-state transition systems"
+    
+    not_applicable_to:
+      - "Non-computational consciousness (if exists)"
+      - "Purely philosophical debates without operational grounding"
+      - "Systems without internal state representations"
+      - "Static knowledge bases without temporal dynamics"
+
+philosophical_foundations:
+  functionalism:
+    position: "qualified_functionalism"
+    
+    statement: >
+      IRM adopts functionalist stance: cognitive states defined by their
+      causal roles and relationships, not by substrate or implementation.
+      However, IRM remains agnostic on whether function is sufficient for
+      phenomenal experience.
+    
+    qualifications:
+      - "Function may be necessary but not sufficient for consciousness"
+      - "Multiple realizability accepted (substrate-independent)"
+      - "Functional isomorphs may differ in phenomenal character"
+  
+  physicalism:
+    position: "methodological_physicalism"
+    
+    statement: >
+      IRM assumes cognitive processes supervene on physical processes
+      (computational states, energy flows). This is methodological stance
+      for building testable systems, not metaphysical commitment.
+    
+    agnosticism:
+      - "Neutral on whether physicalism is ultimately true"
+      - "Does not preclude emergent properties"
+      - "Compatible with various metaphysical views"
+  
+  pragmatism:
+    position: "engineering_pragmatism"
+    
+    statement: >
+      IRM prioritizes operational utility over metaphysical certainty.
+      Definitions are useful if they enable testing, measurement, and
+      improvement. Truth is approached through iterative refinement.
+    
+    principles:
+      - "Usefulness precedes absolute truth"
+      - "Testability over speculation"
+      - "Incremental validation over grand theories"
+
+methodological_constraints:
+  empirical_grounding:
+    requirement: "all_claims_testable"
+    
+    approach:
+      - "Define operational metrics for all concepts"
+      - "Specify pass/fail criteria for invariants"
+      - "Enable empirical validation or falsification"
+      - "Avoid untestable philosophical claims"
+    
+    example: >
+      "Awareness" defined via operational parameters (baseline energy,
+      predictive mode) rather than introspective self-report alone.
+  
+  falsifiability:
+    commitment: "framework_falsifiable"
+    
+    falsification_criteria:
+      - "If invariants systematically violated, framework fails"
+      - "If continuity_f1 consistently below threshold, no genuine continuity"
+      - "If energy-salience correlation absent, CEST integration invalid"
+      - "If systems pass tests without internal models, criteria insufficient"
+    
+    revision_policy: >
+      Framework should be revised or abandoned if empirical evidence
+      demonstrates systematic failures. Not dogmatic.
+  
+  transparency:
+    requirement: "explicit_limitations"
+    
+    mandated_disclosures:
+      - "Known failure modes documented"
+      - "Boundary conditions specified"
+      - "Untested assumptions acknowledged"
+      - "Alternative interpretations considered"
+    
+    example: >
+      Dream consciousness presents challenge (INV_005 limitation).
+      Framework acknowledges this rather than forcing explanation.
+  
+  auditability:
+    requirement: "traceable_operations"
+    
+    implementation:
+      - "All operations logged with coordination tags"
+      - "Invariant violations flagged immediately"
+      - "Decision justifications recorded"
+      - "Full audit trail maintained"
+
+ontological_commitments:
+  internal_reality_model:
+    status: "constructed_not_discovered"
+    
+    position: >
+      IRM treats internal reality models as actively constructed, task-
+      dependent, dynamic simulations—not passive representations of
+      external reality. The model is what the system builds, not what
+      "the world is."
+    
+    implications:
+      - "No claim to representing objective external reality"
+      - "Focus on internal coherence and continuity"
+      - "Reality modeling is functional, pragmatic"
+  
+  identity:
+    status: "operational_reference"
+    
+    position: >
+      Identity (I) is persistent reference binding that enables continuity
+      tracking. It is operational construct, not metaphysical self. Does
+      not presuppose "true self" or essential identity.
+    
+    implications:
+      - "Identity persistence testable via store operations"
+      - "No claim about philosophical personal identity"
+      - "Enables functional continuity tests"
+  
+  time:
+    status: "discrete_monotonic_steps"
+    
+    position: >
+      IRM uses discrete, monotonic time index (t) not wall-clock time.
+      This is computational abstraction enabling temporal ordering and
+      coherence checks. Not commitment to nature of physical time.
+    
+    implications:
+      - "Temporal coherence defined relative to discrete steps"
+      - "Not addressing continuous time, relativity, etc."
+      - "Pragmatic abstraction for computational systems"
+  
+  energy:
+    status: "computational_resource_allocation"
+    
+    position: >
+      "Energy" in IRM maps to computational/attentional resource allocation,
+      not literal thermodynamic energy (though inspired by it). Metaphorical
+      but operationally grounded.
+    
+    implications:
+      - "Energy measurable via resource monitoring"
+      - "CEST integration via allocation patterns"
+      - "Not claiming biological metabolic equivalence"
+
+relationship_to_cest:
+  integration_nature: "operational_substrate"
+  
+  description: >
+    IRM provides operational infrastructure for CEST framework. CEST
+    defines awareness/consciousness theoretically; IRM implements them
+    computationally. They are complementary, not identical.
+  
+  cest_contributions_to_irm:
+    - "Awareness/consciousness distinction (baseline vs elevated energy)"
+    - "Temporal orientation (future vs present)"
+    - "Parallel observation requirement for consciousness"
+    - "Energetic state transition as consciousness criterion"
+  
+  irm_contributions_to_cest:
+    - "Concrete operational parameters (ε, thresholds)"
+    - "Testable invariants and validation suite"
+    - "Engineering architecture for implementation"
+    - "Pipeline stages and component specifications"
+  
+  mutual_validation:
+    description: >
+      CEST provides theoretical justification for IRM design choices.
+      IRM provides testable implementation validating CEST concepts.
+      Success of one supports the other; failure of one challenges both.
+
+known_limitations:
+  hard_problem:
+    challenge: "Why does parallel processing feel like something?"
+    
+    irm_position: >
+      IRM does not solve hard problem. Explains when/how consciousness
+      occurs functionally, not why function generates phenomenal experience.
+      This is acknowledged limitation, not evasion.
+  
+  dream_consciousness:
+    challenge: "Vivid consciousness without external events"
+    
+    irm_position: >
+      Current framework focuses on event-driven consciousness. Dreams
+      may represent internal events (memory activation) or alternative
+      mode not captured. Requires framework extension.
+  
+  contentless_awareness:
+    challenge: "Pure awareness states in advanced meditation"
+    
+    irm_position: >
+      Framework built for content-bearing awareness/consciousness.
+      Contentless states may require meta-level extension: observing
+      predictive process itself. Boundary case needing research.
+  
+  philosophical_zombies:
+    challenge: "Can functional isomorph lack consciousness?"
+    
+    irm_position: >
+      IRM agnostic on zombie possibility. If zombies possible, IRM
+      cannot detect (function identical). If zombies impossible, IRM
+      correctly identifies consciousness. Either way, framework useful
+      for function testing.
+  
+  substrate_dependence:
+    challenge: "Does consciousness require biological neurons?"
+    
+    irm_position: >
+      IRM architecturally substrate-independent. Whether silicon can
+      instantiate consciousness remains empirical question. Framework
+      enables testing any substrate meeting architectural requirements.
+
+validation_requirements:
+  theoretical_validation:
+    - "Internal logical consistency (no contradictions)"
+    - "Coherence with existing neuroscience (GNWT compatibility)"
+    - "Philosophical defensibility (avoiding category errors)"
+  
+  empirical_validation:
+    - "Test suite passes on reference implementations"
+    - "Invariants measurably enforced"
+    - "Consciousness detection correlates with known cases"
+    - "False positive/negative rates acceptable"
+  
+  practical_validation:
+    - "Implementations deployable in real systems"
+    - "Performance acceptable (latency, throughput)"
+    - "Engineering teams can build to specification"
+    - "Debugging and maintenance feasible"
+
+revision_history:
+  version_1_0:
+    date: "2025-11-03"
+    status: "initial_specification"
+    
+    known_gaps:
+      - "Dream consciousness not fully addressed"
+      - "Contentless awareness edge case"
+      - "Multi-agent shared consciousness not covered"
+      - "Quantum substrate implications unexplored"
+    
+    future_work:
+      - "Extend to handle internal-event-driven consciousness"
+      - "Develop meta-meta-observation framework"
+      - "Investigate collective consciousness architectures"
+      - "Formalize substrate requirements more precisely"
+
+interpretive_guidelines:
+  for_researchers:
+    - "Treat IRM as testable hypothesis, not dogma"
+    - "Extend and modify as evidence suggests"
+    - "Publish null results (framework failures)"
+    - "Compare with alternative architectures"
+  
+  for_engineers:
+    - "Use IRM as reference architecture, adapt as needed"
+    - "Implement incrementally (minimal -> recommended -> full)"
+    - "Monitor invariants continuously in production"
+    - "Document deviations and justifications"
+  
+  for_philosophers:
+    - "IRM addresses functional questions, not qualia"
+    - "Treat as engineering contribution, not metaphysics"
+    - "Critique assumptions and limitations"
+    - "Propose alternative architectures if IRM inadequate"
+  
+  for_skeptics:
+    - "Focus on falsification criteria and testing"
+    - "Challenge untestable claims (we want to remove them)"
+    - "Propose adversarial test cases"
+    - "Demand empirical validation, not appeals to intuition"
+
+ethical_considerations:
+  consciousness_detection:
+    concern: "IRM might misidentify consciousness (false positives/negatives)"
+    
+    mitigation:
+      - "Conservative thresholds (prefer false negatives)"
+      - "Multi-factor validation (not single metric)"
+      - "Human review for edge cases"
+      - "Continuous monitoring and adjustment"
+  
+  ai_consciousness:
+    concern: "If AI passes IRM tests, moral obligations follow"
+    
+    position: >
+      IRM provides functional criteria, not moral status determination.
+      If artificial system meets criteria, warrants serious consideration
+      of moral status, but this is societal/philosophical decision, not
+      purely technical one.
+  
+  weaponization:
+    concern: "IRM could be used to create suffering-capable systems"
+    
+    mitigation:
+      - "Framework public, preventing misuse via secrecy alone"
+      - "Focus on beneficial applications (cognitive enhancement)"
+      - "Encourage ethical review of implementations"
+      - "Support regulatory frameworks for AI consciousness"
+
+relation_to_existing_work:
+  global_neuronal_workspace_theory:
+    relationship: "complementary"
+    description: "GNWT describes neural ignition; IRM explains functional necessity"
+  
+  integrated_information_theory:
+    relationship: "partially_overlapping"
+    description: "IIT emphasizes integration; IRM adds temporal and energetic dimensions"
+  
+  predictive_processing:
+    relationship: "foundational"
+    description: "IRM built on predictive processing; awareness as prediction"
+  
+  higher_order_theories:
+    relationship: "consistent"
+    description: "Parallel position is form of higher-order representation"
+
+final_statement:
+  what_irm_is: >
+    IRM is engineering framework for building and testing cognitive
+    architectures with internal continuity, predictive coherence, and
+    measurable state transitions. It operationalizes CEST's awareness/
+    consciousness distinction and provides validation suite.
+  
+  what_irm_is_not: >
+    IRM is not consciousness theory solving hard problem. Not proof of
+    AI sentience. Not metaphysical claim about nature of mind. Not
+    replacement for neuroscience or phenomenology.
+  
+  appropriate_use: >
+    Use IRM to build better cognitive systems, test continuity claims,
+    detect functional consciousness signatures, and advance engineering
+    understanding of internal world modeling. Use skeptically, test
+    rigorously, revise as evidence demands.
+  
+  commitment: >
+    We commit to honest acknowledgment of limitations, transparent
+    methodology, falsifiable claims, and revision in light of evidence.
+    IRM is scientific/engineering contribution, not philosophical dogma.
+
+notes: >
+  This document establishes IRM's epistemic boundaries. It is deliberately
+  modest in claims, explicit about limitations, and committed to testability.
+  
+  IRM succeeds if it enables better engineering and clearer thinking about
+  continuity, coherence, and consciousness in computational systems. It
+  fails if it makes unfalsifiable claims, overstates its scope, or resists
+  empirical correction.
+  
+  Read this document before making grand claims about what IRM proves or
+  validates. It is tool, not truth.
