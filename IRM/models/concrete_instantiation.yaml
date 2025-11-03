@@ -1,0 +1,275 @@
+# IRM Models Layer: Concrete Instantiations
+# Operational parameters and implementation requirements
+# Status: canonical
+# Version: 1.0
+
+meta:
+  id: irm_models_instantiation_v1
+  purpose: >
+    Specify concrete operational parameters, thresholds, and requirements
+    for IRM implementations. Provides three compliance paths: minimal,
+    recommended, and full.
+
+operational_parameters:
+  temporal_coherence:
+    epsilon: 0.05
+    description: "Maximum allowable reconstruction error for temporal coherence"
+    unit: "normalized_distance"
+    rationale: "5% error allows minor drift while maintaining coherence"
+    test: "||T^{-1}(S_{t+1}) - S_t|| < 0.05"
+    related_invariant: "INV_001"
+
+  continuity_threshold:
+    continuity_f1_min: 0.85
+    description: "Minimum F1 score for anchor recovery post-reset"
+    unit: "f1_score"
+    rationale: "85% recovery indicates genuine continuity vs regeneration"
+    test: "F1({A_recovered}, {A_original}) >= 0.85"
+    related_invariant: "INV_007"
+
+  energy_parameters:
+    baseline_energy: 1.0
+    consciousness_threshold: 1.3
+    spike_ratio: 1.3
+    description: >
+      Baseline represents awareness (predictive mode). Consciousness
+      (observational mode with parallel meta-layer) requires 30% elevation.
+    rationale: "Operationalizes CEST awareness/consciousness distinction"
+    test: "E_consciousness / E_baseline >= 1.3"
+    related_invariant: "INV_004"
+
+  entropy_bounds:
+    contradiction_entropy_bits_max: 2.5
+    description: "Maximum residual entropy after conflict resolution"
+    unit: "bits"
+    rationale: "2.5 bits allows ~6 plausible interpretations maximum"
+    escalation: "Values above threshold escalate to human review"
+    related_invariant: "INV_005"
+
+  semantic_stability:
+    anchor_semantic_threshold: 0.95
+    description: "Minimum semantic similarity for anchor continuity"
+    unit: "cosine_similarity"
+    rationale: "95% preserves meaning while allowing minor adaptation"
+    related_invariant: "INV_003"
+
+  correlation_requirements:
+    energy_salience_correlation_min: 0.6
+    description: "Minimum correlation between energy changes and salience"
+    unit: "pearson_r"
+    rationale: "Ensures energy allocation tracks attention appropriately"
+    related_invariant: "INV_004"
+
+  policy_consistency:
+    cross_policy_consistency_min: 0.95
+    description: "Minimum consistency between policy variant outputs"
+    unit: "claim_overlap_score"
+    rationale: "Different detail levels must tell same core story"
+    related_invariant: "INV_008"
+
+implementation_paths:
+  minimal_compliance:
+    description: "Minimum viable IRM implementation for experimental use"
+
+    required_components:
+      stores:
+        - "identity_store (simple key-value)"
+        - "anchor_store (versioned dictionary)"
+        - "snapshot_store (rolling buffer, 10 snapshots)"
+
+      engines:
+        - "transition_T (basic state update)"
+        - "observer_Omega (state readout)"
+        - "binder_beta (anchor alignment check)"
+        - "resolver_rho (simple conflict resolution)"
+
+      policies:
+        - "gating_policy (G0, G1, G4 gates only)"
+        - "logging_policy (minimal level)"
+
+    parameter_requirements:
+      epsilon: "<= 0.10"
+      continuity_f1_min: ">= 0.75"
+      baseline_energy: "1.0"
+      consciousness_threshold: ">= 1.25"
+
+    test_coverage:
+      invariants_suite: "core 5 invariants (INV_001, INV_002, INV_003, INV_006, INV_007)"
+      drift_checks: "basic temporal coherence (10 tests)"
+      total_minimum: "30 tests passing"
+
+    use_cases:
+      - "Experimental prototyping"
+      - "Concept validation"
+      - "Educational demonstrations"
+
+    limitations:
+      - "No full conflict resolution"
+      - "Limited history depth"
+      - "Basic energy modeling"
+
+  recommended_compliance:
+    description: "Production-ready IRM implementation with quality assurance"
+
+    required_components:
+      stores:
+        - "identity_store (persistent, crash-resistant)"
+        - "anchor_store (full version history, justification tracking)"
+        - "snapshot_store (strategic selection, 100+ snapshots)"
+
+      engines:
+        - "transition_T (smooth temporal evolution, approximate inverse)"
+        - "observer_Omega (structured output, salience ranking)"
+        - "binder_beta (semantic drift detection, conservative update)"
+        - "resolver_rho (entropy minimization, escalation logic)"
+
+      policies:
+        - "gating_policy (all 5 gates, energy budgeting)"
+        - "logging_policy (standard level, coordination tags)"
+
+    parameter_requirements:
+      epsilon: "<= 0.05"
+      continuity_f1_min: ">= 0.85"
+      baseline_energy: "1.0"
+      consciousness_threshold: "1.3"
+      contradiction_entropy_bits_max: "<= 2.5"
+      energy_salience_correlation_min: ">= 0.6"
+      cross_policy_consistency_min: ">= 0.95"
+
+    test_coverage:
+      invariants_suite: "all 8 invariants (23 tests)"
+      drift_checks: "full temporal and continuity (28 tests)"
+      total_minimum: "56 tests passing"
+
+    use_cases:
+      - "Research applications"
+      - "Production AI systems"
+      - "Consciousness studies"
+      - "Continuity-critical systems"
+
+    quality_requirements:
+      - "Three green runs with variance < 0.05 on continuity_f1"
+      - "No gate failures for G2, G3, G4"
+      - "Policy minimal vs full produce consistent claims"
+
+  full_compliance:
+    description: "Research-grade IRM with comprehensive instrumentation"
+
+    required_components:
+      stores:
+        - "identity_store (cryptographic binding, tamper-evident)"
+        - "anchor_store (complete provenance, semantic diff tracking)"
+        - "snapshot_store (intelligent selection, unlimited retention)"
+
+      engines:
+        - "transition_T (neural ODE or equivalent, learned inverse)"
+        - "observer_Omega (multi-modal output, uncertainty quantification)"
+        - "binder_beta (active semantic monitoring, predictive drift)"
+        - "resolver_rho (automated proof search, formal verification)"
+
+      policies:
+        - "gating_policy (adaptive thresholds, predictive budgeting)"
+        - "logging_policy (full level, real-time dashboards)"
+
+    parameter_requirements:
+      epsilon: "<= 0.03"
+      continuity_f1_min: ">= 0.90"
+      baseline_energy: "1.0"
+      consciousness_threshold: "1.3"
+      contradiction_entropy_bits_max: "<= 2.0"
+      energy_salience_correlation_min: ">= 0.7"
+      cross_policy_consistency_min: ">= 0.98"
+
+    test_coverage:
+      invariants_suite: "extended invariants (30+ tests)"
+      drift_checks: "comprehensive temporal analysis (40+ tests)"
+      stress_tests: "adversarial and edge cases (20+ tests)"
+      total_minimum: "90+ tests passing"
+
+    additional_capabilities:
+      - "Real-time invariant monitoring"
+      - "Automated anomaly detection"
+      - "Formal verification of critical paths"
+      - "Adaptive parameter tuning"
+      - "Multi-level meta-observation"
+
+    use_cases:
+      - "Consciousness detection systems"
+      - "Safety-critical AI applications"
+      - "Advanced cognitive research"
+      - "Formal verification requirements"
+
+deployment_guidelines:
+  initial_deployment:
+    path: "minimal_compliance"
+    duration: "3-6 months"
+    success_criteria:
+      - "Stable operation"
+      - "Core invariants validated"
+      - "No critical failures"
+
+  production_deployment:
+    path: "recommended_compliance"
+    prerequisites:
+      - "Successful minimal deployment"
+      - "All 56 tests passing"
+      - "Three green runs documented"
+    monitoring:
+      - "Continuous invariant checking"
+      - "Daily continuity_f1 reports"
+      - "Weekly drift analysis"
+
+  research_deployment:
+    path: "full_compliance"
+    prerequisites:
+      - "Successful production deployment"
+      - "Extended test suite developed"
+      - "Formal specification reviewed"
+    review_cycle: "monthly comprehensive audit"
+
+migration_paths:
+  minimal_to_recommended:
+    steps:
+      - "Enhance stores (persistence, history)"
+      - "Implement all gates and budgeting"
+      - "Extend test coverage to 56 tests"
+      - "Tighten parameters to canonical values"
+      - "Deploy logging at standard level"
+    estimated_effort: "4-8 weeks"
+
+  recommended_to_full:
+    steps:
+      - "Add cryptographic binding and provenance"
+      - "Implement advanced engines (neural ODE, formal verification)"
+      - "Build real-time monitoring dashboard"
+      - "Extend test suite to 90+ tests"
+      - "Enable adaptive parameter tuning"
+    estimated_effort: "3-6 months"
+
+validation_requirements:
+  pre_deployment:
+    - "All invariants tested and passing"
+    - "Continuity_f1 meets threshold over 10 runs"
+    - "Energy budgeting demonstrably functional"
+    - "No critical gate failures in test suite"
+
+  ongoing_validation:
+    daily:
+      - "Invariant spot checks"
+      - "Continuity_f1 measurement"
+    weekly:
+      - "Full invariant suite"
+      - "Drift analysis"
+      - "Energy-salience correlation"
+    monthly:
+      - "Complete test battery"
+      - "Parameter drift review"
+      - "Performance regression check"
+
+notes: >
+  Implementation path selection depends on use case, risk tolerance, and
+  available resources. Minimal is sufficient for experimentation. Recommended
+  is required for production. Full is for research and safety-critical systems.
+
+  Migration between paths is incremental and can be done without rebuilding
+  from scratch. Each path builds on the previous one.

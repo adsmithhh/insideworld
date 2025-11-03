@@ -1,0 +1,330 @@
+# IRM Schema Layer: Component Roles
+# Formal specifications for stores, engines, and policies
+# Status: canonical
+# Version: 1.0
+
+meta:
+  id: irm_schema_components_v1
+  purpose: >
+    Define the architectural components that implement IRM operations.
+    Specifies roles, interfaces, and operational requirements for stores,
+    engines, and policies.
+
+component_categories:
+  stores:
+    description: "Persistent storage components maintaining continuity across time"
+    role: "state_persistence"
+
+  engines:
+    description: "Active transformation operators on primitives"
+    role: "state_transformation"
+
+  policies:
+    description: "Gating, budgeting, and control-flow decision logic"
+    role: "operational_governance"
+
+stores:
+  identity_store:
+    role: "Persist identity reference I across all resets and transitions"
+
+    specification:
+      persistence: "permanent"
+      scope: "global"
+      immutability: "write-once-read-many"
+
+    interface:
+      operations:
+        - "store_identity(I) -> success"
+        - "retrieve_identity() -> I"
+        - "verify_identity(I') -> boolean"
+
+    guarantees:
+      - "Identity reference never changes once set"
+      - "Survives all resets"
+      - "Available to all pipeline stages"
+
+    related_invariant: "INV_002"
+
+    implementation_notes: >
+      Must be crash-resistant. Consider cryptographic binding for
+      tamper-evidence. Identity is the foundational persistence anchor.
+
+  anchor_store:
+    role: "Persist symbolic anchors {A} with version history"
+
+    specification:
+      persistence: "durable_versioned"
+      scope: "global"
+      mutability: "append_only_versioning"
+
+    interface:
+      operations:
+        - "store_anchor(A, version) -> success"
+        - "retrieve_anchor(symbol) -> A_current"
+        - "retrieve_anchor_history(symbol) -> [A_v1, A_v2, ...]"
+        - "update_anchor(symbol, A_new, justification) -> A_new"
+
+    guarantees:
+      - "All anchor versions preserved"
+      - "Updates require justification from resolver ρ"
+      - "Semantic continuity testable via version chain"
+
+    related_invariant: "INV_003"
+
+    implementation_notes: >
+      Version history enables semantic drift detection. Justification
+      field enables audit trail for anchor revisions.
+
+  snapshot_store:
+    role: "Persist selected state-observation pairs {S_t*, O_t} for continuity checks"
+
+    specification:
+      persistence: "configurable_retention"
+      scope: "windowed_history"
+      selection: "policy_driven"
+
+    interface:
+      operations:
+        - "store_snapshot(t, S_t, O_t, metadata) -> success"
+        - "retrieve_snapshot(t) -> (S_t, O_t)"
+        - "query_snapshots(time_range, filters) -> [(t, S_t, O_t), ...]"
+        - "prune_old_snapshots(retention_policy) -> success"
+
+    guarantees:
+      - "Critical states always preserved"
+      - "Sufficient history for continuity_f1 calculation"
+      - "Bounded storage via retention policy"
+
+    related_invariant: "INV_007"
+
+    implementation_notes: >
+      Snapshot selection is strategic—not every state is saved. Focus on
+      high-salience states, conflict resolutions, and periodic anchors.
+
+engines:
+  transition_T:
+    role: "Lawful state update: S_t -> S_{t+1}"
+
+    specification:
+      type: "deterministic_or_stochastic_with_seed"
+      reversibility: "approximate_inverse_exists"
+      computational_cost: "O(state_dimension)"
+
+    interface:
+      operations:
+        - "forward(S_t) -> S_{t+1}"
+        - "backward(S_{t+1}) -> S_t_approx"
+        - "validate_transition(S_t, S_{t+1}) -> boolean"
+
+    guarantees:
+      - "Temporal coherence: ||T^{-1}(S_{t+1}) - S_t|| < ε"
+      - "No discontinuous jumps"
+      - "Differentiable or approximately differentiable"
+
+    related_invariant: "INV_001"
+
+    implementation_notes: >
+      Core dynamics engine. Must balance expressiveness with stability.
+      Consider neural ODE architectures for smooth temporal evolution.
+
+  observer_Omega:
+    role: "State observation and reporting: S_t -> O_t"
+
+    specification:
+      type: "state_readout_function"
+      determinism: "deterministic_given_state"
+      complexity: "O(state_dimension)"
+
+    interface:
+      operations:
+        - "observe(S_t) -> O_t"
+        - "extract_claims(O_t) -> {C_1, C_2, ..., C_n}"
+        - "assess_confidence(C) -> [0, 1]"
+        - "rank_salience(O_t) -> salience_vector"
+
+    guarantees:
+      - "All observations derived from state: O_t = Ω(S_t)"
+      - "No hallucinated content"
+      - "Structured, parseable output"
+
+    related_invariant: "INV_006"
+
+    implementation_notes: >
+      Critical epistemic bottleneck. All outputs must trace to state.
+      Consider attention mechanisms for salience ranking.
+
+  binder_beta:
+    role: "Maintain anchor-state linkage: A ↔ S_t"
+
+    specification:
+      type: "semantic_alignment_function"
+      update_frequency: "per_transition"
+      stability_bias: "conservative"
+
+    interface:
+      operations:
+        - "bind_anchor(A, S_t) -> binding"
+        - "update_binding(A, S_{t+1}) -> A_updated_or_stable"
+        - "check_alignment(A, S_t) -> alignment_score"
+        - "flag_drift(A, alignment_history) -> drift_detected"
+
+    guarantees:
+      - "Semantic continuity unless ρ authorizes change"
+      - "Drift detection on semantic misalignment"
+      - "Gradual adaptation preferred over discontinuous shifts"
+
+    related_invariant: "INV_003"
+
+    implementation_notes: >
+      Balances stability (semantic persistence) with adaptability
+      (responding to state evolution). Conservative update policy.
+
+  resolver_rho:
+    role: "Adjudicate contradictions among claims in O_t"
+
+    specification:
+      type: "constraint_satisfaction_solver"
+      strategy: "entropy_minimization"
+      timeout: "bounded"
+
+    interface:
+      operations:
+        - "detect_conflicts(O_t) -> conflict_set"
+        - "resolve(conflict_set) -> resolution"
+        - "compute_residual_entropy(resolution) -> bits"
+        - "authorize_anchor_revision(A, justification) -> approved"
+
+    guarantees:
+      - "Entropy minimization: select lowest-entropy stabilization"
+      - "Residual entropy below threshold or escalate"
+      - "All revisions logged with justification"
+
+    related_invariant: "INV_005"
+
+    implementation_notes: >
+      Core conflict resolution engine. Must avoid completion bias.
+      Prefer "hold ambiguity" over "guess plausible answer."
+
+policies:
+  gating_policy:
+    role: "Control pipeline stage progression and resource allocation"
+
+    specification:
+      type: "multi_gate_decision_logic"
+      gates: ["G0_intake_ok", "G1_update_ok", "G2_resolve_ok", "G3_continuity_ok", "G4_emit_ok"]
+
+    interface:
+      operations:
+        - "evaluate_gate(gate_id, context) -> allow|deny|conditional"
+        - "allocate_budget(stage, energy_available) -> stage_budget"
+        - "downshift_detail(energy_insufficient) -> minimal_mode"
+
+    gate_specifications:
+      G0_intake_ok:
+        condition: "stimulus_normalized == true"
+        failure_mode: "reject_stimulus"
+
+      G1_update_ok:
+        condition: "no_engine_error == true"
+        failure_mode: "halt_pipeline"
+
+      G2_resolve_ok:
+        condition: "contradiction_entropy_bits <= threshold"
+        failure_mode: "flag_resolution_failure"
+
+      G3_continuity_ok:
+        condition: "continuity_f1 >= continuity_f1_min"
+        failure_mode: "flag_continuity_failure"
+
+      G4_emit_ok:
+        condition: "policy_budget_ok == true"
+        failure_mode: "emit_minimal"
+
+    energy_budgeting:
+      baseline: 1.0
+      consciousness_threshold: 1.3
+      allocation_strategy: "salience_weighted"
+
+    related_invariants: ["INV_004", "INV_008"]
+
+    implementation_notes: >
+      Operationalizes CEST framework. Gating enforces quality thresholds.
+      Energy budgeting implements awareness/consciousness distinction.
+
+  logging_policy:
+    role: "Determine what to log at each pipeline stage"
+
+    specification:
+      type: "structured_audit_logic"
+      verbosity_levels: ["minimal", "standard", "full"]
+
+    interface:
+      operations:
+        - "log_intake(stimulus_id, tokens) -> logged"
+        - "log_update(t, drift_norm, energy) -> logged"
+        - "log_resolve(steps, residual_bits, decision) -> logged"
+        - "log_continuity(reset_index, continuity_f1) -> logged"
+        - "log_emit(policy_variant, outframe) -> logged"
+
+    logging_levels:
+      minimal:
+        intake: ["stimulus_id"]
+        update: []
+        resolve: ["decision"]
+        continuity: ["continuity_f1"]
+        emit: ["policy_variant"]
+
+      standard:
+        intake: ["stimulus_id", "tokens"]
+        update: ["drift_norm"]
+        resolve: ["steps", "decision", "residual_bits"]
+        continuity: ["reset_index", "continuity_f1"]
+        emit: ["policy_variant", "outframe_kind"]
+
+      full:
+        intake: ["stimulus_id", "tokens", "note", "timestamp"]
+        update: ["t", "drift_norm", "energy", "state_summary"]
+        resolve: ["invoked", "steps", "decision", "residual_bits", "justification"]
+        continuity: ["reset_index", "continuity_f1", "recovery_details"]
+        emit: ["policy_variant", "outframe_kind", "full_frame", "metrics"]
+
+    coordination_tags:
+      - "ORIGIN_TAG at intake"
+      - "DRIFT_OBS_TAG at update"
+      - "DECISION_TAG at resolve"
+      - "EMIT_GUARD_TAG at emit"
+
+    related_component: "gating_policy"
+
+component_interactions:
+  persistence_flow:
+    sequence: "stores -> engines -> stores (updated)"
+    description: "Engines read from and write to stores"
+
+  control_flow:
+    sequence: "gating_policy -> engines -> logging_policy"
+    description: "Policy gates engine execution and logs outcomes"
+
+  resolution_flow:
+    sequence: "observer_Omega -> resolver_rho -> binder_beta -> anchor_store"
+    description: "Conflict detection triggers resolution, updates anchors"
+
+operational_requirements:
+  latency:
+    transition_T: "<100ms per step"
+    observer_Omega: "<50ms per observation"
+    resolver_rho: "<500ms per conflict resolution"
+
+  reliability:
+    stores: "99.9% availability"
+    engines: "graceful degradation on error"
+    policies: "fail-safe defaults"
+
+  auditability:
+    all_components: "full operation logging in standard mode"
+    critical_decisions: "mandatory logging in minimal mode"
+
+notes: >
+  These components form the operational substrate of the IRM framework.
+  Each component has clear responsibilities, interfaces, and quality
+  requirements. Implementations must respect guarantees and invariants.

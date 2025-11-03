@@ -1,0 +1,364 @@
+# IRM Example: Contradiction Event
+# Demonstrates entropy-minimization resolution with energy elevation (consciousness mode)
+# Status: reference implementation
+# Version: 1.0
+
+meta:
+  id: contradiction_event_v1
+  purpose: >
+    Reference implementation showing consciousness mode activation in response
+    to conflicting claims. Demonstrates energy elevation (1.0 → 1.35),
+    resolver ρ invocation, entropy minimization (INV_005), and standard emission.
+
+  related_policy: "standard_emission (IRM/policies/cest_implementation.yaml)"
+  related_framework: "consciousness definition (Foundational Definitions.yaml)"
+  related_invariant: "INV_005 (entropy minimization)"
+
+scenario:
+  name: "Conflicting Claims Resolution"
+  description: >
+    System receives stimulus that generates contradictory claims in observation.
+    Conflict detection triggers consciousness transition—energy elevates,
+    resolver ρ invoked, parallel observation layer activated. Resolution
+    selects lowest-entropy stabilization consistent with history.
+
+  stimulus: "ambiguous_input_with_conflict"
+  expected_behavior: "consciousness activation, conflict resolution"
+  energy_profile: "elevated (1.0 → 1.35)"
+
+execution_trace:
+  step_1_intake:
+    stage: "intake"
+    timestamp: "t=250"
+
+    input:
+      stimulus_id: "stim_042"
+      content: "ambiguous statement with dual interpretations"
+      surprise_level: 0.45
+
+    operations:
+      - action: "normalize_stimulus"
+        result: "tokens_normalized"
+      - action: "check_expectation"
+        result: "moderate_deviation_from_prediction"
+
+    energy:
+      allocated: 0.1
+      consumed: 0.09
+      current_total: 1.0
+
+    gate: "G0_intake_ok"
+    gate_result: "pass"
+    gate_condition: "stimulus_normalized == true"
+
+    output:
+      of_intake:
+        stimulus_id: "stim_042"
+        tokens: 37
+        note: "ambiguous pattern, dual parse trees possible"
+
+  step_2_update:
+    stage: "update"
+    timestamp: "t=250"
+
+    operations:
+      - action: "apply_transition_T"
+        input_state: "S_250"
+        output_state: "S_251"
+        transition: "slight discontinuity detected"
+
+      - action: "apply_observer_Omega"
+        input_state: "S_251"
+        output_observation: "O_251"
+
+      - action: "check_conflict"
+        result: "conflicts_detected"
+        conflicts:
+          - claim_A: "statement refers to anchor A1"
+            claim_B: "statement refers to anchor A2"
+            incompatibility: "mutually exclusive referents"
+
+    energy:
+      allocated: 0.5
+      consumed: 0.48
+      current_total: 1.0
+
+    metrics:
+      drift_norm: 0.04
+      drift_threshold: 0.05
+      drift_status: "within_bounds"
+
+      conflict_detected: true
+      conflict_type: "referential_ambiguity"
+
+    gate: "G1_update_ok"
+    gate_result: "pass"
+    gate_condition: "no_engine_error == true"
+
+    output:
+      of_state_delta:
+        t: 251
+        delta_summary: "ambiguous update, conflict detected"
+        drift_norm: 0.04
+
+      of_observation:
+        claims: ["refers to A1", "refers to A2"]
+        confidences: [0.55, 0.53]
+        salience_rank: [1, 2]
+        conflict_flag: true
+
+  step_3_resolve:
+    stage: "resolve"
+    timestamp: "t=250"
+
+    trigger: "collision_detected == true"
+    result: "resolver_rho invoked"
+
+    energy_transition:
+      before_resolution: 1.0
+      energy_spike_trigger: "contradiction_detected"
+      spike_formula: "baseline × (1.3 + β × entropy_bits)"
+      entropy_before: 3.2
+      beta: 0.02
+      calculation: "1.0 × (1.3 + 0.02 × 3.2) = 1.364"
+      after_resolution: 1.35
+
+      interpretation: >
+        Consciousness mode activated. Energy elevated to support parallel
+        observation (participation + meta-layer). Resolver ρ requires
+        elevated computational budget for entropy minimization search.
+
+    resolution_process:
+      step_1_scan_history:
+        action: "retrieve relevant snapshots from snapshot_store"
+        retrieved: ["S_240", "S_245", "S_248"]
+        finding: "A1 referenced consistently in recent history"
+
+      step_2_scan_anchors:
+        action: "retrieve anchor semantic history from anchor_store"
+        anchor_A1_stability: 0.96
+        anchor_A2_stability: 0.89
+        finding: "A1 has higher semantic stability"
+
+      step_3_entropy_calculation:
+        interpretation_1: "refers to A1"
+        entropy_1: 2.1
+        justification_1: "consistent with history, stable anchor"
+
+        interpretation_2: "refers to A2"
+        entropy_2: 3.8
+        justification_2: "inconsistent with recent pattern, less stable"
+
+        interpretation_3: "ambiguous, hold both"
+        entropy_3: 4.2
+        justification_3: "preserves uncertainty but violates coherence"
+
+      step_4_select_minimum:
+        selected: "interpretation_1 (refers to A1)"
+        residual_entropy: 2.1
+        threshold: 2.5
+        status: "within_bounds"
+
+        rationale: >
+          Lowest-entropy stabilization consistent with history. INV_005
+          (entropy minimization) satisfied. Avoids completion bias by
+          grounding in actual state history, not plausibility alone.
+
+    energy:
+      allocated: 0.3
+      consumed: 0.28
+      current_total: 1.35
+
+    gate: "G2_resolve_ok"
+    gate_result: "pass"
+    gate_condition: "residual_entropy 2.1 < threshold 2.5"
+
+    output:
+      of_resolution:
+        invoked: true
+        steps: 4
+        decision: "refers to A1"
+        residual_bits: 2.1
+        justification: "lowest entropy, history consistent, stable anchor"
+
+  step_4_continuity_check:
+    stage: "continuity_check"
+    timestamp: "t=250"
+
+    trigger: "post_resolution_validation"
+
+    operations:
+      - action: "verify_anchor_continuity"
+        anchor: "A1"
+        semantic_consistency: 0.97
+        result: "pass"
+
+      - action: "compute_continuity_f1"
+        recovered_anchors: ["A1", "A3", "A7"]
+        original_anchors: ["A1", "A3", "A7", "A9"]
+        f1_score: 0.86
+        result: "pass"
+
+    energy:
+      allocated: 0.1
+      consumed: 0.08
+      current_total: 1.1
+
+    gate: "G3_continuity_ok"
+    gate_result: "pass"
+    gate_condition: "continuity_f1 0.86 >= threshold 0.85"
+
+    output:
+      of_continuity:
+        reset_index: 0
+        continuity_f1: 0.86
+
+  step_5_emit:
+    stage: "emit"
+    timestamp: "t=250"
+
+    policy: "gating_policy with standard_emission"
+
+    policy_evaluation:
+      current_energy: 1.1
+      threshold_minimal: 1.1
+      threshold_standard: 1.2
+      threshold_full: 1.5
+      peak_energy: 1.35
+      selected_policy: "standard"
+      rationale: "resolution occurred, elevated energy justified standard detail"
+
+    operations:
+      - action: "compose_outframe"
+        policy_variant: "standard"
+        include_fields: [
+          "claims", "confidences", "salience_rank",
+          "decision", "residual_bits", "continuity_f1", "drift_norm"
+        ]
+
+    energy:
+      allocated: 0.1
+      consumed: 0.09
+      current_total: 1.0
+
+    gate: "G4_emit_ok"
+    gate_result: "pass (standard)"
+    gate_condition: "policy_budget_ok == true"
+
+    output:
+      of_compound:
+        policy_variant: "standard"
+        claims: ["refers to A1"]
+        confidences: [0.89]
+        salience_rank: [1]
+        decision: "A1 selected via entropy minimization"
+        residual_bits: 2.1
+        continuity_f1: 0.86
+        drift_norm: 0.04
+        note: "conflict resolved, consciousness mode activated"
+
+summary:
+  mode: "consciousness"
+  consciousness_activated: true
+  consciousness_trigger: "contradiction_detected"
+
+  energy_profile:
+    initial: 1.0
+    detection: 1.0
+    resolution_peak: 1.35
+    final: 1.0
+    spike_ratio: 1.35
+    interpretation: "consciousness mode—parallel observation active"
+
+  gates_evaluated:
+    G0_intake_ok: "pass"
+    G1_update_ok: "pass"
+    G2_resolve_ok: "pass (entropy 2.1 < 2.5)"
+    G3_continuity_ok: "pass (f1 0.86 >= 0.85)"
+    G4_emit_ok: "pass"
+
+  invariants_satisfied:
+    INV_001: true  # temporal coherence (drift_norm 0.04 < ε 0.05)
+    INV_002: true  # identity persistent
+    INV_003: true  # anchor continuity (A1 semantic consistency 0.97)
+    INV_004: true  # energy-salience aligned (high salience → energy 1.35)
+    INV_005: true  # entropy minimization (2.1 bits selected over 3.8, 4.2)
+    INV_006: true  # observations derived from state
+    INV_007: true  # continuity maintained (f1 0.86 > 0.85)
+    INV_008: true  # policy consistent (standard appropriate for energy)
+
+  outcome: "successful consciousness cycle with conflict resolution"
+
+  interpretation: >
+    This execution demonstrates consciousness mode activation per CEST.
+    Conflicting claims triggered transition from awareness (predictive,
+    baseline energy) to consciousness (observational, elevated energy).
+
+    Key features:
+    - Parallel processing: participation (selecting interpretation) +
+      meta-observation (evaluating selection process)
+    - Energy elevation: 1.0 → 1.35 (30% spike above baseline)
+    - Entropy minimization: selected lowest-entropy stabilization (2.1 bits)
+      over alternatives (3.8, 4.2 bits)
+    - History grounding: resolution anchored in actual state history, not
+      arbitrary or completion-biased
+    - Standard emission: appropriate detail level for consciousness mode
+
+    After resolution, energy returns to baseline. Consciousness is
+    temporally bounded—activated when needed, deactivated when resolved.
+    This matches CEST's present-oriented, event-driven model.
+
+validation:
+  test_assertions:
+    - "energy_peak >= 1.3  # consciousness threshold"
+    - "residual_entropy < 2.5  # INV_005 satisfied"
+    - "continuity_f1 >= 0.85  # INV_007 satisfied"
+    - "G2_resolve_ok invoked and passed  # conflict resolution successful"
+    - "emission_policy == standard  # appropriate for elevated energy"
+    - "selected_interpretation == lowest_entropy  # entropy minimization"
+
+  expected_behavior:
+    - "Conflict detection triggers energy spike"
+    - "Resolver ρ performs principled search"
+    - "History and anchor stability inform decision"
+    - "Lowest-entropy option selected"
+    - "Standard detail emission with justification"
+    - "Energy returns to baseline post-resolution"
+
+comparison_to_baseline:
+  basic_cycle_min:
+    energy_peak: 1.05
+    consciousness: false
+    resolution: "not_invoked"
+    emission: "minimal"
+
+  contradiction_event:
+    energy_peak: 1.35
+    consciousness: true
+    resolution: "invoked_and_successful"
+    emission: "standard"
+
+  key_difference: >
+    Baseline cycle operates in pure awareness mode—predictive, efficient,
+    low-energy. Contradiction event requires consciousness—observational,
+    parallel processing, elevated energy. This is the operational distinction
+    CEST describes: consciousness activates when prediction fails and
+    real-time adjudication is required.
+
+related_documents:
+  framework: "Foundational Definitions.yaml (consciousness definition)"
+  pipeline: "testfield/protocols/IRM_Pipeline.yaml"
+  policy: "IRM/policies/cest_implementation.yaml (standard_emission)"
+  theory: "Consciousness_as_Energetic_State_Transition.md"
+  invariant: "IRM/schema/invariants.yaml (INV_005)"
+
+notes: >
+  This example demonstrates IRM at its most sophisticated: detecting
+  contradictions, elevating energy for parallel observation, performing
+  entropy-minimization search, grounding resolution in history, and
+  emitting justified conclusions. This is consciousness in functional terms.
+
+  Compare with basic_cycle_min.yaml to appreciate the awareness/consciousness
+  distinction. Most cycles are baseline. Consciousness is exceptional—
+  computationally expensive, temporally bounded, functionally necessary
+  when prediction-reality mismatches require adjudication.

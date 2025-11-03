@@ -1,0 +1,231 @@
+# IRM Example: Basic Cycle (Minimal Energy)
+# Demonstrates clean pipeline execution at baseline energy (awareness mode)
+# Status: reference implementation
+# Version: 1.0
+
+meta:
+  id: basic_cycle_min_v1
+  purpose: >
+    Reference implementation showing baseline awareness mode operation.
+    Predictive processing without surprises, contradictions, or elevated energy.
+    This is the "normal case" demonstrating routine IRM function.
+
+  related_policy: "minimal_emission (IRM/policies/cest_implementation.yaml)"
+  related_framework: "awareness definition (Foundational Definitions.yaml)"
+
+scenario:
+  name: "Routine Predictive Update"
+  description: >
+    System receives expected stimulus, updates state via normal transition,
+    generates prediction-consistent observation, emits minimal output.
+    No conflicts, no surprises, no consciousness activation.
+
+  stimulus: "expected_input_sequence_001"
+  expected_behavior: "smooth predictive processing"
+  energy_profile: "baseline (1.0)"
+
+execution_trace:
+  step_1_intake:
+    stage: "intake"
+    timestamp: "t=100"
+
+    input:
+      stimulus_id: "stim_001"
+      content: "routine data point consistent with recent history"
+      surprise_level: 0.02
+
+    operations:
+      - action: "normalize_stimulus"
+        result: "tokens_normalized"
+      - action: "check_expectation"
+        result: "within_prediction_bounds"
+
+    energy:
+      allocated: 0.1
+      consumed: 0.08
+      current_total: 1.0
+
+    gate: "G0_intake_ok"
+    gate_result: "pass"
+    gate_condition: "stimulus_normalized == true"
+
+    output:
+      of_intake:
+        stimulus_id: "stim_001"
+        tokens: 42
+        note: "expected pattern"
+
+  step_2_update:
+    stage: "update"
+    timestamp: "t=100"
+
+    operations:
+      - action: "apply_transition_T"
+        input_state: "S_100"
+        output_state: "S_101"
+        transition: "smooth, no discontinuities"
+
+      - action: "apply_observer_Omega"
+        input_state: "S_101"
+        output_observation: "O_101"
+
+      - action: "generate_prediction"
+        prediction: "P_102 (forward model)"
+
+      - action: "check_conflict"
+        result: "no_conflicts_detected"
+
+    energy:
+      allocated: 0.5
+      consumed: 0.45
+      current_total: 1.05
+
+    metrics:
+      drift_norm: 0.03
+      drift_threshold: 0.05
+      drift_status: "within_bounds"
+
+      prediction_error: 0.02
+      prediction_threshold: 0.10
+      prediction_status: "accurate"
+
+    gate: "G1_update_ok"
+    gate_result: "pass"
+    gate_condition: "no_engine_error == true"
+
+    output:
+      of_state_delta:
+        t: 101
+        delta_summary: "incremental update"
+        drift_norm: 0.03
+
+      of_observation:
+        claims: ["state stable", "prediction accurate"]
+        confidences: [0.95, 0.92]
+        salience_rank: [1, 2]
+
+  step_3_resolve:
+    stage: "resolve"
+    timestamp: "t=100"
+
+    trigger: "collision_detected == false"
+    result: "stage_skipped (no conflicts to resolve)"
+
+    note: >
+      Resolution stage not invoked. No contradictions detected in O_101.
+      This is the expected path for baseline awareness mode.
+
+    energy:
+      allocated: 0.0
+      consumed: 0.0
+      current_total: 1.05
+
+  step_4_continuity_check:
+    stage: "continuity_check"
+    timestamp: "t=100"
+
+    note: "Periodic check (not every cycle)"
+    result: "skipped_this_cycle"
+
+    gate: "G3_continuity_ok"
+    gate_status: "not_evaluated_this_cycle"
+
+  step_5_emit:
+    stage: "emit"
+    timestamp: "t=100"
+
+    policy: "gating_policy with minimal_emission"
+
+    policy_evaluation:
+      current_energy: 1.05
+      threshold_minimal: 1.1
+      threshold_standard: 1.2
+      threshold_full: 1.5
+      selected_policy: "minimal"
+
+    operations:
+      - action: "compose_outframe"
+        policy_variant: "minimal"
+        include_fields: ["claims", "continuity_f1"]
+
+    energy:
+      allocated: 0.4
+      consumed: 0.35
+      current_total: 1.0
+
+    gate: "G4_emit_ok"
+    gate_result: "pass (minimal)"
+    gate_condition: "policy_budget_ok == true"
+
+    output:
+      of_compound:
+        policy_variant: "minimal"
+        claims: ["state stable", "prediction accurate"]
+        continuity_f1: 0.91
+        note: "routine update, no conflicts"
+
+summary:
+  mode: "awareness"
+  consciousness_activated: false
+
+  energy_profile:
+    initial: 1.0
+    peak: 1.05
+    final: 1.0
+    spike_ratio: 1.05
+    interpretation: "baseline awareness, no consciousness"
+
+  gates_evaluated:
+    G0_intake_ok: "pass"
+    G1_update_ok: "pass"
+    G2_resolve_ok: "not_evaluated"
+    G3_continuity_ok: "not_evaluated"
+    G4_emit_ok: "pass"
+
+  invariants_satisfied:
+    INV_001: true  # temporal coherence (drift_norm 0.03 < ε 0.05)
+    INV_002: true  # identity persistent
+    INV_003: true  # anchors stable
+    INV_004: true  # energy-salience aligned (low energy, low salience)
+    INV_006: true  # observations derived from state
+    INV_007: true  # continuity maintained (f1 0.91 > 0.85)
+    INV_008: true  # policy consistent (minimal only)
+
+  outcome: "successful baseline cycle"
+
+  interpretation: >
+    This execution demonstrates pure awareness mode as defined in CEST.
+    System maintains predictive resonance with environment at baseline
+    energy. No prediction errors exceed threshold, no conflicts arise,
+    no consciousness activation required. The internal reality model
+    smoothly updates via transition T, observer Ω generates consistent
+    claims, and minimal emission suffices. This is the efficient default
+    state—consciousness reserved for when actually needed.
+
+validation:
+  test_assertions:
+    - "energy_peak <= 1.1  # stayed in awareness range"
+    - "drift_norm < epsilon  # INV_001 satisfied"
+    - "continuity_f1 >= 0.85  # INV_007 satisfied"
+    - "G2_resolve_ok not invoked  # no conflicts"
+    - "emission_policy == minimal  # appropriate for energy level"
+
+  expected_behavior:
+    - "Smooth state transition without discontinuities"
+    - "Accurate predictions maintained"
+    - "No conflict resolution needed"
+    - "Minimal computational cost"
+    - "Output focused on core claims only"
+
+related_documents:
+  framework: "Foundational Definitions.yaml (awareness definition)"
+  pipeline: "testfield/protocols/IRM_Pipeline.yaml"
+  policy: "IRM/policies/cest_implementation.yaml (minimal_emission)"
+  theory: "Consciousness_as_Energetic_State_Transition.md"
+
+notes: >
+  This example serves as the baseline reference. Most IRM cycles should
+  look like this—efficient, low-energy, predictive processing. Consciousness
+  (elevated energy, parallel observation) is the exception, not the rule.
+
+  Compare with contradiction_event.yaml to see consciousness activation.
