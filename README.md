@@ -249,8 +249,8 @@ Prompt templates to run your own checks:
 
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
-# Step 10 — IRM Exposition
-Internal Reality Model(IRM) — Public Laboratory Release
+# Step 10 —  Internal Reality Model(IRM) 
+Public Laboratory Release
 With conviction and pride, we present the first operational and verified component of our cognitive research environment: the Internal Reality Model (IRM) schematics.
 Scientific Position
 As articulated in the CEST framework, awareness and consciousness are from first principles:
