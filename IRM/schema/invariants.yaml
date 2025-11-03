@@ -170,7 +170,7 @@ test_matrix:
     invariants_suite: ["INV_002", "INV_003", "INV_004", "INV_005", "INV_006", "INV_008"]
     drift_checks: ["INV_001", "INV_007"]
 
-  total_tests: 51
+  total_tests: 56
   distribution:
     INV_001: 14  # drift and temporal coherence
     INV_002: 4   # identity persistence

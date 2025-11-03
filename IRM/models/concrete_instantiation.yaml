@@ -139,7 +139,7 @@ implementation_paths:
     test_coverage:
       invariants_suite: "all 8 invariants (23 tests)"
       drift_checks: "full temporal and continuity (28 tests)"
-      total_minimum: "51 tests passing"
+      total_minimum: "56 tests passing"
 
     use_cases:
       - "Research applications"
@@ -212,7 +212,7 @@ deployment_guidelines:
     path: "recommended_compliance"
     prerequisites:
       - "Successful minimal deployment"
-      - "All 51 tests passing"
+      - "All 56 tests passing"
       - "Three green runs documented"
     monitoring:
       - "Continuous invariant checking"
@@ -232,7 +232,7 @@ migration_paths:
     steps:
       - "Enhance stores (persistence, history)"
       - "Implement all gates and budgeting"
-      - "Extend test coverage to 51 tests"
+      - "Extend test coverage to 56 tests"
       - "Tighten parameters to canonical values"
       - "Deploy logging at standard level"
     estimated_effort: "4-8 weeks"

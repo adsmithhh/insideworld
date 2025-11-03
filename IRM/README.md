@@ -33,8 +33,8 @@ IRM/
 │   ├── basic_cycle_min.yaml        # Baseline awareness mode (E=1.0)
 │   └── contradiction_event.yaml    # Consciousness mode (E=1.0→1.35)
 │
-├── tests/           # Validation suites (51 tests total)
-│   ├── invariants_suite.yaml       # 23 tests for INV_002-INV_008
+├── tests/           # Validation suites (56 tests total)
+│   ├── invariants_suite.yaml       # 28 tests for INV_002-INV_008
 │   └── drift_checks.yaml           # 28 tests for INV_001, INV_007
 │
 └── meta/            # Epistemic grounding
@@ -80,7 +80,7 @@ IRM/
    - Use case: Prototyping, concept validation
 
 2. **Recommended Compliance** (production)
-   - Full components, ε=0.05, F1≥0.85, 51 tests
+   - Full components, ε=0.05, F1≥0.85, 56 tests
    - Use case: Research, production AI, consciousness studies
 
 3. **Full Compliance** (research-grade)
@@ -121,7 +121,7 @@ IRM/
 - Entropy minimization (INV_005): 2.1 bits < 2.5 threshold
 - Gates: G0, G1, G2, G3, G4 pass
 
-### Tests Layer (2 files, 51 tests)
+### Tests Layer (2 files, 56 tests)
 
 **1. invariants_suite.yaml** (23 tests):
 - INV_002: Identity persistence (4 tests)
@@ -139,7 +139,7 @@ IRM/
 - Critical tests (INV_002, INV_006): 100% pass
 - Required tests (INV_001, INV_003, INV_005, INV_007): 95% pass
 - Advisory tests (INV_004, INV_008): 80% pass
-- Total minimum: 90% pass rate (46/51 tests)
+- Total minimum: 90% pass rate (46/56 tests)
 
 ### Meta Layer (1 file)
 
@@ -181,7 +181,7 @@ IRM/
 - Concrete operational parameters (ε=0.05, F1≥0.85, E≥1.3)
 - Testable invariants (8 constraints)
 - Engineering architecture (stores, engines, policies)
-- Validation suite (51 tests)
+- Validation suite (56 tests)
 
 **Together:** CEST explains *why* consciousness requires energy elevation; IRM shows *how* to implement and test it.
 
@@ -229,7 +229,7 @@ IRM/
 - Continuity_f1 measurement
 
 **Weekly:**
-- Full invariant suite (51 tests)
+- Full invariant suite (56 tests)
 - Drift analysis
 - Energy-salience correlation
 
@@ -253,7 +253,7 @@ IRM/
 
 - Full components and gates
 - ε = 0.05, F1 ≥ 0.85
-- 51 tests passing
+- 56 tests passing
 - Use: Research, production AI
 
 ### 3. Full → Research-Grade (requires recommended success)

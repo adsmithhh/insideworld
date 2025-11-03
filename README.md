@@ -27,7 +27,7 @@ Repository Structure (ordered navigation)
 4. standard_registry/ — Frozen reference standards
 5. testfield/ — Active simulation zone
 6. continuity check scripts — Micro-temporal validation
-7. Internal Reality Model(IRM) -complete module
+7. Internal Reality Model (IRM) - complete module
 
 
 ## CEST Manifest
@@ -250,7 +250,7 @@ Prompt templates to run your own checks:
 
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
-### Step 10 —  Internal Reality Model (IRM) exposition
+### Step 10 — Internal Reality Model (IRM) exposition
 Public Laboratory Release
 With conviction and pride, we present the first operational and verified component of our cognitive research environment: the Internal Reality Model (IRM) schematics.
 Scientific Position

@@ -1,5 +1,5 @@
 # IRM Test Suite: Invariants Validation
-# Validates 8 invariants across 23 tests
+# Validates 6 of 8 invariants across 28 tests (INV_002-INV_006, INV_008)
 # Status: canonical test specification
 # Version: 1.0
 
@@ -7,10 +7,10 @@ meta:
   id: invariants_suite_v1
   purpose: >
     Comprehensive test suite for the 8 core IRM invariants. Each test
-    validates specific aspects of invariant compliance. Total: 23 tests
+    validates specific aspects of invariant compliance. Total: 28 tests
     covering INV_002 through INV_008 (INV_001 covered in drift_checks.yaml).
 
-  total_tests: 23
+  total_tests: 28
 
   coverage:
     INV_002: 4   # identity persistence
@@ -463,12 +463,12 @@ reporting:
 related_documents:
   invariants: "IRM/schema/invariants.yaml"
   drift_tests: "IRM/tests/drift_checks.yaml (INV_001, INV_007)"
-  total_suite: "51 tests across both files"
+  total_suite: "56 tests across both files"
 
 notes: >
   This suite validates core invariants excluding temporal coherence and
   continuity recovery (covered in drift_checks.yaml). Total IRM test
-  coverage: 51 tests validating all 8 invariants comprehensively.
+  coverage: 56 tests validating all 8 invariants comprehensively.
 
   Critical tests must pass 100%. Required tests must pass 95%. Advisory
   tests indicate quality but are not showstoppers. This tiered approach
