@@ -134,10 +134,10 @@ type_relationships:
 validation_rules:
   well_formed_state:
     requires: ["valid t", "coherent S_t", "defined E(S_t)"]
-  
+
   well_formed_observation:
     requires: ["source S_t", "valid Ω application", "structured claims"]
-  
+
   well_formed_anchor:
     requires: ["bound I", "defined role", "constraint set"]
 

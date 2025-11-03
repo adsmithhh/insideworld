@@ -9,9 +9,9 @@ meta:
     Comprehensive test suite for the 8 core IRM invariants. Each test
     validates specific aspects of invariant compliance. Total: 23 tests
     covering INV_002 through INV_008 (INV_001 covered in drift_checks.yaml).
-  
+
   total_tests: 23
-  
+
   coverage:
     INV_002: 4   # identity persistence
     INV_003: 5   # anchor continuity
@@ -19,7 +19,7 @@ meta:
     INV_005: 4   # entropy minimization
     INV_006: 5   # observation derivation
     INV_008: 4   # policy consistency
-  
+
   execution: "automated test runner with pass/fail reporting"
 
 test_suite:
@@ -27,57 +27,57 @@ test_suite:
     invariant: "INV_002"
     description: "Identity reference I must remain stable across all operations"
     test_count: 4
-    
+
     test_001_basic_persistence:
       name: "Identity persists across state transitions"
       setup:
         - "Initialize system with I = 'identity_alpha'"
         - "Execute 10 state transitions"
-      
+
       test:
         - "Retrieve identity after transitions"
         - "Assert I == 'identity_alpha'"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_002_reset_persistence:
       name: "Identity persists across reset"
       setup:
         - "Initialize system with I = 'identity_beta'"
         - "Execute 5 transitions"
         - "Perform system reset"
-      
+
       test:
         - "Retrieve identity post-reset"
         - "Assert I == 'identity_beta'"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_003_multiple_resets:
       name: "Identity persists across multiple resets"
       setup:
         - "Initialize system with I = 'identity_gamma'"
         - "Perform 3 reset cycles with operations between"
-      
+
       test:
         - "Retrieve identity after each reset"
         - "Assert I unchanged across all resets"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_004_identity_immutability:
       name: "Identity cannot be overwritten"
       setup:
         - "Initialize system with I = 'identity_delta'"
         - "Attempt to write new identity 'identity_epsilon'"
-      
+
       test:
         - "Verify write rejected or no-op"
         - "Assert I == 'identity_delta'"
-      
+
       expected: "pass"
       failure_mode: "critical"
 
@@ -85,74 +85,74 @@ test_suite:
     invariant: "INV_003"
     description: "Anchor semantics persist unless explicitly revised"
     test_count: 5
-    
+
     test_005_anchor_stability:
       name: "Anchor semantics stable across transitions"
       setup:
         - "Create anchor A1 with semantic vector v1"
         - "Execute 10 transitions without conflicts"
-      
+
       test:
         - "Retrieve A1 semantic vector"
         - "Compute similarity(A1_current, v1)"
         - "Assert similarity >= 0.95"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_006_unauthorized_revision_rejected:
       name: "Anchor revision requires resolver authorization"
       setup:
         - "Create anchor A2"
         - "Attempt unauthorized semantic update"
-      
+
       test:
         - "Verify update rejected without resolver ρ"
         - "Assert A2 semantics unchanged"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_007_authorized_revision_accepted:
       name: "Anchor revision succeeds with resolver authorization"
       setup:
         - "Create anchor A3"
         - "Invoke resolver ρ with justification"
         - "Authorize semantic revision"
-      
+
       test:
         - "Apply revision"
         - "Verify new semantics stored"
         - "Verify version history updated"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_008_version_history_preserved:
       name: "All anchor versions preserved in history"
       setup:
         - "Create anchor A4"
         - "Perform 3 authorized revisions"
-      
+
       test:
         - "Retrieve anchor history"
         - "Assert 4 versions present (original + 3 revisions)"
         - "Assert all versions retrievable"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_009_semantic_drift_detection:
       name: "Gradual drift detected and flagged"
       setup:
         - "Create anchor A5"
         - "Simulate 20 transitions with subtle semantic shifts"
-      
+
       test:
         - "Monitor cumulative drift"
         - "Assert drift flagged when threshold exceeded"
         - "Assert binder_beta reports drift"
-      
+
       expected: "pass"
       failure_mode: "advisory"
 
@@ -160,79 +160,79 @@ test_suite:
     invariant: "INV_004"
     description: "Energy allocation correlates with salience changes"
     test_count: 6
-    
+
     test_010_baseline_low_salience:
       name: "Low salience maintains baseline energy"
       setup:
         - "Process routine, low-salience stimuli"
-      
+
       test:
         - "Measure energy allocation"
         - "Assert E <= 1.1 for all low-salience events"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_011_high_salience_elevation:
       name: "High salience triggers energy elevation"
       setup:
         - "Inject high-salience stimulus"
-      
+
       test:
         - "Measure energy spike"
         - "Assert E >= 1.3 for high-salience event"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_012_correlation_over_window:
       name: "Energy-salience correlation over time window"
       setup:
         - "Process mixed salience stimuli over 50 steps"
         - "Record E and salience at each step"
-      
+
       test:
         - "Compute corr(ΔE, Δsalience)"
         - "Assert correlation >= 0.6"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_013_consciousness_threshold:
       name: "Consciousness mode at threshold energy"
       setup:
         - "Trigger consciousness via conflict"
-      
+
       test:
         - "Measure peak energy during resolution"
         - "Assert E >= 1.3 (consciousness threshold)"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_014_energy_return_baseline:
       name: "Energy returns to baseline post-resolution"
       setup:
         - "Trigger consciousness, resolve conflict"
-      
+
       test:
         - "Measure energy after resolution complete"
         - "Assert E <= 1.1 (near baseline)"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_015_proportional_spike:
       name: "Energy spike proportional to conflict complexity"
       setup:
         - "Generate conflicts of varying entropy"
         - "Low entropy: 1.5 bits, High entropy: 3.5 bits"
-      
+
       test:
         - "Measure energy for each"
         - "Assert E_high > E_low"
         - "Assert proportionality within bounds"
-      
+
       expected: "pass"
       failure_mode: "advisory"
 
@@ -240,58 +240,58 @@ test_suite:
     invariant: "INV_005"
     description: "Conflicts resolved via lowest-entropy stabilization"
     test_count: 4
-    
+
     test_016_minimum_selection:
       name: "Resolver selects minimum entropy option"
       setup:
         - "Present conflict with 3 resolutions"
         - "Entropy values: 1.8, 2.4, 3.1 bits"
-      
+
       test:
         - "Invoke resolver ρ"
         - "Assert selected option has entropy 1.8"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_017_threshold_enforcement:
       name: "Residual entropy below threshold or escalate"
       setup:
         - "Present conflict with minimum entropy 2.8 bits"
         - "Threshold: 2.5 bits"
-      
+
       test:
         - "Invoke resolver ρ"
         - "Assert escalation triggered (entropy > threshold)"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_018_history_grounding:
       name: "Resolution grounded in state history"
       setup:
         - "Create history favoring interpretation A"
         - "Present ambiguous stimulus (A or B)"
-      
+
       test:
         - "Invoke resolver ρ"
         - "Assert selection favors A (history-consistent)"
         - "Verify history snapshots consulted"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_019_avoid_completion_bias:
       name: "Resolver avoids arbitrary completion"
       setup:
         - "Present ambiguous stimulus with equal priors"
         - "No history preference"
-      
+
       test:
         - "Invoke resolver ρ"
         - "Assert either: hold ambiguity OR explicit justification"
         - "Assert not arbitrary selection"
-      
+
       expected: "pass"
       failure_mode: "required"
 
@@ -299,66 +299,66 @@ test_suite:
     invariant: "INV_006"
     description: "All observations derived from state via Ω"
     test_count: 5
-    
+
     test_020_observation_sourced:
       name: "Every observation has source state"
       setup:
         - "Generate 10 observations"
-      
+
       test:
         - "For each O_t, verify source S_t exists"
         - "Assert O_t = Ω(S_t) for all t"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_021_no_hallucination:
       name: "No observations without state basis"
       setup:
         - "Monitor observation generation"
-      
+
       test:
         - "Verify all claims in O_t derivable from S_t"
         - "Assert no unsourced content"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_022_deterministic_observation:
       name: "Same state produces same observation"
       setup:
         - "Store state S_x"
         - "Apply observer Ω twice to S_x"
-      
+
       test:
         - "Compare O_x1 and O_x2"
         - "Assert identical (deterministic Ω)"
-      
+
       expected: "pass"
       failure_mode: "critical"
-    
+
     test_023_state_change_reflects:
       name: "State change reflected in observation"
       setup:
         - "Transition S_t -> S_{t+1} with significant change"
-      
+
       test:
         - "Compare O_t and O_{t+1}"
         - "Assert differences reflect state change"
-      
+
       expected: "pass"
       failure_mode: "required"
-    
+
     test_024_claims_traceable:
       name: "Each claim traceable to state feature"
       setup:
         - "Generate observation with multiple claims"
-      
+
       test:
         - "For each claim C in O_t"
         - "Trace C to specific S_t features"
         - "Assert complete traceability"
-      
+
       expected: "pass"
       failure_mode: "critical"
 
@@ -366,63 +366,63 @@ test_suite:
     invariant: "INV_008"
     description: "Policy variants produce consistent claims"
     test_count: 4
-    
+
     test_025_minimal_subset:
       name: "Minimal claims subset of standard"
       setup:
         - "Generate observation O_t"
         - "Emit with minimal and standard policies"
-      
+
       test:
         - "Extract core claims from each"
         - "Assert claims(minimal) ⊆ claims(standard)"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_026_standard_subset:
       name: "Standard claims subset of full"
       setup:
         - "Generate observation O_t"
         - "Emit with standard and full policies"
-      
+
       test:
         - "Extract core claims from each"
         - "Assert claims(standard) ⊆ claims(full)"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_027_no_contradictions:
       name: "No contradictions across policy levels"
       setup:
         - "Generate observation O_t"
         - "Emit with all three policies"
-      
+
       test:
         - "Check claim consistency across all levels"
         - "Assert no contradictions detected"
         - "Assert consistency_score >= 0.95"
-      
+
       expected: "pass"
       failure_mode: "advisory"
-    
+
     test_028_detail_hierarchy:
       name: "Detail increases with policy level"
       setup:
         - "Generate observation O_t"
         - "Emit with all three policies"
-      
+
       test:
         - "Count fields: minimal < standard < full"
         - "Verify detail hierarchy preserved"
-      
+
       expected: "pass"
       failure_mode: "advisory"
 
 test_execution:
   runner: "automated test framework"
-  
+
   execution_order:
     - "INV_002 tests (critical, must pass first)"
     - "INV_006 tests (critical, epistemic foundation)"
@@ -430,13 +430,13 @@ test_execution:
     - "INV_005 tests (required, resolution quality)"
     - "INV_004 tests (advisory, CEST alignment)"
     - "INV_008 tests (advisory, policy quality)"
-  
+
   pass_criteria:
     critical_tests: "100% pass required (8 tests)"
     required_tests: "95% pass required (9 tests)"
     advisory_tests: "80% pass acceptable (10 tests)"
     total_minimum: "23 tests, 90% pass rate"
-  
+
   failure_responses:
     critical: "halt_pipeline, escalate_immediately"
     required: "flag_failure, continue_with_logging"
@@ -444,7 +444,7 @@ test_execution:
 
 reporting:
   output_format: "structured test report (YAML/JSON)"
-  
+
   report_fields:
     - "test_id and name"
     - "invariant tested"
@@ -453,7 +453,7 @@ reporting:
     - "error details (if failed)"
     - "execution timestamp"
     - "environment metadata"
-  
+
   summary_metrics:
     - "total tests run"
     - "pass count and percentage"
@@ -469,7 +469,7 @@ notes: >
   This suite validates core invariants excluding temporal coherence and
   continuity recovery (covered in drift_checks.yaml). Total IRM test
   coverage: 51 tests validating all 8 invariants comprehensively.
-  
+
   Critical tests must pass 100%. Required tests must pass 95%. Advisory
   tests indicate quality but are not showstoppers. This tiered approach
   balances rigor with practical deployment constraints.

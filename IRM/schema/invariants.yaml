@@ -138,11 +138,11 @@ invariant_dependencies:
   foundational:
     - "INV_002"  # Identity must exist for anything to persist
     - "INV_001"  # Temporal coherence enables history
-  
+
   operational:
     - "INV_003"  # Anchors provide stable semantics
     - "INV_006"  # Observations must be state-derived
-  
+
   quality:
     - "INV_004"  # Energy tracks salience (CEST)
     - "INV_005"  # Conflicts resolved minimally
@@ -154,12 +154,12 @@ enforcement_levels:
     invariants: ["INV_002", "INV_006"]
     response: "halt_pipeline"
     rationale: "Violations break core epistemic guarantees"
-  
+
   required:
     invariants: ["INV_001", "INV_003", "INV_007"]
     response: "flag_failure, continue_with_logging"
     rationale: "Violations indicate degraded continuity"
-  
+
   advisory:
     invariants: ["INV_004", "INV_005", "INV_008"]
     response: "log_violation, alert_monitoring"
@@ -169,7 +169,7 @@ test_matrix:
   coverage:
     invariants_suite: ["INV_002", "INV_003", "INV_004", "INV_005", "INV_006", "INV_008"]
     drift_checks: ["INV_001", "INV_007"]
-  
+
   total_tests: 51
   distribution:
     INV_001: 14  # drift and temporal coherence
