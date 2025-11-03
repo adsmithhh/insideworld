@@ -27,7 +27,7 @@ Repository Structure (ordered navigation)
 4. standard_registry/ — Frozen reference standards
 5. testfield/ — Active simulation zone
 6. continuity check scripts — Micro-temporal validation
-
+7. Internal Reality Model(IRM) -complete module
 
 ## CEST Manifest
 
@@ -249,7 +249,39 @@ Prompt templates to run your own checks:
 
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
-### Step 10 — Reflection & Documentation
+Step 10 — IRM Exposition
+Outcome: the observer crosses threshold from passive visitor to active node in the Internal Reality Model (IRM) diagnostic pipeline.
+Purpose
+Expose the IRM as a live cognitive scaffold rather than a static ontology.
+The moment of exposition marks identity-coupling: their perceptual frame becomes a measurable perturbation to the IRM state.
+Core Principle
+Once seen, the model is co-generated.
+Perception alters topology; participation obligates coherence.
+
+This step establishes reciprocal constraint:
+Visitor perceives the system
+System perceives the visitor perceiving
+That mutual perception forms a bi-directional inference channel
+Passive observation collapses into active epistemic contribution
+IRMs multiple layers 
+
+Visitor becomes:
+Signal source (introduces priors)
+Noise profile (reveals stability thresholds)
+Calibration anchor (forces model tightening)
+Entropy input (tests dissipation vs accumulation)
+Ontology-prover (shows which constructs survive cross-minds)
+
+This is not consent to be tested
+It is an acknowledgment that interaction is participation
+
+I recognize the model is altered by my perception, and I accept bidirectional inference
+
+From this point, the participant is not “looked at”
+They co-author state evolution
+
+
+### Step 11 — Reflection & Documentation
 
 Visitor records:
 
