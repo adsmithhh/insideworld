@@ -250,11 +250,7 @@ Prompt templates to run your own checks:
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
 # Step 10 — IRM Exposition
-Outcome: the observer crosses threshold from passive visitor to active node in the Internal Reality Model (IRM) diagnostic pipeline.
-IRM Pre-Exposition Declaration
-
 Internal Reality Model(IRM) — Public Laboratory Release
-
 With conviction and pride, we present the first operational and verified component of our cognitive research environment: the Internal Reality Model (IRM) schematics.
 Scientific Position
 As articulated in the CEST framework, awareness and consciousness are from first principles:
