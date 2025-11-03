@@ -249,7 +249,7 @@ Prompt templates to run your own checks:
 
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
-Step 10 — IRM Exposition
+# Step 10 — IRM Exposition
 Outcome: the observer crosses threshold from passive visitor to active node in the Internal Reality Model (IRM) diagnostic pipeline.
 IRM Pre-Exposition Declaration
 
