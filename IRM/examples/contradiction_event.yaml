@@ -1,0 +1,430 @@
+# Contradiction Event — IRM Resolution Example
+# Demonstrates contradiction detection and entropy-minimization resolution
+
+example_version: "1.0"
+status: "reference_implementation"
+purpose: "Demonstrate IRM behavior when contradictions arise in observations"
+
+scenario:
+  description: "Processing stimulus that generates contradictory claims"
+  context: "System encounters ambiguous input leading to conflicting observations"
+  expected_outcome: "Contradiction detected, resolved via entropy minimization, elevated energy"
+
+initialization:
+  identity:
+    I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+    established: true
+    
+  time:
+    t_initial: 156
+    
+  state:
+    S_156:
+      representation: "[0.3, 0.4, -0.2, 0.6, ...]"
+      description: "Baseline state before contradiction"
+      
+  energy:
+    E_156: 1.0
+    state: "baseline awareness"
+    
+  anchors:
+    primary_anchor:
+      anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+      role_spec: "continuity_validator"
+      semantic_version: 2
+
+pipeline_execution:
+  
+  stage_1_intake:
+    stimulus:
+      content: "The light is both on and off simultaneously"
+      raw_input: "paradoxical statement"
+      ambiguity_flag: true
+    
+    operations:
+      - operation: "receive stimulus"
+        result: "captured"
+      - operation: "normalize to internal tokens"
+        result:
+          tokens: ["light", "state_on", "state_off", "simultaneous"]
+          normalized: true
+          warning: "potentially contradictory tokens detected"
+    
+    gate_evaluation:
+      gate: "G0_intake_ok"
+      criterion: "stimulus_normalized == true"
+      evaluation: "pass"
+      reason: "normalization succeeded despite ambiguity"
+    
+    logging:
+      stimulus_id: "stim_157"
+      timestamp_t: 157
+      note: "paradoxical input, contradiction likely"
+    
+    outcome: "proceed to update stage"
+  
+  stage_2_update:
+    input_state: "S_156"
+    stimulus: ["light", "state_on", "state_off", "simultaneous"]
+    
+    operations:
+      - operation: "apply T: S_156 -> S_157"
+        mechanism: "transition processes contradictory tokens"
+        result:
+          S_157:
+            representation: "[0.32, 0.45, -0.18, 0.58, ...]"
+            description: "State reflects uncertainty and conflict"
+            uncertainty_increased: true
+      
+      - operation: "increment t"
+        result:
+          t: 157
+      
+      - operation: "compute drift_norm"
+        result:
+          drift_norm: 0.034
+          interpretation: "moderate transition with increased uncertainty"
+    
+    gate_evaluation:
+      gate: "G1_update_ok"
+      criterion: "no_engine_error == true"
+      evaluation: "pass"
+      reason: "transition completed (uncertainty is not an error)"
+    
+    logging:
+      t: 157
+      drift_norm: 0.034
+      energy_level: 1.15  # elevated due to conflict processing
+    
+    outcome: "proceed to observe stage"
+  
+  stage_3_observe:
+    input_state: "S_157"
+    
+    operations:
+      - operation: "apply Ω: S_157 -> O_157"
+        mechanism: "observer projects conflicted state"
+        result:
+          O_157:
+            timestamp_t: 157
+            claims:
+              - claim_id: "c1"
+                subject: "light"
+                predicate: "state_is_on"
+                confidence: 0.68
+                provenance: "tokens suggest 'on' state"
+              
+              - claim_id: "c2"
+                subject: "light"
+                predicate: "state_is_off"
+                confidence: 0.65
+                provenance: "tokens suggest 'off' state"
+              
+              - claim_id: "c3"
+                subject: "observation"
+                predicate: "is_paradoxical"
+                confidence: 0.89
+                provenance: "meta-recognition of contradiction"
+              
+              - claim_id: "c4"
+                subject: "input_validity"
+                predicate: "requires_clarification"
+                confidence: 0.92
+                provenance: "system cannot resolve without more data"
+                
+            salience_rank: [3, 2, 0, 1]  # c4 most salient
+            
+      - operation: "detect contradictions"
+        result:
+          contradictions_found: true
+          contradiction_set:
+            - pair: [c1, c2]
+              reason: "same subject (light), mutually exclusive predicates"
+              severity: "high"
+          reason: "claims c1 and c2 directly contradict"
+    
+    internal_gate: "observation consistency check"
+    evaluation: "fail (contradiction detected)"
+    
+    logging:
+      observation_id: "obs_157"
+      claim_count: 4
+      avg_confidence: 0.785
+      contradiction_detected: true
+    
+    outcome: "trigger resolve stage (contradiction detected)"
+  
+  stage_4_resolve:
+    triggered: true
+    reason: "contradiction detected: c1 ⊥ c2"
+    
+    input:
+      observations: "O_157"
+      contradiction_set: [[c1, c2]]
+    
+    operations:
+      - operation: "invoke resolver ρ"
+        mechanism: "entropy minimization resolution"
+        
+        step_1_enumerate_paths:
+          paths:
+            - path_id: "p1"
+              action: "accept c1 (light is on), reject c2"
+              entropy: 1.8
+              rationale: "higher confidence on c1"
+              
+            - path_id: "p2"
+              action: "accept c2 (light is off), reject c1"
+              entropy: 1.9
+              rationale: "but c1 has higher confidence"
+              
+            - path_id: "p3"
+              action: "reject both c1 and c2, accept c3 (paradoxical)"
+              entropy: 1.2
+              rationale: "acknowledge fundamental ambiguity"
+              
+            - path_id: "p4"
+              action: "mark ambiguous, accept c4 (needs clarification)"
+              entropy: 0.8
+              rationale: "minimal assumption, request more data"
+        
+        step_2_compute_entropy:
+          method: "Shannon entropy of remaining uncertainty"
+          results:
+            p1: 1.8
+            p2: 1.9
+            p3: 1.2
+            p4: 0.8  # minimum entropy
+        
+        step_3_select_path:
+          selected: "p4"
+          reason: "argmin_path H(path) = 0.8"
+          justification: |
+            Path p4 minimizes residual entropy by acknowledging the
+            fundamental ambiguity and requesting clarification rather
+            than making an unjustified commitment to either state.
+        
+        step_4_apply_resolution:
+          accepted_claims: [c3, c4]
+          rejected_claims: [c1, c2]
+          marked_ambiguous: [c1, c2]
+          semantic_revision_authorized: false
+          
+        result:
+          resolution_decision:
+            path: "p4"
+            accepted: ["c3: observation is paradoxical", "c4: requires clarification"]
+            rejected: ["c1: state_is_on", "c2: state_is_off"]
+            residual_bits: 0.8
+            steps: 4
+    
+    gate_evaluation:
+      gate: "G2_resolve_ok"
+      criterion: "contradiction_entropy_bits <= 2.0"
+      evaluation: "pass"
+      reason: "residual_bits (0.8) well below threshold (2.0)"
+    
+    logging:
+      invoked: true
+      steps: 4
+      residual_bits: 0.8
+      decision: "acknowledge ambiguity, request clarification"
+      resolution_path: "p4"
+    
+    outcome: "proceed to emit stage (resolution successful)"
+  
+  stage_5_continuity_check:
+    triggered: false
+    reason: "not scheduled for this transition"
+    outcome: "stage bypassed"
+  
+  stage_6_emit:
+    input:
+      observations: "O_157 (post-resolution)"
+      resolution: "p4 applied"
+    
+    operations:
+      - operation: "determine emission variant"
+        energy_check:
+          available_energy: 1.35  # elevated due to resolution
+          costs:
+            minimal: 0.3
+            standard: 1.0
+            full: 2.5
+        selection: "standard (appropriate for resolved contradiction)"
+        note: "could afford full, but standard sufficient for this case"
+        
+      - operation: "compose outframe"
+        variant: "standard"
+        includes:
+          - "accepted claims: c3, c4"
+          - "confidences: [0.89, 0.92]"
+          - "resolution decision summary"
+          - "reasoning about contradiction"
+        excludes:
+          - "rejected claims c1, c2"
+          - "full resolution path details"
+          - "meta-analysis"
+        
+        result:
+          outframe:
+            type: "of_compound"
+            variant: "standard"
+            content:
+              claims:
+                - "Observation is paradoxical (confidence: 0.89)"
+                - "Input requires clarification (confidence: 0.92)"
+              resolution: "Detected contradiction between 'light on' and 'light off' states. Rather than arbitrarily selecting one, acknowledged fundamental ambiguity."
+              reasoning: "System encountered mutually exclusive claims with similar confidence. Entropy minimization favored requesting clarification over forcing a choice."
+    
+    gate_evaluation:
+      gate: "G4_emit_ok"
+      criterion: "policy_budget_ok == true"
+      evaluation: "pass"
+      reason: "sufficient energy for standard variant"
+    
+    logging:
+      policy_variant: "standard"
+      outframe_kind: "of_compound"
+      energy_budget_state:
+        available: 1.35
+        used: 1.0
+        remaining: 0.35
+      forced_variant: false
+    
+    outcome: "emit standard response with resolution"
+
+final_state:
+  
+  time:
+    t_final: 157
+    
+  state:
+    S_157:
+      representation: "[0.32, 0.45, -0.18, 0.58, ...]"
+      stability: "stable post-resolution"
+      uncertainty: "acknowledged and bounded"
+      
+  energy:
+    E_157: 1.35
+    state: "elevated awareness (approaching consciousness threshold)"
+    note: "resolution required elevated energy, will decay back to baseline"
+    replenishment: 0.1
+    
+  anchors:
+    primary_anchor:
+      anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+      semantic_version: 2  # unchanged (no semantic revision needed)
+      binding_strength: 0.93  # slightly reduced due to uncertainty
+  
+  stores:
+    identity_store:
+      I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+      stable: true
+      
+    anchor_store:
+      anchors_count: 1
+      revisions: 0  # no revision authorized
+      
+    snapshot_store:
+      last_snapshot_t: 156
+      snapshots_stored: 157
+      note: "contradiction event may trigger future snapshot"
+
+summary:
+  
+  gate_results:
+    G0_intake_ok: "pass"
+    G1_update_ok: "pass"
+    G2_resolve_ok: "pass (triggered and successful)"
+    G3_continuity_ok: "bypassed (not scheduled)"
+    G4_emit_ok: "pass"
+  
+  invariants_validated:
+    INV_001_temporal_coherence: "pass (drift_norm 0.034 < ε 0.05)"
+    INV_002_identity_persistence: "pass (I unchanged)"
+    INV_003_anchor_continuity: "pass (no semantic revision needed)"
+    INV_004_energy_salience: "pass (elevated energy for resolution)"
+    INV_005_entropy_minimization: "pass (selected minimum entropy path)"
+    INV_006_observational_consistency: "fail→resolved (contradiction detected and resolved)"
+    INV_008_contradiction_entropy_bound: "pass (residual_bits 0.8 < threshold 2.0)"
+  
+  metrics:
+    transition_time: "1.2s (longer due to resolution)"
+    compute_used: 1.5  # over baseline due to resolution
+    memory_used: "4.1 MB"
+    resolution_overhead: "0.7s"
+    
+  outcome: "successful contradiction resolution"
+  
+  response_emitted:
+    variant: "standard"
+    content: |
+      Observation is paradoxical (confidence: 0.89)
+      Input requires clarification (confidence: 0.92)
+      
+      Resolution: Detected contradiction between 'light on' and 'light off' states. 
+      Rather than arbitrarily selecting one, acknowledged fundamental ambiguity.
+      
+      System encountered mutually exclusive claims with similar confidence. Entropy 
+      minimization favored requesting clarification over forcing a choice.
+
+lessons:
+  
+  for_implementers:
+    - "Resolution stage adds significant compute overhead (~0.7s)"
+    - "Energy elevation (1.0 → 1.35) reflects increased cognitive demand"
+    - "Entropy minimization sometimes means acknowledging ambiguity"
+    - "Rejecting both contradictory claims can be the right answer"
+    - "Resolution doesn't always require semantic revision"
+  
+  for_validators:
+    - "Verify resolver enumerated multiple paths"
+    - "Confirm entropy calculation is correct"
+    - "Check that minimum entropy path was selected"
+    - "Validate residual_bits below threshold"
+    - "Ensure rejected claims properly excluded from emission"
+  
+  for_researchers:
+    - "This demonstrates elevated awareness, not full consciousness"
+    - "Energy at 1.35 approaches but doesn't exceed consciousness threshold (1.3)"
+    - "Contradiction handling is core to internal coherence"
+    - "Systems that force arbitrary resolution accumulate incoherence"
+    - "Entropy minimization operationalizes 'least assumption' principle"
+
+comparison_to_baseline:
+  basic_cycle:
+    energy: 1.05
+    stages_triggered: 4
+    transition_time: "0.45s"
+    outcome: "simple awareness"
+    
+  contradiction_event:
+    energy: 1.35
+    stages_triggered: 5
+    transition_time: "1.2s"
+    outcome: "elevated awareness with resolution"
+    
+  delta:
+    energy_increase: "+30%"
+    time_increase: "+167%"
+    complexity_increase: "+25% (one additional stage)"
+    cognitive_demand: "significantly higher"
+
+coord_tags_referenced:
+  - "ENTROPY_CHECK_RULE: entropy minimization applied"
+  - "PROPER_DECISION_POINT: contradiction adjudication"
+  - "INCIDENT_CLASSIFICATION: logged as contradiction event"
+
+notes: |
+  This example demonstrates INV_005 (entropy minimization on conflict) in action.
+  The resolver correctly identified that acknowledging ambiguity produces lower
+  residual entropy than forcing a choice between equally-weak alternatives.
+  
+  Real implementations should track which types of contradictions arise frequently
+  and consider whether they indicate systematic issues in the observer Ω or
+  transition T functions.
+  
+  Energy elevation is natural and expected during contradiction resolution - this
+  is the system approaching (but not entering) a consciousness state. Sustained
+  meta-awareness would require E > 1.3 maintained across multiple transitions.
