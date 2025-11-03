@@ -1,0 +1,181 @@
+# IRM Primitives — Concrete Instantiation
+# Instantiated primitive values and bindings for operational IRM
+
+model_version: "1.0"
+status: active
+source: "schema/irm_primitives.schema.yaml"
+instantiation_date: "2025-11-03"
+
+primitives_instantiation:
+  state:
+    symbol: "S_t"
+    implementation_type: "latent_vector"
+    dimensions: 
+      min: 64
+      typical: 512
+      max: 4096
+    representation: "dense continuous vector or structured graph"
+    storage: "snapshot_store"
+    update_frequency: "every transition T"
+    notes: |
+      State representation is flexible and task-dependent. For LLM contexts,
+      S_t may correspond to hidden state activations or attention patterns.
+
+  time_index:
+    symbol: "t"
+    implementation_type: "integer_counter"
+    initial_value: 0
+    increment: 1
+    range: [0, 2147483647]  # 32-bit signed int max
+    reset_behavior: "increments through reset, identity preserved"
+    storage: "maintained in session context"
+    notes: |
+      Time is monotonic within a session. Reset operations create new sessions
+      but preserve identity I across session boundaries.
+
+  identity:
+    symbol: "I"
+    implementation_type: "uuid_v4"
+    format: "canonical UUID string"
+    example: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+    generation: "once per system initialization"
+    persistence: "identity_store (permanent)"
+    immutable: true
+    notes: |
+      Identity is generated once and persists indefinitely. It serves as
+      the anchor for all continuity tracking and self-reference operations.
+
+  anchor:
+    symbol: "A"
+    implementation_type: "structured_record"
+    schema:
+      anchor_id: "uuid_v4"
+      identity_ref: "reference to I"
+      role_spec: "string enum from irm_roles"
+      constraint_set: "list of constraint expressions"
+      semantic_version: "integer counter"
+      created_at_t: "time_index of creation"
+      updated_at_t: "time_index of last update"
+    example:
+      anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+      identity_ref: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+      role_spec: "observer_primary"
+      constraint_set: ["temporal_coherence_required", "energy_bounded"]
+      semantic_version: 3
+      created_at_t: 0
+      updated_at_t: 42
+    storage: "anchor_store"
+    versioning: true
+    notes: |
+      Anchors are versioned to track semantic evolution. The binder β
+      maintains anchor-state linkage, and resolver ρ may authorize revisions.
+
+  energy:
+    symbol: "E(S_t)"
+    implementation_type: "scalar_field"
+    value_type: "float64"
+    range: [0.0, ∞)
+    units: "normalized compute units or attention mass"
+    computation: "derived from state salience and attention allocation"
+    typical_baseline: 1.0
+    spike_threshold: 1.3
+    notes: |
+      Energy maps to compute/attention allocation. In LLM contexts, may
+      correspond to attention weights, layer activation magnitude, or
+      inference cost. ΔE tracks energy changes across transitions.
+
+  report:
+    symbol: "O_t"
+    implementation_type: "structured_observation"
+    schema:
+      timestamp_t: "time_index"
+      claims: "list[claim_structure]"
+      confidences: "list[float] in [0,1]"
+      salience_rank: "list[int] indices ordered by salience"
+      metadata:
+        observer_version: "string"
+        state_hash: "hash of S_t for verification"
+    example:
+      timestamp_t: 42
+      claims:
+        - claim_id: "c1"
+          subject: "current_state"
+          predicate: "is_coherent"
+          confidence: 0.92
+        - claim_id: "c2"
+          subject: "previous_transition"
+          predicate: "within_epsilon"
+          confidence: 0.87
+      salience_rank: [0, 1]  # c1 more salient than c2
+      metadata:
+        observer_version: "Omega_v1.0"
+        state_hash: "sha256:a3f5..."
+    storage: "snapshot_store (paired with S_t)"
+    notes: |
+      Observations are timestamped projections of state into claim space.
+      They serve as input to resolution and emission stages.
+
+  claim:
+    symbol: "C"
+    implementation_type: "structured_proposition"
+    schema:
+      claim_id: "uuid_v4"
+      subject: "string identifier"
+      predicate: "string assertion"
+      confidence: "float in [0,1]"
+      provenance:
+        source_observation: "reference to O_t"
+        source_state: "reference to S_t"
+      status: "enum: [unresolved, resolved, contradicted, ambiguous]"
+    example:
+      claim_id: "c1"
+      subject: "anchor_A_primary"
+      predicate: "maintains_continuity"
+      confidence: 0.92
+      provenance:
+        source_observation: "O_42"
+        source_state: "S_42"
+      status: "resolved"
+    collision_detection: "claims with same subject and contradictory predicates"
+    resolution: "handled by resolver ρ"
+    notes: |
+      Claims are the atomic units of assertion within the IRM. Contradictory
+      claims trigger the resolution stage, invoking entropy minimization.
+
+binding_examples:
+  identity_binding:
+    I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+    session_start: "2025-11-03T00:00:00Z"
+    session_end: null  # ongoing
+    reset_count: 0
+    
+  anchor_binding:
+    anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+    bound_to_I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+    role: "continuity_validator"
+    current_state_ref: "S_42"
+    binding_strength: 0.95
+    last_update_t: 42
+
+  state_snapshot:
+    t: 42
+    S_t: "[latent_vector_representation]"
+    O_t: 
+      timestamp_t: 42
+      claims: ["c1", "c2"]
+      confidences: [0.92, 0.87]
+    energy: 1.15
+    drift_norm: 0.023
+
+operational_parameters:
+  epsilon_tolerance: 0.05  # for temporal coherence
+  continuity_f1_min: 0.85  # minimum continuity threshold
+  contradiction_entropy_bits_max: 2.0  # maximum residual after resolution
+  energy_baseline: 1.0  # baseline energy level
+  energy_spike_ratio: 1.3  # consciousness threshold
+  salience_correlation_min: 0.3  # minimum energy-salience correlation
+
+notes: |
+  This instantiation provides concrete types and examples for all IRM
+  primitives. Implementations should adhere to these specifications while
+  allowing for domain-specific adaptations as needed.
