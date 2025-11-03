@@ -37,7 +37,7 @@ Parallel observation + real-time coherence maintenance, requiring elevated energ
 ```
 .
 ├── README.md                    # Orientation & intent
-├── Foundational_Definitions.yaml # Core concepts & symbolic primitives
+├── Foundational Definitions.yaml # Core concepts & symbolic primitives
 ├── Consciousness_as_Energetic_State_Transition.md # CEST framework
 ├── CONTINUITY_TEST.md          # Temporal stability protocol
 ├── standard_registry/          # Frozen reference standards
@@ -170,7 +170,7 @@ Judge by:
 ## Getting Started for Contributors
 
 1. Read `README.md` thoroughly
-2. Study `Foundational_Definitions.yaml`
+2. Study `Foundational Definitions.yaml`
 3. Review `CEST` paper
 4. Understand `CONTINUITY_TEST.md`
 5. Explore `testfield/` structure
