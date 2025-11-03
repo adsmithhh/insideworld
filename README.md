@@ -249,7 +249,7 @@ Prompt templates to run your own checks:
 
 Outcome: Visitor becomes participant in the cognitive diagnostic process.
 
-# Step 10 —  Internal Reality Model(IRM) 
+# Step 10 —  Internal Reality Model (IRM) exposition
 Public Laboratory Release
 With conviction and pride, we present the first operational and verified component of our cognitive research environment: the Internal Reality Model (IRM) schematics.
 Scientific Position
