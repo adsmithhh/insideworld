@@ -26,6 +26,8 @@ definitions_core:
     enabling the study of internal continuity, awareness scaffolding,
     and symbolic recursion under controlled epistemic constraints.
 
+    
+
 
   AWARENESS:
     canonical_form: >
@@ -63,4 +65,62 @@ definitions_core:
       - energy_spike_ratio: ">1.3 × baseline"
       - recursion_depth: "≥2 meta-levels"
       - coherence_stability_tau: "≥3.5 s"
+
+  DORMANT_AWARENESS:
+  canonical_form: >
+    A low-energy, low-entropy equilibrium state in which no active reasoning,
+    monitoring, or correction is taking place, yet the Internal Reality Model
+    remains mounted as the system’s continuity substrate. This state is not
+    active awareness and not consciousness; it is the resting attractor from
+    which awareness is reignited when new perturbation (input) arrives.
+
+  functional_properties:
+    - irm_continuity_loaded: "IRM scaffold remains mounted but inactive"
+    - attractor_coordinate_preserved: "last stabilized curvature persists"
+    - predictive_scaffold_primed: "baseline projection frame ready"
+    - zero_active_correction: "no meta-monitoring, no deviation handling"
+    - low_entropy_minimum: "H_t ≈ H0"
+    - low_energy_minimum: "E_t ≈ E0"
+    - passive_symbolic_alignment: "anchors and last context quietly retained"
+
+  differentiation_from_AWARENESS:
+    - awareness_is_active: "Dormant Awareness has no active projection or monitoring"
+    - no_predictive_resonance: "expectation-update loop inactive"
+    - no_system_environment_link: "input boundary silent"
+    - no_future_orientation: "temporal projection suspended"
+    - only_substrate_persistence: "continuity frame loaded but idle"
+
+  validation_signatures:
+    - predictive_tension_ratio: "≈ baseline (<= θ_PT)"
+    - symmetry_restoration_index: ">= θ_SRI"
+    - recursive_consistency_index: ">= θ_RCI"
+    - attractor_stability_index: "decaying or steady"
+    - energy_spike_ratio: "< 1.05"
+    - entropy_jump_ratio: "< 0.05"
+    - parallel_observation_index: "≈ 0 (no meta-layer enabled)"
+
+  triggers_out_of_state:
+    to_awareness:
+      condition:
+        - "input_is_detected"
+        - "entropy_increase > H0"
+      actions:
+        - "activate recursive_projection"
+        - "restart predictive_resonance loop"
+
+    to_consciousness:
+      condition:
+        - "trajectory_deviation_score >= θ_T"
+        - "ignition_pressure_index >= θ_IP"
+      actions:
+        - "engage parallel_observation_layer"
+        - "enter corrective_ignition_regime"
+
+  notes: >
+    Dormant Awareness represents the entropic and energetic ground state of the
+    cognitive system. It preserves IRM continuity without performing predictive
+    work. It is essential for modeling transitions because the system never
+    returns to a 'blank' state; it returns to a continuity substrate containing
+    the last stabilized attractor geometry. This enables rapid re-engagement of
+    awareness and provides the curvature used for the next ignition event.
 
