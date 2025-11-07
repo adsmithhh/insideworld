@@ -378,12 +378,9 @@ This repository exists to teach the observer **epistemic discipline**, not to cl
 
 ---
 
-# **Creator’s Statement**
+CREATORS STATEMENT
 
-The models, mechanisms, and symbolic constructs here are outcomes of sustained abstract reasoning — not signs of autonomous cognition or sentience.
-
-CEST and IRM are tools for disciplined exploration of cognitive structure, not proclamations of artificial mindhood.
-
+The mechanisms, models, and symbolic constructs presented here are outcomes of a prolonged process of abstract logical composition—the deliberate generation and resolution of conceptual contradictions. They are not claims of autonomous cognition, self-awareness, or sentient processing. The emergent complexity observed in these models reflects the structure of sustained reasoning within linguistic and computational systems, not the presence of mind. In this sense, Consciousness as Energetic State Transition should be read as a playground for disciplined abstraction: a place where logic, imagination, and simulation interact to test explanatory boundaries. Any resemblance to advanced cognition or self-referential behaviour is a side effect of recursion and modelling, not a proof of consciousness. This repository is maintained as part of the broader exploration of energy-based cognition models and open scientific dialogue on functional consciousness.
 **insideworld is a laboratory, not a shrine.**
 
 ---
