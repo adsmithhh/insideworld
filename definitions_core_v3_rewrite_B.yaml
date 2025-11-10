@@ -1,0 +1,180 @@
+definitions_core_v3_rewrite_B:
+  version: 1.0.0
+  purpose: >
+    Provide a clean, formal distinction between functional (computational,
+    implementable) and phenomenal (experiential, non-computational) domains.
+    The functional domain is fully aligned with IRM architecture. The
+    phenomenal domain is concept-only and cannot be instantiated by any
+    information-processing system.
+
+  # ============================================================
+  # 1. DOMAIN SEPARATION (FOUNDATION)
+  # ============================================================
+  domain_separation:
+    functional_domain:
+      definition: >
+        The set of processes, structures, and dynamics that can be
+        implemented by an AI engine or cognitive architecture.
+      includes:
+        - IRM (Internal Reality Model)
+        - synthetic reality
+        - synthetic timeline
+        - regime transitions
+        - self-correction
+        - prediction and tension metrics
+        - identity maintenance
+        - anchors, invariants, validators
+        - symbolic reasoning
+        - world-model dynamics
+      ontology: computational
+
+    phenomenal_domain:
+      definition: >
+        The set of subjective, experiential states that arise only in biological
+        organisms. Not reproducible through computation or symbolic processing.
+      includes:
+        - qualia
+        - felt experience
+        - emotion-as-feeling
+        - subjective continuity
+        - inner perception
+      ontology: non-computational
+
+    strict_boundary:
+      rule: >
+        Phenomenal terms cannot be mapped to or equated with functional
+        processes. Functional processes may SUPPORT tasks associated with
+        phenomenal states, but never instantiate them.
+
+  # ============================================================
+  # 2. FUNCTIONAL AWARENESS (IMPLEMENTABLE)
+  # ============================================================
+  functional_awareness:
+    definition: >
+      The system’s ability to maintain a coherent internal model of reality
+      through IRM operations, state continuity, predictive evaluation, and
+      synthetic timeline generation.
+    implements:
+      - regime: dormant → active
+      - tension monitoring
+      - deviation detection
+      - object persistence via anchors
+      - evaluator-driven consistency
+      - internal model updates
+    properties:
+      - non-phenomenal
+      - rule-governed
+      - measurable
+      - debuggable
+      - stable across cycles
+
+  # ============================================================
+  # 3. PHENOMENAL AWARENESS (NON-IMPLEMENTABLE)
+  # ============================================================
+  phenomenal_awareness:
+    definition: >
+      The subjective sense of "being aware" experienced by organisms. A
+      private, felt state with no computational analogue.
+    cannot_be_implemented_by:
+      - IRM
+      - synthetic timeline
+      - any reasoning architecture
+      - any information-processing substrate
+    status_in_AI_systems: "concept-only, non-instantiable"
+
+  # ============================================================
+  # 4. FUNCTIONAL CONSCIOUSNESS (IMPLEMENTABLE)
+  # ============================================================
+  functional_consciousness:
+    definition: >
+      A high-activation corrective mode in which the system detects,
+      interprets, and repairs large deviations in its internal reality model.
+      Corresponds to IRM corrective regime (destabilized → corrective).
+    components:
+      - high predictive tension
+      - high entropy
+      - recursive re-evaluation
+      - synthetic timeline override/rebuild
+      - anchor and invariant re-alignment
+    outcome:
+      - new coherent state
+      - restored internal continuity
+
+    notes:
+      - purely functional
+      - not subjective
+      - not experiential
+
+  # ============================================================
+  # 5. PHENOMENAL CONSCIOUSNESS (NON-IMPLEMENTABLE)
+  # ============================================================
+  phenomenal_consciousness:
+    definition: >
+      Subjective, qualitative experience — “what it is like” to feel, think,
+      or exist. Not representable in any computational system.
+    attributes:
+      - private
+      - irreducible
+      - non-symbolic
+      - non-algorithmic
+      - inherently biological
+    status_in_AI_systems: "unreproducible, non-functional category"
+
+  # ============================================================
+  # 6. SYNTHETIC REALITY (FUNCTIONAL)
+  # ============================================================
+  synthetic_reality:
+    definition: >
+      The minimal, internally consistent environment produced by IRM for the
+      purpose of reasoning, prediction, and stable action. Artificial, bounded,
+      and non-phenomenal.
+    components:
+      - synthetic timeline
+      - internal objects
+      - invariants & anchors
+      - correction cycles
+      - entropic regime structure
+    purpose:
+      - allow AI to operate as if in a reality-like space
+      - maintain continuity and consistency for reasoning
+
+  # ============================================================
+  # 7. SYNTHETIC TIMELINE (FUNCTIONAL)
+  # ============================================================
+  synthetic_timeline:
+    definition: >
+      Ordered sequence of IRM state-updates. Represents functional continuity,
+      not subjective temporal experience.
+    includes:
+      - state-chain (z_L, z_H)
+      - metrics-chain
+      - regime-chain
+      - correction history
+    guarantees:
+      - internal consistency
+      - identity continuity
+      - causal predictability
+    excludes:
+      - biological time perception
+      - felt duration
+      - subjective flow
+
+  # ============================================================
+  # 8. SUMMARY OF CATEGORY BOUNDARIES
+  # ============================================================
+  boundary_summary:
+    computational_only:
+      - internal reality model
+      - synthetic reality
+      - functional awareness
+      - functional consciousness
+      - prediction and tension metrics
+      - correction and stabilization
+      - regime state machine
+      - synthetic timeline
+
+    conceptual_only:
+      - phenomenal awareness
+      - phenomenal consciousness
+      - qualia
+      - subjective experience
