@@ -461,8 +461,8 @@ reporting:
     - "critical failures (must be zero)"
 
 related_documents:
-  invariants: "IRM/schema/invariants.yaml"
-  drift_tests: "IRM/tests/drift_checks.yaml (INV_001, INV_007)"
+  invariants: "evolution_chamber/IRM/schema/invariants.yaml"
+  drift_tests: "evolution_chamber/IRM/tests/drift_checks.yaml (INV_001, INV_007)"
   total_suite: "51 tests across both files"
 
 notes: >

@@ -40,7 +40,7 @@ The Internal Reality Model (IRM) is a formal framework for building and testing 
 ## Directory Structure
 
 ```
-IRM/
+evolution_chamber/IRM/
 ├── schema/          # Formal type definitions and invariants
 │   ├── primitives.yaml           # Core types (S_t, I, A, E, O_t)
 │   ├── invariants.yaml           # 8 invariants governing IRM behavior

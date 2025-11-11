@@ -10,7 +10,7 @@ meta:
     Predictive processing without surprises, contradictions, or elevated energy.
     This is the "normal case" demonstrating routine IRM function.
 
-  related_policy: "minimal_emission (IRM/policies/cest_implementation.yaml)"
+  related_policy: "minimal_emission (evolution_chamber/IRM/policies/cest_implementation.yaml)"
   related_framework: "awareness definition (Foundational Definitions.yaml)"
 
 scenario:
@@ -220,7 +220,7 @@ validation:
 related_documents:
   framework: "Foundational Definitions.yaml (awareness definition)"
   pipeline: "testfield/protocols/IRM_Pipeline.yaml"
-  policy: "IRM/policies/cest_implementation.yaml (minimal_emission)"
+  policy: "evolution_chamber/IRM/policies/cest_implementation.yaml (minimal_emission)"
   theory: "Consciousness_as_Energetic_State_Transition.md"
 
 notes: >
