@@ -4,6 +4,27 @@
 **Status:** Canonical Specification  
 **Date:** 2025-11-03
 
+# Direction Shift — November 2025
+
+This repository began as a conceptual exploration of awareness/consciousness.
+It evolved into a functional IRM implementation.
+Now it moves again: from anthropomorphic interpretation to
+pure-state continuity systems and evolution chambers.
+
+This shift replaces:
+- metaphor-centric explanations
+- anthropomorphic assumptions
+- “ghost-catching” interpretation layers
+
+With:
+- functional continuity
+- invariant-driven design
+- cross-line evolution chambers (multiple IRM lines)
+- raw operational structures
+
+The repo remains the same project — only the trajectory changed.
+
+
 ---
 
 ## Overview
