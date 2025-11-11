@@ -25,9 +25,7 @@ With:
 The repo remains the same project — only the trajectory changed.
 
 
----
-
-This repo is no longer a consciousness-theory notebook; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing.
+###This repo is no longer a consciousness-theory notebook; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing.
 
 
 
