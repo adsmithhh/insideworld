@@ -27,9 +27,10 @@ The repo remains the same project — only the trajectory changed.
 
 ---
 
-## Overview
+This repo is no longer a consciousness-theory notebook; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing.
 
-#This repo is no longer a consciousness-theory notebook; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing.
+
+
 *****************************************************************************************************************
 ******************************************************************************************************************
 The Internal Reality Model (IRM) is a formal framework for building and testing cognitive architectures that maintain internal continuity, predictive coherence, and measurable state transitions. IRM operationalizes the CEST (Consciousness as Energetic State Transition) framework's distinction between awareness and consciousness through structured components, invariants, and validation protocols.
