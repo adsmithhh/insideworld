@@ -508,8 +508,8 @@ integration:
     - "All 8 invariants covered"
 
 related_documents:
-  invariants: "IRM/schema/invariants.yaml"
-  other_tests: "IRM/tests/invariants_suite.yaml"
+  invariants: "evolution_chamber/IRM/schema/invariants.yaml"
+  other_tests: "evolution_chamber/IRM/tests/invariants_suite.yaml"
   pipeline: "testfield/protocols/IRM_Pipeline.yaml"
 
 notes: >

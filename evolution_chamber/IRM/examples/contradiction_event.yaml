@@ -10,7 +10,7 @@ meta:
     to conflicting claims. Demonstrates energy elevation (1.0 → 1.35),
     resolver ρ invocation, entropy minimization (INV_005), and standard emission.
 
-  related_policy: "standard_emission (IRM/policies/cest_implementation.yaml)"
+  related_policy: "standard_emission (evolution_chamber/IRM/policies/cest_implementation.yaml)"
   related_framework: "consciousness definition (Foundational Definitions.yaml)"
   related_invariant: "INV_005 (entropy minimization)"
 
@@ -348,9 +348,9 @@ comparison_to_baseline:
 related_documents:
   framework: "Foundational Definitions.yaml (consciousness definition)"
   pipeline: "testfield/protocols/IRM_Pipeline.yaml"
-  policy: "IRM/policies/cest_implementation.yaml (standard_emission)"
+  policy: "evolution_chamber/IRM/policies/cest_implementation.yaml (standard_emission)"
   theory: "Consciousness_as_Energetic_State_Transition.md"
-  invariant: "IRM/schema/invariants.yaml (INV_005)"
+  invariant: "evolution_chamber/IRM/schema/invariants.yaml (INV_005)"
 
 notes: >
   This example demonstrates IRM at its most sophisticated: detecting
