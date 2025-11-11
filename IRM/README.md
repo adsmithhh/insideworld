@@ -22,10 +22,10 @@ With:
 - cross-line evolution chambers (multiple IRM lines)
 - raw operational structures
 
-The repo remains the same project — only the trajectory changed.
 
 
-# This repo is no longer a consciousness-theory; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing.
+
+# This repo is no longer a consciousness-theory; it is a functional evolution chamber for IRM systems with parallel variants and internal continuity testing. The repo remains the same project — only the trajectory changed. 
 
 
 
