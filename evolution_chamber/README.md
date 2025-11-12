@@ -1,12 +1,5 @@
 
 
-title: "Evolution Chamber — Origin & Access"
-version: 1.0
-status: stable
-date: 2025-11-12
-maintainer: insideworld core / adsmithhh
-scope: evolution_chamber
-
 
 # Evolution Chamber — Origin Statement
 
@@ -108,3 +101,10 @@ and prevent anthropomorphic drift.
 **Phase:** Stable operational evolution  
 **Repository:** `insideworld/evolution_chamber`  
 **License:** open-research / attribution-required
+
+title: "Evolution Chamber — Origin & Access"
+version: 1.0
+status: stable
+date: 2025-11-12
+maintainer: insideworld core / adsmithhh
+scope: evolution_chamber
