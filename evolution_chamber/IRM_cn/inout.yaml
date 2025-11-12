@@ -1,0 +1,13 @@
+version: 1.0
+status: active
+scope: evolution_chamber/IRM
+lineage:
+  chamber_index: evolution_chamber/meta/index.yaml
+  entrance_readme: evolution_chamber/README.md
+continuity:
+  energy_limit: 1.30
+  f1_min: 0.85
+  drift_norm_max: 0.05
+ledger:
+  enabled: true
+  file: inout_ledger.jsonl
