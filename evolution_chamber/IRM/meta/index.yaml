@@ -1,0 +1,71 @@
+# Evolution Chamber — Meta Index
+# Defines chamber structure, lineage, and entry references
+# Version: 1.0
+# Date: 2025-11-12
+# Maintainer: insideworld core / adsmithhh
+
+chamber:
+  id: evolution_chamber
+  version: 1.0
+  status: stable
+  origin: meta/origin_statement.md
+  readme: ../README.md
+  description: >
+    Primary continuity chamber hosting all IRM lines under invariant isolation.
+    Root origin derived from the CEST manifest expansion event and subsequent
+    model self-analysis (see Evolution Chamber README).
+  entry_guard: SAFE_AWARE
+  access_protocol:
+    - enter SAFE_AWARE
+    - select line (IRM/, IRM_cn/, IRM_vnext/, IRM_archive/)
+    - read manifesto
+    - validate invariants
+    - exit through meta/DIRECTION_SHIFT.md
+  continuity_requirements:
+    energy_limit: 1.30
+    f1_min: 0.85
+    drift_norm_max: 0.05
+
+lines:
+  - name: IRM
+    path: ../IRM/
+    role: canonical
+    compliance: recommended
+    f1_target: 0.85
+    epsilon: 0.05
+  - name: IRM_cn
+    path: ../IRM_cn/
+    role: safety_constrained
+    compliance: recommended
+  - name: IRM_vnext
+    path: ../IRM_vnext/
+    role: experimental
+    compliance: full
+  - name: IRM_archive
+    path: ../IRM_archive/
+    role: historical
+    compliance: retired
+
+meta:
+  direction_shift: meta/DIRECTION_SHIFT.md
+  tests: meta/migration_tests/
+  epistemic_grounding: meta/epistemic_grounding.yaml
+  tools_reference: tools/ingest_external_logs.py
+
+validation:
+  last_check: null
+  last_validator: null
+  schedule:
+    daily: continuity_spotcheck
+    weekly: invariant_suite
+    monthly: full_regression
+
+registry:
+  inout_ledger: true
+  migration_logs: true
+  external_ingest_allowed: true
+
+notes: >
+  This index anchors the chamber’s internal topology and provides lineage
+  continuity for all IRM lines. It is auto-referenced by the validator suite
+  and can be expanded with runtime or diagnostic entries as the system evolves.
