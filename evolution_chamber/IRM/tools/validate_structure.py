@@ -7,6 +7,7 @@ Checks minimal invariants:
 - Listed IRM line paths exist and contain a README.md (and optionally inout.yaml)
 - Numeric thresholds are sane
 """
+import argparse
 from __future__ import annotations
 import sys, json, re
 from pathlib import Path
@@ -30,4 +31,23 @@ def _miniyaml(text: str):
                 # list item can be scalar k or start of nested map
                 item = l[2:]
                 if re.match(r"^[^:]+:\s*.*$", item):  # inline map head -> recurse next indent
-                    #
+                 
+                    def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--strict", action="store_true", help="enforce tests/ and inout.yaml schema")
+    args = ap.parse_args()
+    strict = args.strict
+
+                 if strict:
+                check((lp/"tests").exists(), f"{name}: tests/ folder present (strict)", str(lp/"tests"), findings)
+                # minimal inout.yaml schema check (version/status/scope)
+                ino = lp/"inout.yaml"
+                if ino.exists():
+                    try:
+                        ino_data = _miniyaml(ino.read_text(encoding="utf-8"))
+                        okv = all(k in (ino_data or {}) for k in ("version","status","scope"))
+                        check(okv, f"{name}: inout.yaml has version/status/scope (strict)", str(ino), findings)
+                    except Exception as e:
+                        check(False, f"{name}: inout.yaml parseable ({e})", str(ino), findings)
+
+#
