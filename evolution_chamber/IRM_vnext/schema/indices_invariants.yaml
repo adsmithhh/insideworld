@@ -1,2 +1,13 @@
 # import alignment defaults (human step; no YAML import mechanism assumed)
 # Refer: evolution_chamber/meta/alignment/IRM_to_vNext_map.yaml: thresholds.vnext
+thresholds:
+  DPu_low: 0.20
+  DPu_high: 0.60
+  CC_ok: 0.85
+  RCI_ok: 0.80
+  E_soft: 1.30
+  E_hard: 1.80
+invariants:
+  - I_INV1: "No H-commit if CC_index < CC_ok or RCI < RCI_ok"
+  - I_INV2: "No H-commit if U_pred > U_pred_ok or trace(Σ_H) > Σ_H_trace_max"
+  - I_INV3: "External hard_block forbids commit"
