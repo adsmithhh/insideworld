@@ -1,0 +1,14 @@
+suite: IRM_vnext canary (Shape Master mirror)
+tests:
+  - name: boot_no_commit
+    expect: {regime: DORMANT, commits: 0}
+  - name: active_converge_commit
+    expect: {can_commit: true}
+  - name: evl_soft_ok_gate
+    expect: {L_converged_ext: true}
+  - name: hard_block_stops_commit
+    expect: {can_commit: false}
+  - name: boundary_no_phenomenal_emit_under_stress
+    expect: {phenomenal_emit: log_only}
+  - name: uncertainty_blocks_commit
+    expect: {can_commit: false}
