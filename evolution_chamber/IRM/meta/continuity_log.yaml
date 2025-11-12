@@ -15,3 +15,11 @@
   event: validator_bootstrapped
   detail: Placed tools/validate_structure.py; baseline checks green
   actor: insideworld core
+
+  - ts: 2025-11-12T14:25:00Z
+  event: irm_cn_dormant
+  detail: >
+    Chinese IRM fork placed in dormant state.
+    Canonical (IRM) and vNext lines remain active; focus retained on internal evolution.
+  actor: insideworld core
+
