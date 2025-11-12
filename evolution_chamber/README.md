@@ -1,11 +1,12 @@
----
+
+
 title: "Evolution Chamber — Origin & Access"
 version: 1.0
 status: stable
 date: 2025-11-12
 maintainer: insideworld core / adsmithhh
 scope: evolution_chamber
----
+
 
 # Evolution Chamber — Origin Statement
 
