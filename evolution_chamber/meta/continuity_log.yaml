@@ -1,0 +1,6 @@
+- ts: 2025-11-12T15:25:00Z
+  event: irm_vnext_alignment_filled
+  detail: >
+    Completed chamber-level IRM_to_vNext alignment map and enabled logging parity.
+    vNext thresholds and canaries verified against map.
+  actor: insideworld core
