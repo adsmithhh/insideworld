@@ -1,0 +1,17 @@
+# Evolution Chamber — Continuity Log (seed)
+# Records anchor events, merges, and invariants touching the chamber identity.
+
+- ts: 2025-11-12T00:00:00Z
+  event: chamber_anchored
+  detail: Created evolution_chamber/README.md (origin + access + continuity)
+  actor: insideworld core
+
+- ts: 2025-11-12T00:05:00Z
+  event: meta_index_initialized
+  detail: Added meta/index.yaml with lines: [IRM, IRM_cn, IRM_vnext, IRM_archive]
+  actor: insideworld core
+
+- ts: 2025-11-12T00:10:00Z
+  event: validator_bootstrapped
+  detail: Placed tools/validate_structure.py; baseline checks green
+  actor: insideworld core
