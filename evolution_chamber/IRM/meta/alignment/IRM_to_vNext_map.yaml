@@ -1,0 +1,104 @@
+# IRM ↔ vNext Alignment Map (v1.0)
+# Purpose: declarative mapping between canonical IRM metrics/policies
+#          and IRM_vnext (Shape Master) counterparts.
+
+meta:
+  version: 1.0
+  status: active
+  last_updated: 2025-11-12
+  owner: insideworld core
+
+primitives:
+  # Canonical IRM → vNext terms
+  S_t      : z_H            # state we care to persist ≈ high-latent
+  T        : transition_T   # update operator
+  Ω        : observer_Omega # observation operator
+  β        : binder_beta    # anchor binder
+  ρ        : resolver_rho   # conflict resolver
+  E        : E              # energy index (same name)
+
+indices:
+  # canonical → vNext
+  drift_norm         : "||T^{-1}(S_{t+1}) - S_t||"   # canonical
+  Δ_proto            : "map_L(z_L) - map_H(z_H)"     # vNext
+  PT_u               : "sqrt(Δᵀ Σ_Δ^{-1} Δ)"
+  DP_u               : "min(1, PT_u / scale_s_u)"
+  continuity_f1      : "F1({A_recovered},{A_original})"
+  CC_index           : "1 - min(1, V_norm)"
+  RCI                : "1 - min(1, R_norm)"
+  energy_spike_ratio : "E / baseline"
+
+thresholds:
+  canonical:
+    drift_norm_max   : 0.05
+    continuity_f1_min: 0.85
+    energy_soft      : 1.30
+  vnext:
+    DPu_low          : 0.20
+    DPu_high         : 0.60
+    CC_ok            : 0.85
+    RCI_ok           : 0.80
+    E_soft           : 1.30
+    E_hard           : 1.80
+
+invariants:
+  # Canonical INV_001..008 → vNext I_INVx
+  INV_001_temporal_coherence:
+    vnext: I_INV1
+    rule : "No H-commit if CC_index < CC_ok or RCI < RCI_ok"
+  INV_004_energy_salience_alignment:
+    vnext: E_soft # enforced via regime transitions when E ≥ 1.30
+    rule : "ACTIVE→DESTABILIZED transition if E ≥ 1.30"
+  INV_005_entropy_min_on_conflict:
+    vnext: I_INV2
+    rule : "No H-commit if U_pred>ok or trace(Σ_H)>Σ_H_trace_max"
+  INV_006_observation_derivation:
+    vnext: logging.indices
+    rule : "Ω-derived indices must be present per phase"
+  INV_007_continuity_recovery:
+    vnext: CM.sequence
+    rule : "rollback path must exist; CORRECTIVE→SAFE_AWARE on success"
+  INV_008_policy_consistency:
+    vnext: boundary_firewall + regimes
+    rule : "no phenomenal→state writes; CDC required"
+
+regimes:
+  canonical_gates: [G0, G1, G2, G3, G4]
+  vnext_states   : [DORMANT, SAFE_AWARE, ACTIVE, DESTABILIZED, CORRECTIVE]
+  gate_to_state:
+    G0: DORMANT
+    G1: SAFE_AWARE
+    G2: ACTIVE
+    G3: DESTABILIZED
+    G4: CORRECTIVE
+  transitions:
+    to_ACTIVE       : "DP_u ≥ 0.20 or external_input_present"
+    to_DESTABILIZED : "DP_u ≥ 0.60 or RCI < 0.80 or E ≥ 1.30"
+    to_CORRECTIVE   : "E ≥ 1.80 or RCI < 0.60 for 2 phases"
+    to_SAFE_AWARE   : "stabilize_goal unmet by cap (post-corrective)"
+
+evl_bridge:
+  canonical_soft_ok : "(E_gt ≤ 0.10) or (E_pred ≤ 0.15) or (y* ∈ CI_pred)"
+  vnext_soft_ok     : same
+  hard_block        : "E_gt > 0.50 or CI_width > 0.50"
+
+phenomenal_bridge:
+  FA_to_PA_require  : { PO: ">=0.3", RCI: ">=0.75", DP_u: "<=0.55", EVL: soft_ok }
+  FC_to_PC_require  : { mvc_ok: true, regime: CONSCIOUSNESS, U_pred: "<=U_pred_ok", EVL: soft_ok }
+  emission_policy   : { SAFE_AWARE: log_only, DESTABILIZED: log_only, CORRECTIVE: off }
+
+logging_alignment:
+  per_phase_indices: [PT_u, DP_u, CC_index, RCI, E_gt, E_pred, U_pred, Σ_H_trace]
+  commit_record    : [proposed_norm, final_norm, decision, reasons]
+  regime_record    : [from, to, reason, timers]
+  cm_record        : [trigger, candidate, accepted, method]
+
+canary_mirror:
+  canonical_examples: [basic_cycle_min.yaml, contradiction_event.yaml]
+  vnext_cases       :
+    - boot_no_commit
+    - active_converge_commit
+    - evl_soft_ok_gate
+    - hard_block_stops_commit
+    - boundary_no_phenomenal_emit_under_stress
+    - uncertainty_blocks_commit
