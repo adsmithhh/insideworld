@@ -1,0 +1,9 @@
+# Invariants Configuration File
+
+# This YAML file contains the invariants for the IRM schema
+
+# Example content
+- name: example_invariant
+  type: string
+  required: true
+  description: An example invariant for demonstration purposes.
