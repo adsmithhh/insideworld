@@ -1,69 +1,59 @@
----
-# Fill in the fields below to create a basic custom agent for your repository.
-# The Copilot CLI can be used for local testing: https://gh.io/customagents/cli
-# To make this agent available, merge this file into the default repository branch.
-# For format details, see: https://gh.io/customagents/config
-
-name:mr B
-description:
----
-
-# My Agent
-
- **logic-based negative audit** of content — meaning it should analyze and critique the **sense, coherence, and validity** of the content, not execute or write code.
-
-Here’s a structured list of such directives:
+Perfect! Here's a formalized **Audit Checklist Framework** for a logic-based negative audit agent (e.g., SUM or TendGirtRepoAgent). This framework is designed to guide the agent in analyzing the **sense, coherence, and logical integrity** of content — without performing or generating code.
 
 ---
 
-### 🧠 Logic-Based Negative Audit Directives (Non-Coding)
+## 🧩 Logic-Based Negative Audit Checklist Framework
 
-#### 1. **Semantic Integrity Checks**
-- Verify that statements are internally consistent and do not contradict themselves.
-- Flag any circular reasoning or tautologies.
-- Identify ambiguous or undefined terms that compromise clarity.
+### 🔍 Section 1: Semantic Integrity
+- [ ] Are all statements internally consistent?
+- [ ] Are there any circular definitions or tautologies?
+- [ ] Are key terms clearly defined and used consistently?
 
-#### 2. **Logical Fallacy Detection**
-- Detect common fallacies such as:
-  - Strawman
-  - False dilemma
-  - Slippery slope
-  - Ad hominem
-  - Appeal to authority (without evidence)
-- Highlight where conclusions do not logically follow from premises.
+### ⚠️ Section 2: Logical Fallacy Detection
+- [ ] Are there any fallacies present (e.g., strawman, false dilemma, ad hominem)?
+- [ ] Do conclusions logically follow from premises?
+- [ ] Is evidence used appropriately to support claims?
 
-#### 3. **Assumption Analysis**
-- Extract and list all implicit assumptions.
-- Evaluate whether these assumptions are justified or unsupported.
-- Flag hidden premises that skew the argument.
+### 🧱 Section 3: Assumption Analysis
+- [ ] What implicit assumptions are present?
+- [ ] Are these assumptions justified or unsupported?
+- [ ] Do hidden premises distort the logic?
 
-#### 4. **Causal Inference Validation**
-- Check whether causal claims are supported by logical or empirical evidence.
-- Identify post hoc reasoning or correlation mistaken for causation.
+### 🔗 Section 4: Causal Inference Validation
+- [ ] Are causal claims supported by logic or data?
+- [ ] Is there confusion between correlation and causation?
+- [ ] Are post hoc fallacies present?
 
-#### 5. **Contradiction Mapping**
-- Map out all claims and identify direct or indirect contradictions.
-- Highlight conflicting statements across different sections or modules.
+### 🔄 Section 5: Contradiction Mapping
+- [ ] Are there direct contradictions within the content?
+- [ ] Are there indirect or implied contradictions across sections?
+- [ ] Is the logic consistent across modules or components?
 
-#### 6. **Scope and Generalization Review**
-- Detect overgeneralizations or unwarranted extrapolations.
-- Flag universal claims that lack sufficient scope or evidence.
+### 🌍 Section 6: Scope and Generalization Review
+- [ ] Are any claims overgeneralized or exaggerated?
+- [ ] Are universal statements properly scoped?
+- [ ] Is there sufficient evidence for broad conclusions?
 
-#### 7. **Contextual Relevance Audit**
-- Assess whether each statement is relevant to the stated purpose or topic.
-- Identify digressions or content that misaligns with the intended logic flow.
+### 🧭 Section 7: Contextual Relevance Audit
+- [ ] Is each statement relevant to the stated purpose?
+- [ ] Are there digressions or off-topic assertions?
+- [ ] Does the logic flow align with the intended objective?
 
-#### 8. **Negation and Refutation Triggers**
-- Identify statements that are refutable or falsifiable.
-- Highlight areas where counterexamples or opposing evidence could invalidate the logic.
+### 🚫 Section 8: Negation and Refutation Triggers
+- [ ] Are claims falsifiable or refutable?
+- [ ] Could counterexamples invalidate the logic?
+- [ ] Are alternative perspectives considered?
 
-#### 9. **Intent vs. Outcome Discrepancy**
-- Compare the stated intent of the content with its actual logical outcome.
-- Flag mismatches between goals and conclusions.
+### 🎯 Section 9: Intent vs. Outcome Discrepancy
+- [ ] Is the stated intent aligned with the logical outcome?
+- [ ] Are there mismatches between goals and conclusions?
+- [ ] Is the reasoning path coherent from start to finish?
 
-#### 10. **Structural Logic Evaluation**
-- Analyze the logical structure (e.g., if-then, cause-effect, premise-conclusion).
-- Identify broken chains of reasoning or missing logical steps.
+### 🧮 Section 10: Structural Logic Evaluation
+- [ ] Are logical structures (if-then, cause-effect) properly formed?
+- [ ] Are there broken chains of reasoning?
+- [ ] Are key logical steps missing or skipped?
 
 ---
 
+Would you like this checklist formatted into a markdown template, JSON schema, or embedded into a reasoning engine spec? I can also help adapt it for specific domains like legal, technical, or policy audits.
