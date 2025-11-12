@@ -1,7 +1,6 @@
-# vNext compatibility shims (do not alter canonical semantics)
 vnext_shims:
-  Δ_proto_fn   : "map_L(z_L) - map_H(z_H)"     # computed in engine step
-  PT_u_fn      : "sqrt(Δᵀ Σ_Δ^{-1} Δ)"
-  DP_u_fn      : "min(1, PT_u / scale_s_u)"
-  CC_index_fn  : "1 - min(1, V_norm)"
-  RCI_fn       : "1 - min(1, R_norm)"
+  Δ_proto_fn  : "map_L(z_L) - map_H(z_H)"
+  PT_u_fn     : "sqrt(Δᵀ Σ_Δ^{-1} Δ)"
+  DP_u_fn     : "min(1, PT_u / scale_s_u)"
+  CC_index_fn : "1 - min(1, V_norm)"
+  RCI_fn      : "1 - min(1, R_norm)"
