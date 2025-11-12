@@ -1,0 +1,6 @@
+suite: IRM canary
+tests:
+  - name: readme_present
+    expect: {readme: true}
+  - name: inout_present
+    expect: {inout_yaml: true}
