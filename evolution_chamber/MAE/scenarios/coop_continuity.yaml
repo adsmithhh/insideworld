@@ -1,0 +1,25 @@
+scenario:
+  name: coop_continuity
+  seed: 0
+  ticks: 200
+
+task:
+  seed: 0
+
+bus_acl: {}
+bus_rate_limits: {}
+
+irm_params:
+  IRM:
+    z_dim: 8
+
+agents:
+  - id: A
+    kind: irm
+    line: IRM
+  - id: B
+    kind: random
+    line: IRM
+  - id: C
+    kind: random
+    line: IRM_cn
