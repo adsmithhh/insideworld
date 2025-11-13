@@ -1,0 +1,24 @@
+scenario:
+  name: adversarial_taint
+  seed: 2
+  ticks: 200
+
+task:
+  seed: 2
+
+bus_acl:
+  taint:
+    allow_src: ["B"]
+bus_rate_limits: {}
+
+irm_params:
+  IRM:
+    z_dim: 8
+
+agents:
+  - id: A
+    kind: irm
+    line: IRM
+  - id: B
+    kind: random
+    line: IRM_cn
