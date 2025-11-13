@@ -1,1 +1,41 @@
 
+  __init__.py
+    cli.py
+
+    env/
+      __init__.py
+      world.py        # base Environment (ticks, reset/step)
+      spaces.py       # Obs/Act specs, dataclasses
+      tasks.py        # task definitions (co-op, adversarial, etc.)
+
+    bus/
+      __init__.py
+      schema.py       # Message models (Pydantic/dataclasses)
+      broker.py       # in-proc pub/sub, ACLs, rate limits
+
+    agents/
+      __init__.py
+      base.py         # Agent interface + lifecycle
+      adapters.py     # XIL↔Env adapter (Obs <-> IRM policy)
+      registry.py     # build agents from YAML configs
+
+    policies/
+      __init__.py
+      random.py       # pure baseline
+      scripted.py     # simple heuristic policies
+      bridge.py       # IRM-backed policy (calls IRM.step_engine)
+
+    sim/
+      __init__.py
+      scheduler.py    # deterministic tick scheduler
+      rollout.py      # high-level “run scenario” helper
+
+    logging/
+      __init__.py
+      kpis.py         # multi-agent KPIs (continuity, traffic, etc.)
+      writers.py      # CSV/JSON writers; per-line log routing
+
+    scenarios/
+      coop_continuity.yaml
+      contradiction_probe.yaml
+      adversarial_taint.yaml
