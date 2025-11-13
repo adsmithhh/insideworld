@@ -1,0 +1,23 @@
+scenario:
+  name: contradiction_probe
+  seed: 1
+  ticks: 200
+
+task:
+  seed: 1
+
+bus_acl: {}
+bus_rate_limits: {}
+
+irm_params:
+  IRM:
+    z_dim: 8
+
+agents:
+  - id: A
+    kind: irm
+    line: IRM
+  - id: B
+    kind: scripted
+    line: IRM_cn
+    delta: 0.05
