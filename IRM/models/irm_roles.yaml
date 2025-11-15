@@ -1,0 +1,419 @@
+# IRM Roles — Concrete Role Assignments
+# Operational role definitions for IRM components
+
+roles_version: "1.0"
+status: active
+source: "schema/irm_roles.schema.yaml"
+
+stores_instantiation:
+  
+  identity_store:
+    role: "persist I across resets"
+    implementation_notes: "UUID-based persistent storage"
+    operations:
+      initialize_identity:
+        description: "Create and store new identity I"
+        parameters:
+          - name: "identity_uuid"
+            type: "uuid_v4"
+            required: false
+            default: "auto-generate"
+        returns: "I"
+        preconditions:
+          - "identity_not_previously_set"
+        postconditions:
+          - "I stored permanently"
+          - "I immutable"
+        
+      get_identity:
+        description: "Retrieve current identity I"
+        parameters: []
+        returns: "I"
+        guarantees:
+          - "always returns same I"
+          - "never returns null"
+        
+      validate_identity:
+        description: "Check identity consistency"
+        parameters: []
+        returns: "boolean"
+        checks:
+          - "I is valid UUID"
+          - "I has not changed"
+    
+    invariants_enforced: ["INV_002"]
+    metrics:
+      - "identity_stability_score: 1.0 (always)"
+    
+  anchor_store:
+    role: "persist {A} and versions"
+    implementation_notes: "Versioned key-value store with history"
+    operations:
+      create_anchor:
+        description: "Create new anchor binding"
+        parameters:
+          - name: "identity_ref"
+            type: "uuid_v4"
+            required: true
+          - name: "role_spec"
+            type: "string"
+            required: true
+          - name: "constraint_set"
+            type: "list[string]"
+            required: false
+        returns: "anchor_id"
+        postconditions:
+          - "anchor stored with version 1"
+          - "anchor linked to I"
+        
+      get_anchor:
+        description: "Retrieve anchor by ID"
+        parameters:
+          - name: "anchor_id"
+            type: "uuid_v4"
+            required: true
+        returns: "A (current version)"
+        
+      update_anchor:
+        description: "Update anchor binding (requires authorization)"
+        parameters:
+          - name: "anchor_id"
+            type: "uuid_v4"
+            required: true
+          - name: "new_binding"
+            type: "anchor_structure"
+            required: true
+          - name: "authorized_by"
+            type: "enum[beta, rho]"
+            required: true
+        returns: "new_version_number"
+        postconditions:
+          - "semantic_version incremented"
+          - "previous version preserved in history"
+        
+      get_anchor_history:
+        description: "Retrieve version history"
+        parameters:
+          - name: "anchor_id"
+            type: "uuid_v4"
+            required: true
+        returns: "list[A_versioned]"
+    
+    invariants_enforced: ["INV_003"]
+    metrics:
+      - "anchor_revision_rate: revisions per 100 transitions"
+      - "semantic_drift_score: semantic distance across versions"
+  
+  snapshot_store:
+    role: "persist {S_t*, O_t} for continuity checks"
+    implementation_notes: "Time-indexed snapshot storage"
+    operations:
+      store_snapshot:
+        description: "Store state and observation snapshot"
+        parameters:
+          - name: "t"
+            type: "integer"
+            required: true
+          - name: "S_t"
+            type: "state_representation"
+            required: true
+          - name: "O_t"
+            type: "observation_structure"
+            required: true
+        returns: "snapshot_id"
+        constraints:
+          - "t must be >= previous t"
+        
+      get_snapshot:
+        description: "Retrieve snapshot by time index"
+        parameters:
+          - name: "t"
+            type: "integer"
+            required: true
+        returns: "{S_t, O_t}"
+        
+      get_snapshot_range:
+        description: "Retrieve multiple snapshots"
+        parameters:
+          - name: "t_start"
+            type: "integer"
+            required: true
+          - name: "t_end"
+            type: "integer"
+            required: true
+        returns: "list[{S_t, O_t}]"
+        
+      compute_continuity_f1:
+        description: "Compute continuity metric over range"
+        parameters:
+          - name: "t_start"
+            type: "integer"
+            required: true
+          - name: "t_end"
+            type: "integer"
+            required: true
+        returns: "float [0,1]"
+        computation: "F1 score for anchor recovery"
+    
+    invariants_enforced: ["INV_001", "INV_007"]
+    metrics:
+      - "continuity_f1: anchor recovery F1 score"
+      - "drift_norm: ||S_t - S_{t-1}||"
+      - "snapshot_frequency: snapshots per 100 transitions"
+
+engines_instantiation:
+  
+  transition_T:
+    role: "S_t -> S_{t+1} lawful update"
+    implementation_notes: "Lawful state evolution with reversibility"
+    signature: "(S_t, stimulus) -> S_{t+1}"
+    operations:
+      transition:
+        description: "Compute next state from current state and input"
+        parameters:
+          - name: "S_t"
+            type: "state_representation"
+            required: true
+          - name: "stimulus"
+            type: "normalized_input"
+            required: true
+        returns: "S_{t+1}"
+        side_effects:
+          - "increments time index t"
+          - "stores snapshot if drift > threshold"
+          - "emits drift_norm metric"
+        guarantees:
+          - "temporal coherence: ||T^{-1}(S_{t+1}) - S_t|| < ε"
+          - "identity preservation: I(S_{t+1}) = I(S_t)"
+    
+    invariants_enforced: ["INV_001", "INV_002"]
+    metrics:
+      - "drift_norm: magnitude of state change"
+      - "reversibility_error: ||T^{-1}(S_{t+1}) - S_t||"
+    
+  observer_Omega:
+    role: "S_t -> O_t reporting operator"
+    implementation_notes: "State projection into observable space"
+    signature: "(S_t) -> O_t"
+    operations:
+      observe:
+        description: "Project state into observations and claims"
+        parameters:
+          - name: "S_t"
+            type: "state_representation"
+            required: true
+        returns: "O_t"
+        components:
+          - "claims: list[claim_structure]"
+          - "confidences: list[float]"
+          - "salience_rank: list[int]"
+        internal_steps:
+          - "extract salient features from S_t"
+          - "generate structured claims"
+          - "assign confidence scores"
+          - "rank by salience"
+          - "detect potential contradictions"
+    
+    invariants_enforced: ["INV_006"]
+    metrics:
+      - "claim_count: number of claims generated"
+      - "avg_confidence: mean confidence score"
+      - "contradiction_rate: contradictions per 100 observations"
+  
+  binder_beta:
+    role: "maintain A↔state linkage under change"
+    implementation_notes: "Semantic anchor binding maintenance"
+    signature: "(A, S_t) -> binding_update"
+    operations:
+      bind:
+        description: "Establish anchor-state linkage"
+        parameters:
+          - name: "A"
+            type: "anchor_structure"
+            required: true
+          - name: "S_t"
+            type: "state_representation"
+            required: true
+        returns: "binding_strength [0,1]"
+        
+      update_binding:
+        description: "Update binding as state evolves"
+        parameters:
+          - name: "A"
+            type: "anchor_structure"
+            required: true
+          - name: "S_t"
+            type: "state_representation"
+            required: true
+          - name: "S_{t+1}"
+            type: "state_representation"
+            required: true
+        returns: "binding_delta"
+        side_effects:
+          - "may update anchor_store if semantic drift detected"
+          - "coordinates with resolver ρ if revision needed"
+        decision_logic:
+          - "if semantic_drift < threshold: maintain binding"
+          - "if semantic_drift >= threshold: request ρ authorization"
+    
+    invariants_enforced: ["INV_003"]
+    metrics:
+      - "binding_strength: current anchor-state linkage strength"
+      - "semantic_drift: semantic distance across transitions"
+  
+  resolver_rho:
+    role: "adjudicate contradictions among claims"
+    implementation_notes: "Minimum-entropy contradiction resolution"
+    signature: "(O_t, contradiction_set) -> resolution_decision"
+    operations:
+      resolve:
+        description: "Resolve contradictions via entropy minimization"
+        parameters:
+          - name: "O_t"
+            type: "observation_structure"
+            required: true
+          - name: "contradiction_set"
+            type: "list[claim_pair]"
+            required: true
+        returns: "resolution_decision"
+        components:
+          - "accepted_claims: list[claim]"
+          - "rejected_claims: list[claim]"
+          - "residual_bits: float"
+          - "resolution_steps: int"
+        algorithm:
+          - "enumerate possible resolution paths"
+          - "compute entropy H for each path"
+          - "select argmin_path H(path)"
+          - "authorize semantic revisions if needed"
+        
+      detect_contradictions:
+        description: "Identify contradictory claims in O_t"
+        parameters:
+          - name: "O_t"
+            type: "observation_structure"
+            required: true
+        returns: "list[claim_pair]"
+        logic:
+          - "same subject, contradictory predicates"
+          - "mutual exclusivity violations"
+    
+    invariants_enforced: ["INV_005", "INV_008"]
+    metrics:
+      - "residual_bits: uncertainty after resolution"
+      - "resolution_steps: number of steps taken"
+      - "contradiction_frequency: contradictions per 100 observations"
+
+policies_instantiation:
+  
+  gating_policy:
+    role: "ΔE/compute budget gating for pipeline depth"
+    decision_points:
+      G0_intake_ok:
+        criterion: "stimulus successfully normalized"
+        pass_action: "proceed to update stage"
+        fail_action: "reject stimulus, request reformulation"
+        
+      G1_update_ok:
+        criterion: "no engine errors during transition"
+        pass_action: "proceed to observation stage"
+        fail_action: "halt pipeline, log error"
+        
+      G2_resolve_ok:
+        criterion: "contradiction_entropy_bits <= 2.0"
+        pass_action: "proceed to continuity check"
+        fail_action: "flag resolution failure, emit minimal"
+        
+      G3_continuity_ok:
+        criterion: "continuity_f1 >= 0.85"
+        pass_action: "proceed to emission"
+        fail_action: "flag continuity failure, trigger recovery"
+        
+      G4_emit_ok:
+        criterion: "energy budget sufficient for selected policy variant"
+        pass_action: "emit according to selected variant"
+        fail_action: "downshift to minimal emission"
+    
+    budget_management:
+      baseline_budget: 1.0
+      variant_costs:
+        minimal: 0.3
+        standard: 1.0
+        full: 2.5
+      selection_logic:
+        - "if E(S_t) >= 2.5: allow full"
+        - "if E(S_t) >= 1.0: allow standard"
+        - "else: force minimal"
+  
+  logging_policy:
+    role: "what to log at each gate"
+    stage_requirements:
+      intake:
+        required: ["stimulus_id", "timestamp_t"]
+        optional: ["tokens", "normalization_note"]
+        
+      update:
+        required: ["t", "drift_norm"]
+        optional: ["delta_summary", "state_hash"]
+        
+      resolve:
+        required: ["invoked", "steps", "residual_bits"]
+        optional: ["decision_details", "rejected_claims"]
+        
+      continuity_check:
+        required: ["continuity_f1", "reset_index"]
+        optional: ["snapshot_range", "drift_history"]
+        
+      emit:
+        required: ["policy_variant", "outframe_kind"]
+        optional: ["full_outframe", "emission_metrics"]
+    
+    retention_policy:
+      logs_per_session: "all required fields"
+      log_rotation: "after 1000 transitions or 24 hours"
+      archive: "compress and store for audit"
+  
+  schedule_policy:
+    role: "temporal scheduling and priority rules"
+    scheduling_rules:
+      resolve_before_emit:
+        description: "Always complete resolution before emission"
+        priority: 1
+        enforcement: "strict"
+        
+      snapshot_on_significant_drift:
+        description: "Store snapshot when drift exceeds threshold"
+        priority: 2
+        enforcement: "conditional"
+        trigger: "drift_norm > 0.1"
+        
+      priority_identity_preservation:
+        description: "Identity operations have highest priority"
+        priority: 0
+        enforcement: "strict"
+    
+    concurrency_rules:
+      - "single-threaded pipeline execution (no parallelism)"
+      - "observer and resolver cannot run simultaneously"
+      - "snapshot writes must complete before next transition"
+
+role_coordination:
+  store_to_engine:
+    - "identity_store → transition_T: I read for preservation"
+    - "anchor_store → binder_beta: A read/write for binding updates"
+    - "snapshot_store → ALL: snapshot writes, continuity reads"
+  
+  engine_to_engine:
+    - "transition_T → observer_Omega: S_{t+1} input"
+    - "observer_Omega → resolver_rho: O_t input on contradiction"
+    - "resolver_rho → binder_beta: authorization for semantic revision"
+  
+  policy_enforcement:
+    - "gating_policy gates all engine execution"
+    - "logging_policy triggers at each gate"
+    - "schedule_policy coordinates ordering"
+
+notes: |
+  These role assignments provide concrete operational specifications for
+  all IRM components. Implementations should adhere to these interfaces
+  while allowing for domain-specific optimizations.

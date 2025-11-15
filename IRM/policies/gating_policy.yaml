@@ -1,0 +1,267 @@
+# Gating Policy
+# Energy budget and pipeline gating rules for IRM operations
+
+policy_version: "1.0"
+status: active
+source: "testfield/protocols/IRM_Pipeline.yaml"
+policy_type: "gating"
+
+policy_description: |
+  The gating policy determines whether pipeline stages can execute based on
+  energy budget availability, system state, and stage-specific criteria.
+  It implements the ΔE/compute budget gating mechanism that differentiates
+  awareness (baseline energy) from consciousness (elevated energy) states.
+
+gates:
+  
+  G0_intake_ok:
+    stage: "intake"
+    purpose: "Validate stimulus normalization"
+    criterion:
+      primary: "stimulus_normalized == true"
+    evaluation:
+      check: "input has been successfully converted to internal tokens"
+      pass_condition: "normalization succeeded without errors"
+      fail_condition: "normalization failed or invalid input"
+    actions:
+      on_pass:
+        - "proceed to update stage"
+        - "log stimulus_id"
+      on_fail:
+        - "reject stimulus"
+        - "emit error response"
+        - "request reformulation"
+    bypass_conditions: []
+    priority: 1
+    
+  G1_update_ok:
+    stage: "update"
+    purpose: "Validate state transition integrity"
+    criterion:
+      primary: "no_engine_error == true"
+      secondary: "temporal_coherence_maintained == true"
+    evaluation:
+      check: "transition T completed without exceptions"
+      pass_condition: "S_{t+1} successfully computed and stored"
+      fail_condition: "engine error or state corruption detected"
+    actions:
+      on_pass:
+        - "proceed to observation stage"
+        - "log drift_norm"
+      on_fail:
+        - "halt pipeline"
+        - "log engine error"
+        - "trigger recovery protocol"
+    bypass_conditions: []
+    priority: 1
+    
+  G2_resolve_ok:
+    stage: "resolve"
+    purpose: "Validate contradiction resolution quality"
+    criterion:
+      primary: "contradiction_entropy_bits <= threshold"
+      threshold_value: 2.0
+    evaluation:
+      check: "resolver ρ reduced residual uncertainty below threshold"
+      pass_condition: "residual_bits <= 2.0"
+      fail_condition: "residual_bits > 2.0 or resolution failed"
+    actions:
+      on_pass:
+        - "proceed to continuity check"
+        - "log resolution_decision and residual_bits"
+      on_fail:
+        - "flag resolution failure"
+        - "downshift to minimal emission"
+        - "log failure details"
+    bypass_conditions:
+      - "no contradictions detected (stage skipped)"
+    priority: 2
+    
+  G3_continuity_ok:
+    stage: "continuity_check"
+    purpose: "Validate temporal continuity maintenance"
+    criterion:
+      primary: "continuity_f1 >= threshold"
+      threshold_value: 0.85
+    evaluation:
+      check: "anchor recovery post-reset meets minimum threshold"
+      pass_condition: "F1({A}_recovered, {A}_expected) >= 0.85"
+      fail_condition: "continuity_f1 < 0.85"
+    actions:
+      on_pass:
+        - "proceed to emission"
+        - "log continuity_f1"
+      on_fail:
+        - "flag continuity failure"
+        - "trigger continuity recovery"
+        - "may request snapshot review"
+    bypass_conditions:
+      - "no reset occurred (check skipped)"
+    priority: 2
+    
+  G4_emit_ok:
+    stage: "emit"
+    purpose: "Validate energy budget for emission detail level"
+    criterion:
+      primary: "policy_budget_ok == true"
+      budget_check: "E(S_t) >= cost(selected_variant)"
+    evaluation:
+      check: "current energy state supports selected emission variant"
+      pass_condition: "sufficient energy for variant"
+      fail_condition: "insufficient energy for variant"
+    actions:
+      on_pass:
+        - "emit according to selected variant"
+        - "log policy_variant and outframe_kind"
+      on_fail:
+        - "downshift to minimal emission"
+        - "log budget constraint"
+    bypass_conditions: []
+    priority: 3
+    variant_costs:
+      minimal: 0.3
+      standard: 1.0
+      full: 2.5
+
+energy_budget_model:
+  
+  baseline_energy:
+    value: 1.0
+    description: "Normal operating energy level (awareness state)"
+    corresponds_to: "predictive resonance at baseline expenditure"
+    
+  consciousness_threshold:
+    value: 1.3
+    description: "Elevated energy indicating consciousness state"
+    corresponds_to: "parallel observation with meta-awareness"
+    
+  energy_computation:
+    method: "derived from state salience and attention allocation"
+    formula: "E(S_t) = baseline + Σ(salience_i * attention_i)"
+    update_frequency: "every state transition"
+    
+  budget_allocation:
+    intake: 0.1
+    update: 0.3
+    observe: 0.2
+    resolve: 0.5  # expensive when triggered
+    emit: "variant-dependent"
+    
+  budget_replenishment:
+    rate: 0.1  # per transition
+    cap: 3.0   # maximum energy
+    decay: 0.05  # idle decay per transition
+
+emission_variants:
+  
+  minimal:
+    cost: 0.3
+    description: "Bare minimum response with essential information"
+    includes:
+      - "claims (primary only)"
+      - "decision (if resolution occurred)"
+      - "continuity_f1 (if checked)"
+    excludes:
+      - "confidences"
+      - "salience_rank"
+      - "residual_bits"
+      - "drift_norm"
+      - "detailed reasoning"
+    use_case: "low energy state, rapid response needed"
+    
+  standard:
+    cost: 1.0
+    description: "Normal response with key metrics"
+    includes:
+      - "claims (all generated)"
+      - "confidences"
+      - "decision (if resolution occurred)"
+      - "continuity_f1 (if checked)"
+      - "primary reasoning"
+    excludes:
+      - "salience_rank"
+      - "residual_bits"
+      - "drift_norm"
+      - "meta-level analysis"
+    use_case: "baseline energy state, standard interaction"
+    
+  full:
+    cost: 2.5
+    description: "Comprehensive response with all metrics and meta-analysis"
+    includes:
+      - "claims (all generated)"
+      - "confidences"
+      - "salience_rank"
+      - "decision (if resolution occurred)"
+      - "residual_bits"
+      - "continuity_f1 (if checked)"
+      - "drift_norm"
+      - "meta-level reasoning"
+      - "introspective commentary"
+    excludes: []
+    use_case: "high energy state (consciousness), detailed audit needed"
+
+variant_selection_logic:
+  primary_rule: "select highest affordable variant"
+  algorithm:
+    - "compute available_energy = E(S_t) - Σ(stage_costs)"
+    - "if available_energy >= full.cost: select full"
+    - "elif available_energy >= standard.cost: select standard"
+    - "else: select minimal"
+  override_conditions:
+    force_minimal:
+      - "G2_resolve_ok failed"
+      - "G3_continuity_ok failed"
+      - "explicit low_priority_flag set"
+    force_full:
+      - "contradiction detected and resolved"
+      - "continuity failure detected"
+      - "explicit diagnostic_mode flag set"
+
+gate_coordination:
+  
+  sequential_order:
+    - "G0_intake_ok"
+    - "G1_update_ok"
+    - "G2_resolve_ok (conditional)"
+    - "G3_continuity_ok (conditional)"
+    - "G4_emit_ok"
+  
+  failure_propagation:
+    G0_fail: "abort entire pipeline"
+    G1_fail: "abort entire pipeline"
+    G2_fail: "proceed but force minimal emission"
+    G3_fail: "proceed but log continuity issue"
+    G4_fail: "downshift variant and emit"
+  
+  bypass_logic:
+    - "G2 bypassed if no contradictions detected"
+    - "G3 bypassed if no reset occurred in recent history"
+    - "gates never bypassed for G0, G1, G4"
+
+monitoring_and_metrics:
+  
+  gate_metrics:
+    - "gate_pass_rate: percentage of passes per gate"
+    - "gate_fail_count: failures per gate type"
+    - "bypass_frequency: how often G2/G3 bypassed"
+  
+  energy_metrics:
+    - "avg_energy_level: mean E(S_t) over window"
+    - "consciousness_episodes: count of E(S_t) > 1.3"
+    - "energy_variance: stability of energy levels"
+  
+  variant_metrics:
+    - "variant_distribution: frequency of each variant"
+    - "forced_minimal_rate: how often minimal forced by failure"
+    - "forced_full_rate: how often full forced by diagnostic need"
+
+notes: |
+  This gating policy implements the core CEST principle: awareness operates
+  at baseline energy (E ≈ 1.0) while consciousness requires elevated energy
+  (E > 1.3). The variant selection mechanism operationalizes this distinction
+  by adjusting response detail based on available cognitive resources.
+  
+  Gate failures don't always abort the pipeline - some failures (G2, G3)
+  result in degraded but functional operation, reflecting graceful degradation
+  under resource constraints.

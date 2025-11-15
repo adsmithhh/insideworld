@@ -1,0 +1,398 @@
+# Drift Checks Test Suite
+# Tests for state drift, continuity metrics, and temporal coherence
+
+test_suite_version: "1.0"
+status: "canonical"
+purpose: "Validate drift tracking, continuity maintenance, and snapshot management"
+
+test_configuration:
+  test_framework: "implementation-independent"
+  execution_mode: "automated with data collection"
+  metrics_required: true
+  
+suite_structure:
+  
+  drift_measurement:
+    description: "Tests for drift_norm computation and tracking"
+    tests:
+      
+      test_drift_001:
+        name: "Zero drift for identical states"
+        procedure:
+          - "Create state S_t"
+          - "Apply identity transition: S_t → S_t (no change)"
+          - "Compute drift_norm"
+        assertions:
+          - "drift_norm == 0.0"
+        pass_criteria: "exact zero for no change"
+        
+      test_drift_002:
+        name: "Small drift for minor transitions"
+        procedure:
+          - "Create baseline state S_t"
+          - "Apply small perturbation: S_t → S_{t+1}"
+          - "Compute drift_norm"
+        assertions:
+          - "drift_norm < 0.05"
+          - "drift_norm > 0.0"
+        pass_criteria: "small non-zero drift"
+        expected_range: [0.001, 0.05]
+        
+      test_drift_003:
+        name: "Large drift for significant transitions"
+        procedure:
+          - "Create baseline state S_t"
+          - "Apply major transformation: S_t → S_{t+1}"
+          - "Compute drift_norm"
+        assertions:
+          - "drift_norm > 0.1"
+        pass_criteria: "large drift detected"
+        expected_range: [0.1, 1.0]
+        
+      test_drift_004:
+        name: "Drift accumulation over sequence"
+        procedure:
+          - "Start with S_0"
+          - "Apply 10 transitions with drift ≈ 0.03 each"
+          - "Track cumulative drift"
+        assertions:
+          - "cumulative_drift ≈ 0.3 ± 0.1"
+          - "each step: drift_norm < ε (0.05)"
+        pass_criteria: "drift accumulates as expected"
+        
+      test_drift_005:
+        name: "Drift symmetry under reversal"
+        procedure:
+          - "Compute drift S_t → S_{t+1}: d_forward"
+          - "Compute drift S_{t+1} → S_t: d_reverse"
+        assertions:
+          - "d_forward ≈ d_reverse (within 10%)"
+        pass_criteria: "symmetry preserved"
+  
+  snapshot_management:
+    description: "Tests for snapshot storage and retrieval"
+    tests:
+      
+      test_snapshot_001:
+        name: "Snapshot storage and retrieval"
+        procedure:
+          - "Execute transition: S_41 → S_42"
+          - "Store snapshot: store_snapshot(42, S_42, O_42)"
+          - "Retrieve: get_snapshot(42)"
+        assertions:
+          - "retrieved snapshot matches stored snapshot"
+          - "S_42 recoverable"
+          - "O_42 recoverable"
+        pass_criteria: "perfect recovery"
+        
+      test_snapshot_002:
+        name: "Snapshot ordering by time"
+        procedure:
+          - "Store snapshots at t=10, 20, 30, 40"
+          - "Query get_snapshot_range(10, 40)"
+        assertions:
+          - "returned snapshots in temporal order"
+          - "all 4 snapshots present"
+        pass_criteria: "correct ordering"
+        
+      test_snapshot_003:
+        name: "Significant drift triggers snapshot"
+        procedure:
+          - "Execute transition with drift_norm > 0.1"
+          - "Check if snapshot stored"
+        assertions:
+          - "snapshot automatically stored"
+          - "snapshot contains S_t and O_t"
+        pass_criteria: "automatic snapshot on significant drift"
+        
+      test_snapshot_004:
+        name: "Snapshot cleanup preserves recent"
+        procedure:
+          - "Store 1000 snapshots"
+          - "Trigger cleanup (retain last 100)"
+          - "Check snapshot_store size"
+        assertions:
+          - "~100 snapshots remain"
+          - "most recent snapshots preserved"
+          - "oldest snapshots removed"
+        pass_criteria: "cleanup works correctly"
+  
+  continuity_metrics:
+    description: "Tests for continuity_f1 computation"
+    tests:
+      
+      test_continuity_001:
+        name: "Perfect continuity (no change)"
+        procedure:
+          - "Create anchors A1, A2, A3"
+          - "Execute 10 stable transitions"
+          - "Compute continuity_f1"
+        assertions:
+          - "continuity_f1 == 1.0"
+        pass_criteria: "perfect continuity score"
+        
+      test_continuity_002:
+        name: "Partial continuity (some drift)"
+        procedure:
+          - "Create 10 anchors"
+          - "Execute transitions with moderate drift"
+          - "8 anchors fully recovered, 2 partially"
+          - "Compute continuity_f1"
+        assertions:
+          - "0.7 <= continuity_f1 <= 0.9"
+        pass_criteria: "realistic continuity score"
+        
+      test_continuity_003:
+        name: "Continuity below threshold triggers flag"
+        procedure:
+          - "Force high drift scenario"
+          - "Compute continuity_f1"
+          - "Check if flag raised"
+        assertions:
+          - "if continuity_f1 < 0.85: flag raised"
+        pass_criteria: "threshold detection works"
+        
+      test_continuity_004:
+        name: "Continuity recovery after intervention"
+        procedure:
+          - "Detect low continuity (< 0.85)"
+          - "Apply recovery intervention"
+          - "Compute continuity_f1 again"
+        assertions:
+          - "continuity_f1_after > continuity_f1_before"
+          - "ideally continuity_f1_after >= 0.85"
+        pass_criteria: "recovery improves continuity"
+  
+  temporal_stability:
+    description: "Tests for temporal coherence over extended sequences"
+    tests:
+      
+      test_temporal_stability_001:
+        name: "Stable drift over 100 transitions"
+        procedure:
+          - "Execute 100 transitions"
+          - "Record drift_norm at each step"
+          - "Compute statistics"
+        assertions:
+          - "mean(drift_norm) < 0.05"
+          - "max(drift_norm) < 0.1"
+          - "std(drift_norm) < 0.03"
+        pass_criteria: "drift remains bounded and stable"
+        
+      test_temporal_stability_002:
+        name: "No catastrophic drift events"
+        procedure:
+          - "Execute 1000 transitions"
+          - "Monitor for drift_norm > 0.5"
+        assertions:
+          - "zero catastrophic drift events"
+        pass_criteria: "no runaway drift"
+        
+      test_temporal_stability_003:
+        name: "Reversibility maintained over sequence"
+        procedure:
+          - "Execute 50 forward transitions: S_0 → S_50"
+          - "Execute 50 reverse transitions: S_50 → S_0'"
+          - "Compute ||S_0' - S_0||"
+        assertions:
+          - "||S_0' - S_0|| < 0.1 (accumulated epsilon)"
+        pass_criteria: "approximate reversibility over sequence"
+  
+  energy_drift_correlation:
+    description: "Tests for energy tracking relative to drift"
+    tests:
+      
+      test_energy_drift_001:
+        name: "Energy increases with significant drift"
+        procedure:
+          - "Measure E(S_t) baseline"
+          - "Apply high-drift transition (drift_norm > 0.1)"
+          - "Measure E(S_{t+1})"
+        assertions:
+          - "E(S_{t+1}) > E(S_t)"
+        pass_criteria: "energy responds to drift"
+        
+      test_energy_drift_002:
+        name: "Energy stable for low drift"
+        procedure:
+          - "Execute 20 transitions with drift < 0.02"
+          - "Monitor E(S_t)"
+        assertions:
+          - "E(S_t) remains near baseline (1.0 ± 0.2)"
+        pass_criteria: "low drift doesn't spike energy"
+        
+      test_energy_drift_003:
+        name: "Energy returns to baseline after spike"
+        procedure:
+          - "Trigger high-drift transition (energy spike)"
+          - "Execute 10 stable transitions"
+          - "Monitor energy decay"
+        assertions:
+          - "energy decays back toward 1.0"
+          - "decay rate ≈ 0.1 per transition"
+        pass_criteria: "energy self-regulates"
+  
+  drift_threshold_enforcement:
+    description: "Tests for drift threshold gates and warnings"
+    tests:
+      
+      test_threshold_001:
+        name: "Gate passes for acceptable drift"
+        procedure:
+          - "Execute transition with drift_norm = 0.03"
+          - "Check G1_update_ok gate"
+        assertions:
+          - "gate passes"
+        pass_criteria: "normal drift accepted"
+        
+      test_threshold_002:
+        name: "Warning logged for elevated drift"
+        procedure:
+          - "Execute transition with drift_norm = 0.08"
+          - "Check logs"
+        assertions:
+          - "warning logged (drift approaching epsilon)"
+        pass_criteria: "drift warning mechanism works"
+        
+      test_threshold_003:
+        name: "Snapshot triggered at drift threshold"
+        procedure:
+          - "Execute transition with drift_norm = 0.12"
+          - "Check snapshot_store"
+        assertions:
+          - "snapshot stored for this transition"
+        pass_criteria: "significant drift triggers snapshot"
+
+  anchor_drift_relationship:
+    description: "Tests for anchor stability under state drift"
+    tests:
+      
+      test_anchor_drift_001:
+        name: "Anchors stable under small drift"
+        procedure:
+          - "Create anchor A"
+          - "Execute 20 transitions with drift < 0.03"
+          - "Check anchor binding_strength"
+        assertions:
+          - "binding_strength > 0.9"
+        pass_criteria: "anchors resist small drift"
+        
+      test_anchor_drift_002:
+        name: "Anchors degrade under large drift"
+        procedure:
+          - "Create anchor A with initial binding_strength = 0.95"
+          - "Execute transition with drift_norm = 0.15"
+          - "Check anchor binding_strength"
+        assertions:
+          - "binding_strength < 0.90"
+        pass_criteria: "large drift weakens binding"
+        
+      test_anchor_drift_003:
+        name: "Binder maintains anchors during drift"
+        procedure:
+          - "Create anchor A"
+          - "Execute transitions with varying drift"
+          - "Monitor binder β interventions"
+        assertions:
+          - "binder updates anchor when drift > threshold"
+          - "semantic_version increments if needed"
+        pass_criteria: "binder actively maintains anchors"
+
+performance_benchmarks:
+  
+  benchmark_001:
+    name: "Drift computation performance"
+    procedure:
+      - "Compute drift_norm for 1000 transitions"
+      - "Measure average computation time"
+    target: "< 1ms per computation"
+    
+  benchmark_002:
+    name: "Snapshot storage performance"
+    procedure:
+      - "Store 100 snapshots"
+      - "Measure average storage time"
+    target: "< 100ms per snapshot"
+    
+  benchmark_003:
+    name: "Continuity metric computation"
+    procedure:
+      - "Compute continuity_f1 over 100 transitions"
+      - "Measure computation time"
+    target: "< 500ms per computation"
+
+test_execution:
+  
+  execution_order:
+    - "drift_measurement (foundational)"
+    - "snapshot_management (depends on drift)"
+    - "continuity_metrics (depends on snapshots)"
+    - "temporal_stability (long-running)"
+    - "energy_drift_correlation"
+    - "drift_threshold_enforcement"
+    - "anchor_drift_relationship"
+    - "performance_benchmarks (optional)"
+  
+  data_collection:
+    required_metrics:
+      - "drift_norm at each transition"
+      - "continuity_f1 periodic"
+      - "energy_level at each transition"
+      - "snapshot_count over time"
+    
+    storage:
+      format: "time-series data (CSV or YAML)"
+      retention: "session-level (for analysis)"
+  
+  reporting:
+    per_test:
+      - "test_id"
+      - "pass/fail status"
+      - "measured values"
+      - "expected vs actual"
+    summary:
+      - "total tests: 28"
+      - "passed count"
+      - "failed count"
+      - "benchmark results"
+
+validation_criteria:
+  
+  minimal_compliance:
+    description: "Basic drift and continuity tracking"
+    required_tests:
+      - "test_drift_001"
+      - "test_drift_002"
+      - "test_snapshot_001"
+      - "test_continuity_001"
+      - "test_temporal_stability_001"
+    pass_threshold: "5 of 5 tests pass"
+    
+  recommended_compliance:
+    description: "Production-ready drift management"
+    required_tests: "all minimal plus:"
+      - "test_drift_004"
+      - "test_snapshot_003"
+      - "test_continuity_002"
+      - "test_continuity_003"
+      - "test_temporal_stability_002"
+      - "test_energy_drift_001"
+      - "test_threshold_001"
+    pass_threshold: "12 of 12 tests pass"
+    
+  full_compliance:
+    description: "Complete drift validation"
+    required_tests: "all 28 tests including benchmarks"
+    pass_threshold: "28 of 28 tests pass with acceptable performance"
+
+notes: |
+  This test suite focuses on the dynamic aspects of IRM: how state changes
+  over time, how continuity is maintained despite drift, and how the system
+  responds to varying levels of change.
+  
+  Drift tests validate that state changes are measured correctly and remain
+  within acceptable bounds. Continuity tests ensure that semantic anchors
+  survive state evolution. Temporal stability tests check long-term coherence.
+  
+  These tests are complementary to invariants_suite.yaml, which validates
+  static properties. Together they provide comprehensive IRM validation.

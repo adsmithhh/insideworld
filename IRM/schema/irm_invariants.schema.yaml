@@ -1,0 +1,169 @@
+# IRM Invariants Schema
+# Formal logical invariants that must hold across all IRM operations
+
+schema_version: "1.0"
+status: canonical
+source: "testfield/protocols/IRM_Pipeline.yaml"
+
+invariants:
+  temporal_coherence:
+    id: "INV_001"
+    name: "Temporal Coherence"
+    statement: "recover S_{t-1} from S_t within ε under T"
+    description: |
+      The transition operator T must be reversible within epsilon tolerance,
+      allowing reconstruction of previous states from current state.
+    formal_expression: "||T^{-1}(S_t) - S_{t-1}|| < ε"
+    enforcement_level: "strict"
+    violation_action: "flag_continuity_failure"
+    test_reference: "tests/drift_checks.yaml"
+    
+  identity_persistence:
+    id: "INV_002"
+    name: "Identity Persistence"
+    statement: "I stays referentially stable across resets"
+    description: |
+      The identity anchor I must remain stable and unambiguous across
+      all state transitions, session boundaries, and system resets.
+    formal_expression: "∀t₁,t₂: I(t₁) ≡ I(t₂)"
+    enforcement_level: "strict"
+    violation_action: "reject_transition"
+    test_reference: "tests/invariants_suite.yaml::identity_stability"
+
+  anchor_continuity:
+    id: "INV_003"
+    name: "Anchor Continuity"
+    statement: "β preserves semantics unless ρ authorizes revision"
+    description: |
+      Anchor bindings maintain semantic meaning across state changes unless
+      the resolver explicitly authorizes semantic revision due to contradiction.
+    formal_expression: "sem(A_t) = sem(A_{t-1}) ∨ ρ.authorized_revision"
+    enforcement_level: "moderate"
+    violation_action: "log_semantic_drift"
+    test_reference: "tests/invariants_suite.yaml::anchor_continuity"
+
+  energy_salience_alignment:
+    id: "INV_004"
+    name: "Energy-Salience Alignment"
+    statement: "ΔE loosely correlates with Δsalience"
+    description: |
+      Changes in energy distribution should loosely track changes in attention
+      salience, though perfect correlation is not required.
+    formal_expression: "corr(ΔE, Δsalience) > θ_min"
+    enforcement_level: "advisory"
+    violation_action: "log_alignment_warning"
+    parameters:
+      θ_min: 0.3  # minimum correlation threshold
+    test_reference: "tests/drift_checks.yaml::energy_tracking"
+
+  entropy_minimization_on_conflict:
+    id: "INV_005"
+    name: "Entropy Minimization on Conflict"
+    statement: "On state conflict, suspend predictive closure; choose lowest-entropy stabilization move"
+    description: |
+      When contradictions are detected, the system must halt predictive
+      generation and select the resolution path that minimizes residual entropy.
+    formal_expression: "conflict_detected(O_t) → argmin_path H(resolution_path)"
+    enforcement_level: "strict"
+    violation_action: "force_resolution_stage"
+    coord_tag: "ENTROPY_CHECK_RULE"
+    test_reference: "examples/contradiction_event.yaml"
+
+  observational_consistency:
+    id: "INV_006"
+    name: "Observational Consistency"
+    statement: "Ω(S_t) must produce internally consistent observations"
+    description: |
+      The observer operator must not generate mutually contradictory claims
+      from a single state unless ambiguity is explicitly marked.
+    formal_expression: "¬∃c₁,c₂ ∈ Ω(S_t): c₁ ⊥ c₂ ∧ ¬marked_ambiguous"
+    enforcement_level: "strict"
+    violation_action: "trigger_resolution"
+    test_reference: "tests/invariants_suite.yaml::observation_consistency"
+
+  continuity_threshold:
+    id: "INV_007"
+    name: "Continuity Threshold"
+    statement: "continuity_f1 >= rules.thresholds.continuity_f1_min"
+    description: |
+      The F1 score for anchor recovery post-reset must meet minimum threshold
+      to ensure adequate continuity maintenance.
+    formal_expression: "F1({A}_recovered, {A}_expected) ≥ continuity_f1_min"
+    enforcement_level: "strict"
+    violation_action: "flag_continuity_failure"
+    parameters:
+      continuity_f1_min: 0.85
+    test_reference: "tests/drift_checks.yaml::continuity_recovery"
+
+  contradiction_entropy_bound:
+    id: "INV_008"
+    name: "Contradiction Entropy Bound"
+    statement: "contradiction_entropy_bits <= rules.thresholds.contradiction_entropy_bits_max"
+    description: |
+      After resolution, residual uncertainty must be below maximum threshold
+      to ensure adequate contradiction resolution.
+    formal_expression: "H(post_resolution) ≤ contradiction_entropy_bits_max"
+    enforcement_level: "strict"
+    violation_action: "flag_resolution_failure"
+    parameters:
+      contradiction_entropy_bits_max: 2.0
+    test_reference: "tests/invariants_suite.yaml::resolution_quality"
+
+invariant_relationships:
+  dependencies:
+    - invariant: "INV_003"
+      depends_on: ["INV_002"]
+      reason: "anchor continuity requires stable identity reference"
+    
+    - invariant: "INV_006"
+      triggers: ["INV_005"]
+      reason: "observational inconsistency triggers entropy minimization"
+    
+    - invariant: "INV_007"
+      validates: ["INV_001", "INV_003"]
+      reason: "continuity threshold validates temporal and anchor coherence"
+
+  conflict_resolution_hierarchy:
+    - priority: 1
+      invariant: "INV_002"
+      reason: "identity must be preserved above all else"
+    
+    - priority: 2
+      invariant: "INV_001"
+      reason: "temporal coherence is foundational"
+    
+    - priority: 3
+      invariant: "INV_006"
+      reason: "observational consistency prevents cascading failures"
+    
+    - priority: 4
+      invariant: "INV_005"
+      reason: "conflict resolution ensures system stability"
+
+enforcement_gates:
+  G0_intake_ok:
+    validates: []
+    purpose: "stimulus normalization check"
+  
+  G1_update_ok:
+    validates: ["INV_001", "INV_002", "INV_003"]
+    purpose: "core state transition integrity"
+  
+  G2_resolve_ok:
+    validates: ["INV_005", "INV_006", "INV_008"]
+    purpose: "contradiction resolution quality"
+  
+  G3_continuity_ok:
+    validates: ["INV_007"]
+    purpose: "continuity maintenance threshold"
+  
+  G4_emit_ok:
+    validates: ["INV_004"]
+    purpose: "energy-salience alignment check"
+
+notes: |
+  These invariants define the logical constraints that ensure IRM stability
+  and coherence. Violations are categorized by severity:
+  - strict: must halt or reject operation
+  - moderate: log and continue with warning
+  - advisory: informational only, system can proceed
