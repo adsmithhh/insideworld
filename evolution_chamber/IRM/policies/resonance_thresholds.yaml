@@ -1,0 +1,30 @@
+# evolution_chamber/IRM/policies/resonance_thresholds.yaml
+# CEST-Aligned Policy: Defines thresholds for state transitions in IRM evolutions.
+# Functional Awareness: Coherence > 0.7 (low-energy prediction loop).
+# Functional Consciousness: Error accumulation > 0.3 triggers meta-correction (high-energy ignition).
+# Invariants: Domain-agnostic; vnext-compatible for alignment maps.
+# Usage: Inject via tools/strict_mode for validation; evolve in step_engine.py.
+
+version: "vnext-1.0"
+policy_type: "energy_state"
+description: "Scalar and vector thresholds for resonance-based adaptation."
+
+thresholds:
+  awareness_min: 0.7  # Baseline predictive coherence (0-1 scale). Below: Dormant state.
+  ignition_trigger: 0.3  # Cumulative error delta to spark meta-layer (e.g., contradiction events).
+  correction_ceiling: 0.9  # Max coherence post-correction; cap to prevent over-resonance.
+  decay_rate: 0.05  # Per-step entropy bleed (simulates forgetting for stability).
+
+vectors:  # Multi-domain scaling (e.g., for vnext injections).
+  state_metrics:
+    - domain: "nominal"  # Stable env.
+      awareness: [0.7, 0.85]
+      ignition: 0.25
+    - domain: "perturbed"  # Contradiction-heavy.
+      awareness: [0.5, 0.75]
+      ignition: 0.4
+  alignment_map: "meta/vnext_alignment.yaml"  # Cross-ref for IRM invariance.
+
+validation:
+  strict_mode: true  # Enforce via schema/; fail on out-of-bound evolutions.
+  canary_check: "tests/canary_irm_suite.py"  # Link to test suite.
