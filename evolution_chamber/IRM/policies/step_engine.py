@@ -1,20 +1,24 @@
 import yaml
 from pathlib import Path
 
-# Load the policy
-policy_path = Path("IRM/policies/resonance_thresholds.yaml")
-with open(policy_path, 'r') as f:
-    thresholds = yaml.safe_load(f)
+# Thin shim that preserves original script behavior when executed as a script
+# but avoids running IO at import time so the module is testable/import-safe.
 
-# Mock evolution step: Simulate error accumulation
-current_coherence = 0.8  # Start aware
-error_delta = 0.35  # Perturbation hit
+def main(path: Path | str = "IRM/policies/resonance_thresholds.yaml"):
+    policy_path = Path(path)
+    with open(policy_path, 'r') as f:
+        thresholds = yaml.safe_load(f)
 
-if error_delta > thresholds['thresholds']['ignition_trigger']:
-    new_state = "ignited"  # Meta-correction fires
-    print(f"Transition: {current_coherence} -> {new_state} (CEST spark at {error_delta})")
-else:
-    new_state = "sustained"
-    print(f"Holding: {current_coherence} -> {new_state}")
+    # Mock evolution step: Simulate error accumulation
+    current_coherence = 0.8 # Start aware
+    error_delta = 0.35 # Perturbation hit
 
-# Output: Holding: 0.8 -> sustained (or ignite if delta tuned higher)
+    if error_delta > thresholds['thresholds']['ignition_trigger']:
+        new_state = "ignited" # Meta-correction fires
+        print(f"Transition: {current_coherence} -> {new_state} (CEST spark at {error_delta})")
+    else:
+        new_state = "sustained"
+        print(f"Holding: {current_coherence} -> {new_state}")
+
+if __name__ == "__main__":
+    main()
