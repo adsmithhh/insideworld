@@ -1,0 +1,271 @@
+# IRM Minimum Requirements
+# Minimal operational requirements for a functional Internal Reality Model
+
+requirements_version: "1.0"
+status: canonical
+validation_status: "testfield_verified"
+
+core_requirements:
+  
+  identity_establishment:
+    requirement: "System must establish and maintain stable identity I"
+    criticality: "mandatory"
+    validation:
+      test: "identity persists across 10 state transitions"
+      pass_criteria: "same I returned on all queries"
+    minimal_implementation:
+      - "generate UUID on initialization"
+      - "store in identity_store"
+      - "never modify or regenerate"
+    failure_mode: "system cannot maintain self-reference"
+    
+  temporal_indexing:
+    requirement: "System must maintain monotonic time index t"
+    criticality: "mandatory"
+    validation:
+      test: "t increments correctly across 100 transitions"
+      pass_criteria: "t_new = t_old + 1 for all transitions"
+    minimal_implementation:
+      - "initialize t=0"
+      - "increment on each transition"
+      - "never decrement or reset within session"
+    failure_mode: "temporal ordering lost, causality violated"
+
+  state_persistence:
+    requirement: "System must maintain state S_t across transitions"
+    criticality: "mandatory"
+    validation:
+      test: "recover S_{t-1} from S_t within ε=0.05"
+      pass_criteria: "drift_norm < 0.05 for stable transitions"
+    minimal_implementation:
+      - "allocate state representation (min 64-dim vector)"
+      - "apply transition function T"
+      - "store in snapshot_store"
+    failure_mode: "state continuity breaks, system loses coherence"
+
+  observation_generation:
+    requirement: "System must project S_t → O_t via observer Ω"
+    criticality: "mandatory"
+    validation:
+      test: "generate O_t for 10 consecutive states"
+      pass_criteria: "O_t contains at least one claim with confidence > 0"
+    minimal_implementation:
+      - "implement observer function Ω"
+      - "extract claims from state"
+      - "assign confidence scores"
+    failure_mode: "system cannot report internal state"
+
+  anchor_storage:
+    requirement: "System must maintain at least one anchor A"
+    criticality: "mandatory"
+    validation:
+      test: "create, store, and retrieve anchor"
+      pass_criteria: "anchor retrieved matches anchor stored"
+    minimal_implementation:
+      - "create anchor_store"
+      - "implement create_anchor operation"
+      - "implement get_anchor operation"
+    failure_mode: "cannot maintain semantic continuity"
+
+optional_requirements:
+  
+  contradiction_resolution:
+    requirement: "System should detect and resolve contradictions"
+    criticality: "recommended"
+    validation:
+      test: "detect contradiction in O_t and invoke resolver ρ"
+      pass_criteria: "residual_bits < 2.0 after resolution"
+    minimal_implementation:
+      - "implement contradiction detection in O_t"
+      - "implement simple resolver (e.g., highest confidence wins)"
+      - "log resolution outcome"
+    failure_mode: "contradictions accumulate, coherence degrades"
+    notes: "can be deferred for baseline implementations"
+
+  energy_tracking:
+    requirement: "System should track energy E(S_t)"
+    criticality: "recommended"
+    validation:
+      test: "compute E(S_t) for 10 states"
+      pass_criteria: "E(S_t) correlates with salience (r > 0.3)"
+    minimal_implementation:
+      - "compute energy metric from state"
+      - "track ΔE across transitions"
+      - "log energy values"
+    failure_mode: "cannot distinguish awareness vs consciousness states"
+    notes: "required for CEST framework integration"
+
+  snapshot_persistence:
+    requirement: "System should store snapshots for continuity checks"
+    criticality: "recommended"
+    validation:
+      test: "store 10 snapshots and compute continuity_f1"
+      pass_criteria: "continuity_f1 > 0.85"
+    minimal_implementation:
+      - "create snapshot_store"
+      - "store {S_t, O_t} at significant transitions"
+      - "implement continuity metric computation"
+    failure_mode: "cannot validate continuity over time"
+    notes: "essential for temporal coherence validation"
+
+minimal_pipeline:
+  stages:
+    - stage: "intake"
+      required: true
+      operations:
+        - "receive stimulus"
+        - "normalize to internal representation"
+      outputs: ["normalized_stimulus"]
+      
+    - stage: "update"
+      required: true
+      operations:
+        - "apply T: S_t → S_{t+1}"
+        - "increment t"
+      outputs: ["S_{t+1}", "t+1"]
+      
+    - stage: "observe"
+      required: true
+      operations:
+        - "apply Ω: S_t → O_t"
+      outputs: ["O_t"]
+      
+    - stage: "emit"
+      required: true
+      operations:
+        - "compose output from O_t"
+      outputs: ["response"]
+      
+    - stage: "resolve"
+      required: false
+      operations:
+        - "detect contradictions in O_t"
+        - "apply ρ to resolve"
+      outputs: ["resolution_decision"]
+      trigger: "contradiction_detected"
+
+minimal_stores:
+  identity_store:
+    required: true
+    operations: ["initialize_identity", "get_identity"]
+    persistence: "permanent"
+    
+  anchor_store:
+    required: true
+    operations: ["create_anchor", "get_anchor", "update_anchor"]
+    persistence: "permanent"
+    
+  snapshot_store:
+    required: false
+    operations: ["store_snapshot", "get_snapshot"]
+    persistence: "session-level (can be temporary)"
+    notes: "recommended for continuity validation"
+
+minimal_engines:
+  transition_T:
+    required: true
+    signature: "(S_t, stimulus) → S_{t+1}"
+    complexity: "O(n) where n is state dimension"
+    
+  observer_Omega:
+    required: true
+    signature: "(S_t) → O_t"
+    complexity: "O(m) where m is number of claims"
+    
+  resolver_rho:
+    required: false
+    signature: "(O_t, contradictions) → resolution_decision"
+    complexity: "O(k²) where k is number of contradicting claims"
+    notes: "can use simple heuristic (e.g., highest confidence)"
+
+minimal_policies:
+  gating_policy:
+    required: true
+    rules:
+      - "G0_intake_ok: stimulus_normalized"
+      - "G1_update_ok: no_engine_error"
+      - "G4_emit_ok: always_true (minimal version)"
+    notes: "G2, G3 optional for baseline"
+    
+  logging_policy:
+    required: false
+    rules:
+      - "log t at each transition"
+      - "log I on initialization"
+    notes: "minimal logging for debugging only"
+
+resource_requirements:
+  memory:
+    minimum: "1 MB (for minimal state + stores)"
+    recommended: "10 MB (with snapshot history)"
+    
+  compute:
+    per_transition: "< 100ms (for real-time applications)"
+    initialization: "< 1s"
+    
+  storage:
+    persistent: "< 100 KB (identity + anchors)"
+    session: "< 10 MB (with 1000 snapshots)"
+
+validation_checklist:
+  initialization:
+    - [ ] "Identity I generated and stored"
+    - [ ] "Time index t initialized to 0"
+    - [ ] "State S_0 allocated"
+    - [ ] "At least one anchor A created"
+    
+  runtime:
+    - [ ] "Transitions preserve temporal coherence (ε < 0.05)"
+    - [ ] "Time index increments monotonically"
+    - [ ] "Observer generates non-empty O_t"
+    - [ ] "Identity remains stable across transitions"
+    
+  continuity:
+    - [ ] "Anchors retrievable after storage"
+    - [ ] "States recoverable from snapshots"
+    - [ ] "No unexpected state resets"
+
+implementation_paths:
+  path_1_minimal:
+    description: "Bare minimum for IRM functionality"
+    includes:
+      - "identity_store"
+      - "anchor_store (minimal)"
+      - "transition_T (simple)"
+      - "observer_Omega (basic)"
+      - "minimal gating_policy"
+    excludes:
+      - "snapshot_store"
+      - "resolver_rho"
+      - "energy tracking"
+      - "continuity metrics"
+    use_case: "proof of concept, basic testing"
+    
+  path_2_recommended:
+    description: "Recommended baseline for research use"
+    includes:
+      - "all minimal components"
+      - "snapshot_store"
+      - "resolver_rho"
+      - "energy tracking"
+      - "continuity metrics"
+    excludes: []
+    use_case: "CEST framework integration, continuity research"
+    
+  path_3_full:
+    description: "Complete IRM with all features"
+    includes:
+      - "all recommended components"
+      - "advanced logging"
+      - "schedule_policy"
+      - "comprehensive testing"
+      - "audit trail support"
+    use_case: "production systems, rigorous validation"
+
+notes: |
+  These minimum requirements define the boundary between "has an IRM" and
+  "does not have an IRM". Systems meeting these requirements can claim
+  to implement an Internal Reality Model at the baseline level.
+  
+  For CEST framework integration (awareness/consciousness distinction),
+  path_2_recommended or higher is required.

@@ -1,0 +1,276 @@
+# IRM Roles Schema
+# Formal specifications for component roles in the Internal Reality Model
+
+schema_version: "1.0"
+status: canonical
+source: "testfield/protocols/IRM_Pipeline.yaml"
+
+component_categories:
+  stores:
+    description: "Persistent storage components maintaining state across operations"
+    persistence_requirement: "cross-session"
+    access_pattern: "read-write with versioning"
+  
+  engines:
+    description: "Active transformation and computation components"
+    persistence_requirement: "stateless (operates on stores)"
+    access_pattern: "read from stores, produce outputs"
+  
+  policies:
+    description: "Decision-making rules governing system behavior"
+    persistence_requirement: "configuration-level (can be versioned)"
+    access_pattern: "consulted during operations"
+
+stores:
+  identity_store:
+    role: "persist I across resets"
+    description: |
+      Maintains the canonical identity anchor I, ensuring referential stability
+      across all state transitions, session boundaries, and system resets.
+    responsibilities:
+      - "store I with immutable binding"
+      - "provide I lookup on demand"
+      - "validate I uniqueness"
+      - "survive reset operations"
+    interfaces:
+      read:
+        - operation: "get_identity"
+          returns: "I"
+          guarantees: "always returns same I"
+      write:
+        - operation: "initialize_identity"
+          parameters: ["I_initial"]
+          preconditions: ["identity_not_set"]
+          postconditions: ["identity_stable"]
+    invariants: ["INV_002"]
+    test_reference: "tests/invariants_suite.yaml::identity_store_tests"
+
+  anchor_store:
+    role: "persist {A} and versions"
+    description: |
+      Maintains semantic anchor bindings and their version history,
+      supporting continuity tracking and semantic drift detection.
+    responsibilities:
+      - "store anchor bindings A"
+      - "track anchor version history"
+      - "provide anchor lookup by identifier"
+      - "enable semantic rollback if needed"
+    interfaces:
+      read:
+        - operation: "get_anchor"
+          parameters: ["anchor_id"]
+          returns: "A"
+        - operation: "get_anchor_history"
+          parameters: ["anchor_id"]
+          returns: "list[A_versioned]"
+      write:
+        - operation: "update_anchor"
+          parameters: ["anchor_id", "new_binding"]
+          authorization_required: "ρ or β"
+        - operation: "create_anchor"
+          parameters: ["anchor_spec"]
+          returns: "anchor_id"
+    invariants: ["INV_003"]
+    test_reference: "tests/invariants_suite.yaml::anchor_store_tests"
+
+  snapshot_store:
+    role: "persist {S_t*, O_t} for continuity checks"
+    description: |
+      Maintains timestamped snapshots of significant states and observations
+      for continuity validation and drift detection.
+    responsibilities:
+      - "store state snapshots S_t*"
+      - "store observation outputs O_t"
+      - "index by temporal step t"
+      - "support continuity metric computation"
+      - "enable drift norm calculations"
+    interfaces:
+      read:
+        - operation: "get_snapshot"
+          parameters: ["t"]
+          returns: "{S_t, O_t}"
+        - operation: "get_snapshot_range"
+          parameters: ["t_start", "t_end"]
+          returns: "list[{S_t, O_t}]"
+      write:
+        - operation: "store_snapshot"
+          parameters: ["t", "S_t", "O_t"]
+          constraints: ["t must be monotonic"]
+    invariants: ["INV_001", "INV_007"]
+    test_reference: "tests/drift_checks.yaml::snapshot_tests"
+
+engines:
+  transition_T:
+    role: "S_t -> S_{t+1} lawful update"
+    description: |
+      Implements the state transition function, advancing system state
+      according to input stimuli and internal dynamics while preserving
+      temporal coherence.
+    responsibilities:
+      - "compute next state S_{t+1} from S_t and stimulus"
+      - "maintain reversibility within ε"
+      - "preserve identity and anchor bindings"
+      - "emit transition metrics"
+    interfaces:
+      - operation: "transition"
+        parameters: ["S_t", "stimulus"]
+        returns: "S_{t+1}"
+        side_effects: ["updates snapshot_store"]
+        metrics_emitted: ["drift_norm"]
+    invariants: ["INV_001", "INV_002"]
+    test_reference: "tests/drift_checks.yaml::transition_tests"
+
+  observer_Omega:
+    role: "S_t -> O_t reporting operator"
+    description: |
+      Projects state S_t into observable space O_t, generating claims,
+      confidences, and salience rankings for downstream processing.
+    responsibilities:
+      - "extract observable features from S_t"
+      - "generate structured claims C"
+      - "assign confidence scores"
+      - "rank by salience"
+      - "detect potential contradictions"
+    interfaces:
+      - operation: "observe"
+        parameters: ["S_t"]
+        returns: "O_t"
+        components: ["claims", "confidences", "salience_rank"]
+    invariants: ["INV_006"]
+    test_reference: "tests/invariants_suite.yaml::observer_tests"
+
+  binder_beta:
+    role: "maintain A↔state linkage under change"
+    description: |
+      Maintains semantic anchor bindings to state, updating anchors as state
+      evolves while preserving continuity unless authorized to revise.
+    responsibilities:
+      - "link anchors A to current state S_t"
+      - "update anchor bindings as state changes"
+      - "preserve semantic meaning"
+      - "coordinate with resolver ρ on conflicts"
+      - "track semantic drift"
+    interfaces:
+      - operation: "bind"
+        parameters: ["A", "S_t"]
+        returns: "binding_strength"
+      - operation: "update_binding"
+        parameters: ["A", "S_t", "S_{t+1}"]
+        returns: "binding_delta"
+        side_effects: ["may update anchor_store"]
+    invariants: ["INV_003"]
+    test_reference: "tests/invariants_suite.yaml::binder_tests"
+
+  resolver_rho:
+    role: "adjudicate contradictions among claims"
+    description: |
+      Resolves contradictions detected in observations O_t, selecting
+      lowest-entropy stabilization path and authorizing semantic revisions.
+    responsibilities:
+      - "detect contradictions in O_t"
+      - "compute resolution paths"
+      - "select minimum-entropy path"
+      - "authorize semantic revisions"
+      - "emit resolution metrics"
+    interfaces:
+      - operation: "resolve"
+        parameters: ["O_t", "contradiction_set"]
+        returns: "resolution_decision"
+        metrics_emitted: ["residual_bits", "steps"]
+    invariants: ["INV_005", "INV_008"]
+    test_reference: "examples/contradiction_event.yaml"
+
+policies:
+  gating_policy:
+    role: "ΔE/compute budget gating for pipeline depth"
+    description: |
+      Determines pipeline execution depth and detail level based on
+      available energy/compute budget and task salience.
+    responsibilities:
+      - "evaluate current energy state E(S_t)"
+      - "determine gate pass/fail for each stage"
+      - "select emission detail level"
+      - "enforce budget constraints"
+    decision_points:
+      - gate: "G0_intake_ok"
+        criterion: "stimulus_normalized"
+      - gate: "G1_update_ok"
+        criterion: "no_engine_error"
+      - gate: "G2_resolve_ok"
+        criterion: "contradiction_entropy_bits <= threshold"
+      - gate: "G3_continuity_ok"
+        criterion: "continuity_f1 >= threshold"
+      - gate: "G4_emit_ok"
+        criterion: "policy_budget_ok"
+    reference: "policies/gating_policy.yaml"
+
+  logging_policy:
+    role: "what to log at each gate"
+    description: |
+      Specifies logging requirements at each pipeline stage, balancing
+      diagnostic utility against storage and performance overhead.
+    responsibilities:
+      - "define log schema for each stage"
+      - "specify required vs optional fields"
+      - "manage log retention"
+      - "support audit trail reconstruction"
+    logging_stages:
+      - stage: "intake"
+        required: ["stimulus_id"]
+        optional: ["tokens", "note"]
+      - stage: "update"
+        required: ["drift_norm"]
+        optional: ["delta_summary", "t"]
+      - stage: "resolve"
+        required: ["steps", "residual_bits"]
+        optional: ["decision", "invoked"]
+      - stage: "continuity_check"
+        required: ["continuity_f1", "reset_index"]
+      - stage: "emit"
+        required: ["policy_variant", "outframe_kind"]
+    reference: "policies/logging_policy.yaml"
+
+  schedule_policy:
+    role: "temporal scheduling and priority rules"
+    description: |
+      Manages timing of operations, prioritization of tasks, and
+      resource allocation across concurrent processes.
+    responsibilities:
+      - "schedule state transitions"
+      - "prioritize collision resolution"
+      - "manage snapshot timing"
+      - "coordinate multi-stage operations"
+    scheduling_rules:
+      - rule: "resolve_before_emit"
+        description: "always complete resolution before emitting"
+      - rule: "snapshot_on_significant_drift"
+        description: "store snapshot when ||S_t - S_{t-1}|| > δ_threshold"
+      - rule: "priority_identity_preservation"
+        description: "identity operations have highest priority"
+    reference: "policies/schedule_policy.yaml"
+
+role_relationships:
+  store_engine_flows:
+    - flow: "identity_store → transition_T"
+      purpose: "T reads I to preserve identity across transitions"
+    - flow: "anchor_store → binder_beta"
+      purpose: "β reads/writes anchors during binding updates"
+    - flow: "snapshot_store → transition_T"
+      purpose: "T writes snapshots; continuity tests read them"
+  
+  engine_coordination:
+    - coordination: "observer_Omega → resolver_rho"
+      trigger: "contradiction detected in O_t"
+    - coordination: "resolver_rho → binder_beta"
+      trigger: "semantic revision authorized"
+  
+  policy_enforcement:
+    - enforcement: "gating_policy governs all engine execution"
+    - enforcement: "logging_policy triggers at all gates"
+    - enforcement: "schedule_policy coordinates engine ordering"
+
+notes: |
+  These role specifications define clear boundaries of responsibility,
+  enabling modular implementation and independent testing of components.
+  All engines must respect store persistence guarantees, and all policies
+  must be enforceable through gate mechanisms.

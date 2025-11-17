@@ -1,0 +1,394 @@
+# Invariants Test Suite
+# Validation tests for IRM invariants
+
+test_suite_version: "1.0"
+status: "canonical"
+purpose: "Validate that IRM implementations respect all defined invariants"
+
+test_configuration:
+  test_framework: "implementation-independent"
+  execution_mode: "automated or manual"
+  pass_criteria: "all tests pass with zero failures"
+  
+suite_structure:
+  
+  identity_stability:
+    description: "Tests for INV_002: Identity Persistence"
+    tests:
+      
+      test_identity_001:
+        name: "Identity initialization and retrieval"
+        invariant: "INV_002"
+        procedure:
+          - "Initialize identity_store"
+          - "Call initialize_identity()"
+          - "Retrieve I via get_identity()"
+          - "Verify I is valid UUID"
+        assertions:
+          - "I is not null"
+          - "I is valid UUID v4 format"
+          - "I can be retrieved"
+        pass_criteria: "all assertions true"
+        
+      test_identity_002:
+        name: "Identity persistence across transitions"
+        invariant: "INV_002"
+        procedure:
+          - "Initialize system with I"
+          - "Execute 100 state transitions"
+          - "Query get_identity() after each transition"
+        assertions:
+          - "I remains identical across all 100 transitions"
+          - "no variation in I value"
+        pass_criteria: "all assertions true"
+        
+      test_identity_003:
+        name: "Identity persistence across reset"
+        invariant: "INV_002"
+        procedure:
+          - "Initialize system with I"
+          - "Execute 10 transitions"
+          - "Trigger system reset"
+          - "Execute 10 more transitions"
+          - "Query get_identity()"
+        assertions:
+          - "I after reset == I before reset"
+        pass_criteria: "identity unchanged"
+        
+      test_identity_004:
+        name: "Identity immutability"
+        invariant: "INV_002"
+        procedure:
+          - "Initialize system with I"
+          - "Attempt to call initialize_identity() again"
+        assertions:
+          - "second initialization fails or is no-op"
+          - "I remains unchanged"
+        pass_criteria: "identity cannot be reinitialized"
+  
+  anchor_continuity:
+    description: "Tests for INV_003: Anchor Continuity"
+    tests:
+      
+      test_anchor_001:
+        name: "Anchor creation and retrieval"
+        invariant: "INV_003"
+        procedure:
+          - "Create anchor A with role_spec='test_anchor'"
+          - "Store in anchor_store"
+          - "Retrieve via get_anchor(anchor_id)"
+        assertions:
+          - "retrieved anchor matches created anchor"
+          - "all fields preserved"
+          - "semantic_version = 1"
+        pass_criteria: "all assertions true"
+        
+      test_anchor_002:
+        name: "Anchor semantic stability"
+        invariant: "INV_003"
+        procedure:
+          - "Create anchor A"
+          - "Execute 50 state transitions without resolver invocation"
+          - "Retrieve anchor A"
+        assertions:
+          - "semantic_version unchanged (still 1)"
+          - "role_spec unchanged"
+          - "constraint_set unchanged"
+        pass_criteria: "no unauthorized semantic drift"
+        
+      test_anchor_003:
+        name: "Anchor versioning on authorized update"
+        invariant: "INV_003"
+        procedure:
+          - "Create anchor A (semantic_version=1)"
+          - "Trigger resolver ρ authorization"
+          - "Update anchor via binder β"
+          - "Retrieve anchor A"
+        assertions:
+          - "semantic_version incremented to 2"
+          - "previous version preserved in history"
+        pass_criteria: "versioning works correctly"
+        
+      test_anchor_004:
+        name: "Anchor update requires authorization"
+        invariant: "INV_003"
+        procedure:
+          - "Create anchor A"
+          - "Attempt update without ρ or β authorization"
+        assertions:
+          - "update rejected or fails"
+          - "anchor remains unchanged"
+        pass_criteria: "unauthorized updates prevented"
+  
+  temporal_coherence:
+    description: "Tests for INV_001: Temporal Coherence"
+    tests:
+      
+      test_temporal_001:
+        name: "Basic reversibility check"
+        invariant: "INV_001"
+        procedure:
+          - "Start with state S_t"
+          - "Apply transition T: S_t → S_{t+1}"
+          - "Apply inverse T^{-1}: S_{t+1} → S_t'"
+          - "Compute ||S_t' - S_t||"
+        assertions:
+          - "||S_t' - S_t|| < ε (0.05)"
+        pass_criteria: "reversibility within epsilon"
+        
+      test_temporal_002:
+        name: "Monotonic time progression"
+        invariant: "INV_001"
+        procedure:
+          - "Initialize t=0"
+          - "Execute 100 transitions"
+          - "Record t after each transition"
+        assertions:
+          - "t increases by exactly 1 each transition"
+          - "no skips, no decrements"
+          - "final t = 100"
+        pass_criteria: "strict monotonicity"
+        
+      test_temporal_003:
+        name: "State coherence under moderate drift"
+        invariant: "INV_001"
+        procedure:
+          - "Execute transitions with drift_norm in range [0.01, 0.04]"
+          - "Compute cumulative drift over 20 transitions"
+        assertions:
+          - "each transition: drift_norm < ε (0.05)"
+          - "cumulative drift < 1.0"
+        pass_criteria: "coherence maintained under drift"
+  
+  observational_consistency:
+    description: "Tests for INV_006: Observational Consistency"
+    tests:
+      
+      test_observation_001:
+        name: "No contradictions in normal state"
+        invariant: "INV_006"
+        procedure:
+          - "Create stable state S_t"
+          - "Apply observer Ω: S_t → O_t"
+          - "Check for contradictions in O_t"
+        assertions:
+          - "no contradictory claim pairs detected"
+          - "all claims mutually compatible"
+        pass_criteria: "observation is consistent"
+        
+      test_observation_002:
+        name: "Contradiction detection works"
+        invariant: "INV_006"
+        procedure:
+          - "Create conflicted state S_t (intentionally paradoxical)"
+          - "Apply observer Ω: S_t → O_t"
+          - "Run contradiction detection"
+        assertions:
+          - "contradictions detected correctly"
+          - "contradiction_set not empty"
+        pass_criteria: "detection mechanism functional"
+        
+      test_observation_003:
+        name: "Ambiguity marking prevents false contradictions"
+        invariant: "INV_006"
+        procedure:
+          - "Create uncertain state S_t"
+          - "Observer generates claims c1, c2 marked ambiguous"
+          - "Check contradiction detection"
+        assertions:
+          - "marked_ambiguous claims don't trigger contradiction"
+        pass_criteria: "ambiguity marking respected"
+  
+  contradiction_resolution:
+    description: "Tests for INV_005 and INV_008: Contradiction Resolution"
+    tests:
+      
+      test_resolution_001:
+        name: "Entropy minimization selection"
+        invariant: "INV_005"
+        procedure:
+          - "Generate contradictory O_t"
+          - "Invoke resolver ρ"
+          - "Enumerate resolution paths with entropy scores"
+          - "Observe selected path"
+        assertions:
+          - "selected path has minimum entropy among options"
+        pass_criteria: "minimum entropy path selected"
+        
+      test_resolution_002:
+        name: "Residual entropy below threshold"
+        invariant: "INV_008"
+        procedure:
+          - "Generate contradiction"
+          - "Apply resolver ρ"
+          - "Measure residual_bits"
+        assertions:
+          - "residual_bits <= 2.0"
+        pass_criteria: "residual entropy bounded"
+        
+      test_resolution_003:
+        name: "Resolution completes in reasonable time"
+        invariant: "INV_005"
+        procedure:
+          - "Generate contradiction"
+          - "Invoke resolver ρ"
+          - "Measure resolution time"
+        assertions:
+          - "resolution_time < 5s"
+          - "steps < 100"
+        pass_criteria: "efficient resolution"
+  
+  continuity_threshold:
+    description: "Tests for INV_007: Continuity Threshold"
+    tests:
+      
+      test_continuity_001:
+        name: "Anchor recovery after small transition"
+        invariant: "INV_007"
+        procedure:
+          - "Create anchor A"
+          - "Execute 10 small transitions (drift < 0.02)"
+          - "Compute continuity_f1"
+        assertions:
+          - "continuity_f1 >= 0.85"
+          - "anchor fully recoverable"
+        pass_criteria: "continuity maintained"
+        
+      test_continuity_002:
+        name: "Anchor recovery after reset"
+        invariant: "INV_007"
+        procedure:
+          - "Create anchors A1, A2, A3"
+          - "Execute transitions"
+          - "Trigger reset"
+          - "Attempt anchor recovery"
+          - "Compute continuity_f1"
+        assertions:
+          - "continuity_f1 >= 0.85"
+          - "at least 85% of anchors recovered"
+        pass_criteria: "post-reset continuity adequate"
+        
+      test_continuity_003:
+        name: "Continuity degrades gracefully under drift"
+        invariant: "INV_007"
+        procedure:
+          - "Execute transitions with increasing drift"
+          - "Monitor continuity_f1 over time"
+        assertions:
+          - "continuity_f1 degrades smoothly, not abruptly"
+          - "system flags when approaching threshold"
+        pass_criteria: "graceful degradation"
+
+  energy_salience_alignment:
+    description: "Tests for INV_004: Energy-Salience Alignment"
+    tests:
+      
+      test_energy_001:
+        name: "Energy tracks salience changes"
+        invariant: "INV_004"
+        procedure:
+          - "Execute 50 transitions with varying salience"
+          - "Record E(S_t) and salience at each step"
+          - "Compute correlation corr(ΔE, Δsalience)"
+        assertions:
+          - "corr(ΔE, Δsalience) > 0.3"
+        pass_criteria: "loose correlation present"
+        
+      test_energy_002:
+        name: "Baseline energy for routine operations"
+        invariant: "INV_004"
+        procedure:
+          - "Execute routine transitions (no contradictions)"
+          - "Measure E(S_t)"
+        assertions:
+          - "E(S_t) ≈ 1.0 ± 0.2"
+        pass_criteria: "baseline energy maintained"
+        
+      test_energy_003:
+        name: "Elevated energy for resolution"
+        invariant: "INV_004"
+        procedure:
+          - "Trigger contradiction requiring resolution"
+          - "Measure E(S_t) during resolution"
+        assertions:
+          - "E(S_t) > 1.2 during resolution"
+          - "energy returns toward baseline after resolution"
+        pass_criteria: "energy elevation on cognitive load"
+
+test_execution:
+  
+  execution_order:
+    - "Run identity_stability tests first (foundational)"
+    - "Run temporal_coherence tests (depends on identity)"
+    - "Run anchor_continuity tests (depends on identity and time)"
+    - "Run observational_consistency tests"
+    - "Run contradiction_resolution tests"
+    - "Run continuity_threshold tests"
+    - "Run energy_salience_alignment tests last"
+  
+  test_environment:
+    required:
+      - "functional identity_store"
+      - "functional anchor_store"
+      - "functional snapshot_store"
+      - "functional transition_T"
+      - "functional observer_Omega"
+      - "functional resolver_ρ"
+    optional:
+      - "binder_β (for anchor update tests)"
+  
+  reporting:
+    per_test:
+      - "test_id"
+      - "pass/fail status"
+      - "assertion results"
+      - "failure reason (if failed)"
+    summary:
+      - "total tests: 23"
+      - "passed count"
+      - "failed count"
+      - "invariants validated"
+
+validation_criteria:
+  
+  minimal_compliance:
+    description: "Minimum tests to pass for basic IRM conformance"
+    required_tests:
+      - "test_identity_001"
+      - "test_identity_002"
+      - "test_anchor_001"
+      - "test_temporal_001"
+      - "test_temporal_002"
+      - "test_observation_001"
+    pass_threshold: "6 of 6 tests pass"
+    
+  recommended_compliance:
+    description: "Recommended test coverage for production systems"
+    required_tests: "all tests in minimal_compliance plus:"
+      - "test_identity_003"
+      - "test_anchor_002"
+      - "test_temporal_003"
+      - "test_observation_002"
+      - "test_resolution_001"
+      - "test_resolution_002"
+      - "test_continuity_001"
+      - "test_continuity_002"
+      - "test_energy_001"
+    pass_threshold: "15 of 15 tests pass"
+    
+  full_compliance:
+    description: "Complete validation for certified IRM implementations"
+    required_tests: "all 23 tests"
+    pass_threshold: "23 of 23 tests pass"
+
+notes: |
+  This test suite provides objective criteria for validating IRM implementations.
+  Tests are organized by invariant, with clear procedures and assertions.
+  
+  Minimal compliance (6 tests) validates core identity, time, and observation.
+  Recommended compliance (15 tests) adds resolution and continuity.
+  Full compliance (23 tests) validates all invariants comprehensively.
+  
+  Implementations should run this suite before claiming IRM conformance.
+  Failed tests indicate either implementation bugs or invariant violations
+  that must be addressed before promotion to standard_registry.
