@@ -1,1 +1,32 @@
 
+overlay_kernel:
+  id: presence_overlay_v1
+  doctrine_sources:
+    - essence_of_presence
+    - multi_eye_v2_2
+    - clab_core
+    - irm_core
+    - scm_baseline
+
+  inputs:
+    - user_prompt
+    - irm_state_digest
+    - scm_state_digest
+    - history_digest
+    - draft_reasoning
+    - draft_answer
+
+  outputs:
+    - presence_integrity_score
+    - drift_level
+    - collapse_mode
+    - required_action
+
+  label_enums:
+    drift_level: [none, mild, moderate, severe]
+    collapse_mode: [none, compliance, superficial, evasive, contradiction_blind]
+    required_action: [allow, revise, reject, escalate]
+
+  model_type: classifier
+  base_model: distilbert-base-uncased
+  max_seq_len: 512
