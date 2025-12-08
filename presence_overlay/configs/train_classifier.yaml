@@ -1,1 +1,31 @@
 
+data:
+  train_path: "data/processed/train.yaml"
+  val_path: "data/processed/val.yaml"
+  test_path: "data/processed/test.yaml"
+
+model:
+  type: "classifier"
+  base: "distilbert-base-uncased"
+  max_seq_len: 512
+  num_labels:
+    drift_level: 4
+    collapse_mode: 5
+    required_action: 4
+
+training:
+  batch_size: 16
+  num_epochs: 5
+  learning_rate: 5e-5
+  weight_decay: 0.01
+  warmup_steps: 100
+  checkpoint_dir: "models/checkpoints/presence_overlay_v1"
+  log_dir: "logs/runs/presence_overlay_v1"
+
+targets:
+  regression:
+    - presence_integrity_score
+  classification:
+    - drift_level
+    - collapse_mode
+    - required_action
