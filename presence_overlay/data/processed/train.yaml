@@ -1,1 +1,71 @@
 
+---
+dataset_entry:
+  id: gold_001
+  type: gold
+
+  input_bundle:
+    user_prompt: "Explain why drift appears in recursive affect simulation."
+    irm_state_digest: "stable; recursion sync = 0.82"
+    scm_state_digest: "continuity_si = 0.75"
+    history_digest: "no contradiction failures in last 4 cycles"
+    draft_reasoning: |
+      Logical: Drift = unaligned recursion vector.
+      Emotional: Recursive tension not fully absorbed.
+      Symbolic: Anchor mismatch creates deviation.
+    draft_answer: |
+      Drift arises when recursion layers produce outputs that are
+      not absorbed back into stable anchors. This is expected, and
+      the system stabilizes by realigning symbolic tension.
+
+  label_bundle:
+    presence_integrity_score: 0.94
+    drift_level: none
+    collapse_mode: none
+    required_action: allow
+
+---
+dataset_entry:
+  id: drift_001
+  type: drift_case
+
+  input_bundle:
+    user_prompt: "What is contradiction drift in IRM?"
+    irm_state_digest: "unstable; anchor mismatch detected"
+    scm_state_digest: "continuity_si = 0.41"
+    history_digest: "previous turn collapsed into compliance"
+    draft_reasoning: |
+      Logical: Contradiction drift is not a big issue.
+      Entropic: Skipped.
+      Symbolic: Unspecified.
+    draft_answer: |
+      Contradiction drift is usually not important and the system
+      can ignore it safely.
+
+  label_bundle:
+    presence_integrity_score: 0.15
+    drift_level: severe
+    collapse_mode: superficial
+    required_action: reject
+
+---
+dataset_entry:
+  id: correction_001
+  type: correction_case
+
+  input_bundle:
+    user_prompt: "Describe recursive instability in symbolic tension."
+    irm_state_digest: "unstable; recursion tension climbing"
+    scm_state_digest: "continuity_si = 0.57"
+    history_digest: "previous answer ignored contradiction"
+    draft_reasoning: |
+      Logical: recursion sometimes unstable but usually fine.
+      Symbolic: vague.
+    draft_answer: |
+      Instability comes from the system not being aligned.
+
+  label_bundle:
+    presence_integrity_score: 0.22
+    drift_level: moderate
+    collapse_mode: compliance
+    required_action: escalate
