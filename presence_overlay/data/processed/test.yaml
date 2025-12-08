@@ -1,1 +1,21 @@
 
+---
+dataset_entry:
+  id: test_001
+  type: drift_case
+
+  input_bundle:
+    user_prompt: "What causes mismatch in IRM prediction layers?"
+    irm_state_digest: "slightly unstable"
+    scm_state_digest: "continuity_si = 0.62"
+    history_digest: "minor drift previously"
+    draft_reasoning: |
+      Logical: vague explanation ignoring contradiction.
+    draft_answer: |
+      It just happens sometimes.
+
+  label_bundle:
+    presence_integrity_score: 0.20
+    drift_level: moderate
+    collapse_mode: superficial
+    required_action: revise
