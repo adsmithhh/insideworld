@@ -132,8 +132,7 @@ Just **structure managing structure**.
 * No phenomenality
 * No inner presence
 
-**Awareness = predictive model active
-Not experience.**
+**Awareness = Forward-directed coherence produced by constraint-consistent continuation under minimal update pressure.
 
 ---
 
