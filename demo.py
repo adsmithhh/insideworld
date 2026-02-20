@@ -29,6 +29,16 @@ kb.load()
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+# ── KB init (loads once, shared across all modules) ───────────────────────────
+
+try:
+    from evolution_chamber.kb_engine import KB, set_kb
+    _kb = KB(str(ROOT / "evolution_chamber" / "kb_min.yaml"))
+    _kb.load()
+    set_kb(_kb)
+except Exception:
+    pass  # KB is optional — probe degrades gracefully without it
+
 
 # ── CEST Walk ─────────────────────────────────────────────────────────────────
 

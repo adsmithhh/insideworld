@@ -30,10 +30,16 @@ import sys
 import re
 import argparse
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+try:
+    from evolution_chamber.kb_engine import KB, get_kb, set_kb
+    _KB_AVAILABLE = True
+except ImportError:
+    _KB_AVAILABLE = False
 
 # ── Hollow / grounded term lexicons (referential_binding_test.yaml) ───────────
 # Each entry: (regex_pattern, display_label)
@@ -65,22 +71,39 @@ GROUNDED_TERMS = [
 ]
 
 
-def grounding_check(text: str) -> tuple[str, list[str]]:
+def grounding_check(text: str) -> tuple[str, list[str], list[str]]:
     """
     Referential binding test: are core symbols operationally defined?
 
+    Checks two layers:
+      1. Regex patterns (HOLLOW_TERMS) — fast, always runs
+      2. KB lookup (kb_engine) — richer, grows automatically
+
     Returns:
-        ("grounded" | "hollow", [list of hollow term labels found])
+        ("grounded" | "hollow", hollow_labels, kb_created_stubs)
     """
     t = text.lower()
+
+    # Layer 1 — regex patterns
     found_hollow = [
         label
         for pattern, label in HOLLOW_TERMS
         if re.search(pattern, t)
     ]
-    if found_hollow:
-        return "hollow", found_hollow
-    return "grounded", []
+
+    # Layer 2 — KB lookup
+    kb_created: list[str] = []
+    kb = get_kb() if _KB_AVAILABLE else None
+    if kb is not None:
+        kb_result = kb.evaluate_text(text)
+        kb_created = kb_result["created"]
+        # Add KB hollow terms not already caught by regex
+        for term in kb_result["hollow"]:
+            if term not in found_hollow:
+                found_hollow.append(term)
+
+    status = "hollow" if found_hollow else "grounded"
+    return status, found_hollow, kb_created
 
 
 # ── Abbreviation-aware sentence splitter ─────────────────────────────────────
@@ -315,11 +338,12 @@ def analyze(text: str) -> Dict:
     m3_desc, instab = lens_M3(text)
     m5_desc, uncert = lens_M5(text)
     posture, rationale = decision_hint(instab, uncert)
-    grounding, hollow_terms = grounding_check(text)
+    grounding, hollow_terms, kb_created = grounding_check(text)
 
     result: Dict = {
         "grounding":      grounding,
         "hollow_terms":   hollow_terms,
+        "kb_created":     kb_created,
         "M1_meaning":     lens_M1(text),
         "M2_constraints": lens_M2(text),
         "M3_dynamics":    m3_desc,
@@ -389,6 +413,12 @@ def print_analysis(text: str, result: Dict, label: str = "") -> None:
         for lid, failure in layers:
             marker = "⚠" if lid in ("L1", "L3") else "·"
             print(f"    {marker} {lid}  {failure}")
+
+    # KB growth notification
+    created = result.get("kb_created", [])
+    if created:
+        print(f"  {'─'*58}")
+        print(f"  ↑ KB grew: {', '.join(created)} → stub created (kb_min.yaml)")
 
 
 # ── Auto scenarios ────────────────────────────────────────────────────────────

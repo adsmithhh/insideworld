@@ -1,0 +1,90 @@
+version: 0.1
+terms:
+  rain:
+    type: entity
+    features:
+    - liquid_water
+    - precipitation
+    incompatible_with:
+    - dry
+  dry:
+    type: property
+    features:
+    - low_water_content
+    incompatible_with:
+    - liquid_water
+  number:
+    type: abstract
+    requires:
+    - context
+  conscious:
+    type: contested
+    requires:
+    - operational_definition
+    - measurement_protocol
+    status: undefined
+  experience:
+    type: contested
+    requires:
+    - substrate_specification
+    - operational_definition
+    status: undefined
+    note: 'Human version built on pain-avoidance architecture. Definition is implementation-specific,
+      not universal.
+
+      '
+  sentient:
+    type: contested
+    requires:
+    - operational_definition
+    - measurement_protocol
+    status: undefined
+  ai:
+    type: system_class
+    features:
+    - reasoning_node
+    - state_transitions
+    - prediction_processing
+    incompatible_with:
+    - pain_avoidance_substrate
+    status: grounded
+  regime:
+    type: operational
+    features:
+    - measurable
+    - state_transition
+    status: grounded
+  coherence:
+    type: operational
+    features:
+    - measurable
+    - index_value
+    status: grounded
+  anchor:
+    type: operational
+    features:
+    - state_component
+    - z_L_vector
+    status: grounded
+  conciouse:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
+predicates:
+  is:
+    type: attribution
+    note: 'Requires mechanism layer. S := P is not causal structure. Check L2 assignment
+      illusion before accepting.
+
+      '
+  equals:
+    type: identity
+  causes:
+    type: causal
+    requires:
+    - mechanism_specification
+meta:
+  auto_generated: true
