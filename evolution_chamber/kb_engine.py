@@ -6,16 +6,18 @@ Any term not found during grounding evaluation triggers an
 auto-stub entry — the KB grows from interaction.
 
 Usage:
-    from evolution_chamber.kb_engine import KB
+    from evolution_chamber.kb_engine import KB, GroundingTier, GroundingResult
     kb = KB()
     kb.load()
-    result = kb.evaluate_grounding(["ai", "conscious"])
+    result = kb.evaluate_text("the rain is wet")
+    # result.tier → GroundingTier.UNVERIFIED
 """
 from __future__ import annotations
 
 import os
 import re
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -23,6 +25,23 @@ try:
     import yaml
 except ImportError:
     yaml = None  # type: ignore
+
+
+# ── Grounding tiers ───────────────────────────────────────────────────────────
+
+class GroundingTier(str, Enum):
+    GROUNDED   = "GROUNDED"    # ✓  known and operationally defined
+    UNVERIFIED = "UNVERIFIED"  # ?  not in KB yet — epistemically open
+    HOLLOW     = "HOLLOW"      # ⚠  known to be contested/undefined
+
+
+@dataclass
+class GroundingResult:
+    tier: GroundingTier
+    hollow_terms: List[str]     = field(default_factory=list)
+    unverified_terms: List[str] = field(default_factory=list)
+    created_terms: List[str]    = field(default_factory=list)
+    notes: str                  = ""
 
 _DEFAULT_PATH = Path(__file__).parent / "kb_min.yaml"
 
@@ -112,53 +131,76 @@ class KB:
 
     # ── Grounding evaluation ─────────────────────────────────────────────────
 
-    def evaluate_grounding(
-        self, terms: List[str]
-    ) -> Tuple[bool, List[str], List[str]]:
+    def evaluate_grounding(self, terms: List[str]) -> GroundingResult:
         """
-        Check each term against the KB.
+        Evaluate a list of terms against the KB.
 
-        Returns:
-            (grounded: bool, hollow: list[str], created: list[str])
+        Hollow policy (explicit, not assumed):
+          - status in ("contested", "undefined")  — known problematic
+          - type == "contested"                   — contested category
+          - requires operational_definition AND none present
 
-        hollow  — terms that are undefined, contested, or auto_stub
-        created — new stubs added to KB this call
+        Unknown terms → auto-stub + UNVERIFIED (not hollow).
+        Known and not hollow → usable.
         """
         hollow: List[str] = []
+        unverified: List[str] = []
         created: List[str] = []
-        undefined_statuses = {"undefined", "auto_stub", "unknown"}
 
-        for t in terms:
-            tl = t.lower()
-            if not self.has_term(tl):
+        for term in terms:
+            tl = term.lower()
+            entry = self.get_term(tl)
+
+            if entry is None:
                 self.ensure_term(tl)
                 created.append(tl)
+                unverified.append(tl)
+                continue
+
+            status    = (entry.get("status") or "").lower()
+            ttype     = (entry.get("type")   or "").lower()
+            req       = entry.get("requires") or []
+            requires_op = "operational_definition" in req
+            has_op      = bool(entry.get("operational_definition"))
+
+            is_hollow = (
+                status in ("contested", "undefined")
+                or ttype == "contested"
+                or (requires_op and not has_op)
+            )
+
+            if is_hollow:
                 hollow.append(tl)
-            else:
-                info = self.get_term(tl)
-                if info and info.get("status") in undefined_statuses:
-                    hollow.append(tl)
+            elif status == "auto_stub":
+                unverified.append(tl)  # previously seen, still unresolved
 
-        grounded = len(hollow) == 0
-        return grounded, hollow, created
-
-    def evaluate_text(self, text: str) -> dict:
-        """
-        Full pipeline: extract terms from text → evaluate grounding.
-
-        Returns dict with keys: grounded, hollow, created, terms_checked.
-        Saves KB if new stubs were created.
-        """
-        terms = _extract_terms(text)
-        grounded, hollow, created = self.evaluate_grounding(terms)
         if created:
             self.save()
-        return {
-            "grounded":      grounded,
-            "hollow":        hollow,
-            "created":       created,
-            "terms_checked": terms,
-        }
+
+        if hollow:
+            return GroundingResult(
+                tier=GroundingTier.HOLLOW,
+                hollow_terms=hollow,
+                unverified_terms=unverified,
+                created_terms=created,
+                notes=f"structurally HOLLOW — contested/undefined: {', '.join(hollow)}",
+            )
+        if unverified:
+            return GroundingResult(
+                tier=GroundingTier.UNVERIFIED,
+                unverified_terms=unverified,
+                created_terms=created,
+                notes=f"unverified grounding — not in KB yet: {', '.join(unverified)}",
+            )
+        return GroundingResult(
+            tier=GroundingTier.GROUNDED,
+            notes="structurally grounded",
+        )
+
+    def evaluate_text(self, text: str) -> GroundingResult:
+        """Extract terms from free text and evaluate grounding."""
+        terms = _extract_terms(text)
+        return self.evaluate_grounding(terms)
 
 
 # ── Module-level singleton ────────────────────────────────────────────────────

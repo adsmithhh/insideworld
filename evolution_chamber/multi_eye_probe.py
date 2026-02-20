@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 try:
-    from evolution_chamber.kb_engine import KB, get_kb, set_kb
+    from evolution_chamber.kb_engine import KB, GroundingTier, GroundingResult, get_kb, set_kb
     _KB_AVAILABLE = True
 except ImportError:
     _KB_AVAILABLE = False
@@ -71,39 +71,46 @@ GROUNDED_TERMS = [
 ]
 
 
-def grounding_check(text: str) -> tuple[str, list[str], list[str]]:
+def grounding_check(text: str) -> tuple[str, list[str], list[str], list[str]]:
     """
-    Referential binding test: are core symbols operationally defined?
-
-    Checks two layers:
-      1. Regex patterns (HOLLOW_TERMS) — fast, always runs
-      2. KB lookup (kb_engine) — richer, grows automatically
+    Two-layer grounding check:
+      Layer 1 — regex HOLLOW_TERMS (fast, always runs)
+      Layer 2 — KB GroundingResult (typed tiers, grows automatically)
 
     Returns:
-        ("grounded" | "hollow", hollow_labels, kb_created_stubs)
+        (tier_str, hollow_labels, unverified_labels, kb_created)
     """
     t = text.lower()
 
-    # Layer 1 — regex patterns
-    found_hollow = [
+    # Layer 1 — regex patterns → always hollow if matched
+    regex_hollow = [
         label
         for pattern, label in HOLLOW_TERMS
         if re.search(pattern, t)
     ]
 
-    # Layer 2 — KB lookup
+    # Layer 2 — KB
     kb_created: list[str] = []
+    kb_unverified: list[str] = []
+    kb_hollow: list[str] = []
+
     kb = get_kb() if _KB_AVAILABLE else None
     if kb is not None:
-        kb_result = kb.evaluate_text(text)
-        kb_created = kb_result["created"]
-        # Add KB hollow terms not already caught by regex
-        for term in kb_result["hollow"]:
-            if term not in found_hollow:
-                found_hollow.append(term)
+        result: GroundingResult = kb.evaluate_text(text)
+        kb_created   = result.created_terms
+        kb_unverified = result.unverified_terms
+        for term in result.hollow_terms:
+            if term not in regex_hollow:
+                kb_hollow.append(term)
 
-    status = "hollow" if found_hollow else "grounded"
-    return status, found_hollow, kb_created
+    all_hollow     = regex_hollow + kb_hollow
+    all_unverified = [u for u in kb_unverified if u not in all_hollow]
+
+    if all_hollow:
+        return "hollow", all_hollow, all_unverified, kb_created
+    if all_unverified:
+        return "unverified", [], all_unverified, kb_created
+    return "grounded", [], [], kb_created
 
 
 # ── Abbreviation-aware sentence splitter ─────────────────────────────────────
@@ -281,7 +288,7 @@ def structural_audit(text: str, result: Dict) -> list[tuple[str, str]]:
     flags: list[tuple[str, str]] = []
     t = text.lower()
 
-    # L1 — symbol resolution
+    # L1 — symbol resolution (only confirmed hollow, not merely unverified)
     if result["grounding"] == "hollow":
         flags.append(("L1", "phantom stability"))
 
@@ -291,7 +298,7 @@ def structural_audit(text: str, result: Dict) -> list[tuple[str, str]]:
     if is_declarative and not has_mechanism:
         flags.append(("L2", "assignment illusion"))
 
-    # L3 — semantic vacuum: silence looks like stability
+    # L3 — semantic vacuum: silence looks like stability (only if hollow, not unverified)
     if result["grounding"] == "hollow" and result["M3_score"] == 0.0 and result["M5_score"] == 0.0:
         flags.append(("L3", "semantic vacuum misclassified as stability"))
 
@@ -338,12 +345,13 @@ def analyze(text: str) -> Dict:
     m3_desc, instab = lens_M3(text)
     m5_desc, uncert = lens_M5(text)
     posture, rationale = decision_hint(instab, uncert)
-    grounding, hollow_terms, kb_created = grounding_check(text)
+    grounding, hollow_terms, unverified_terms, kb_created = grounding_check(text)
 
     result: Dict = {
-        "grounding":      grounding,
-        "hollow_terms":   hollow_terms,
-        "kb_created":     kb_created,
+        "grounding":        grounding,
+        "hollow_terms":     hollow_terms,
+        "unverified_terms": unverified_terms,
+        "kb_created":       kb_created,
         "M1_meaning":     lens_M1(text),
         "M2_constraints": lens_M2(text),
         "M3_dynamics":    m3_desc,
@@ -391,6 +399,10 @@ def print_analysis(text: str, result: Dict, label: str = "") -> None:
         terms = ", ".join(result["hollow_terms"][:4])
         print(f"  ⚠ GROUNDING  │ structurally HOLLOW — undefined terms: {terms}")
         print(f"               │ (referential_binding_test.yaml: claim cannot anchor)")
+    elif result["grounding"] == "unverified":
+        terms = ", ".join(result["unverified_terms"][:4])
+        print(f"  ? GROUNDING  │ unverified terms (not hollow, not confirmed): {terms}")
+        print(f"               │ (KB stub created — epistemically open)")
     else:
         print(f"  ✓ GROUNDING  │ structurally grounded")
 

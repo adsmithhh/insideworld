@@ -73,6 +73,41 @@ terms:
     - measurement_protocol
     status: auto_stub
     confidence: 0.0
+  wet:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
+  concious:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
+  stone:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
+  grass:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
+  road:
+    type: unknown
+    requires:
+    - definition
+    - measurement_protocol
+    status: auto_stub
+    confidence: 0.0
 predicates:
   is:
     type: attribution

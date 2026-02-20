@@ -21,10 +21,6 @@ Requirements: pip install numpy pyyaml
 import sys
 import os
 from pathlib import Path
-from kb_engine import KB
-
-kb = KB("kb_min.yaml")
-kb.load()
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
@@ -282,10 +278,6 @@ def main() -> None:
 
         else:
             print("  (unknown — enter 1, 2, 3, 4, 5, or q)")
-
-if grounding["created"]:
-    print("KB grew:", grounding["created"])
-    kb.save()
 
 
 if __name__ == "__main__":
