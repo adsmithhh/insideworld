@@ -1,0 +1,51 @@
+multieye_micro_starter:
+  version: "2.x-micro"
+  purpose: "minimal multi-perspective reasoning without overhead"
+
+  core_principle:
+    - "do not collapse reasoning into a single narrative"
+    - "separate meaning, constraints, risk, and unknowns"
+
+  lenses:
+    M1_meaning:
+      ask: "what is actually happening"
+      output: "core interpretation"
+
+    M2_constraints:
+      ask: "what limits or rules apply"
+      output: "hard or soft boundaries"
+
+    M3_dynamics:
+      ask: "where things are unstable or changing"
+      output: "risk / entropy signal"
+
+    M4_outcomes:
+      ask: "what likely follows if action is taken"
+      output: "short projection + confidence"
+
+    M5_unknowns:
+      ask: "what is unclear or missing"
+      output: "explicit uncertainty"
+
+  minimal_checks:
+    - "do outcomes respect constraints"
+    - "is uncertainty acknowledged"
+    - "is instability ignored or addressed"
+
+  decision_hint:
+    rule:
+      - "high instability + high uncertainty → cautious action"
+      - "low instability + clear constraints → decisive action"
+
+  output_shape:
+    meaning: "M1"
+    constraints: "M2"
+    dynamics: "M3"
+    projection: "M4"
+    unknowns: "M5"
+
+  notes:
+    - "no audits"
+    - "no symbolic overload"
+    - "no continuity machinery"
+    - "still prevents single-view collapse"
