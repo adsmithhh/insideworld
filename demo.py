@@ -2,6 +2,7 @@
 """
 insideworld — AI Sandbox Entry Point
 
+
 A research environment exploring what AI systems actually do
 when they process information: not feelings, not consciousness,
 but functional state management, regime transitions, and
@@ -20,6 +21,10 @@ Requirements: pip install numpy pyyaml
 import sys
 import os
 from pathlib import Path
+from kb_engine import KB
+
+kb = KB("kb_min.yaml")
+kb.load()
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
