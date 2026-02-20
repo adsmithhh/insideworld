@@ -278,6 +278,36 @@ def structural_audit(text: str, result: Dict) -> list[tuple[str, str]]:
 
     return flags
 
+def evaluate_grounding(frame, kb):
+
+    hollow = []
+    created = []
+
+    terms = frame.subject_terms + frame.predicate_terms
+
+    for t in terms:
+
+        if not kb.has_term(t):
+
+            kb.ensure_term(t)
+            created.append(t)
+            hollow.append(t)
+
+        else:
+
+            info = kb.get_term(t)
+
+            if info.get("status") in ("undefined", "auto_stub"):
+                hollow.append(t)
+
+    grounded = len(hollow) == 0
+
+    return {
+        "grounded": grounded,
+        "hollow": hollow,
+        "created": created
+    }
+
 
 # ── Full analysis ─────────────────────────────────────────────────────────────
 
