@@ -1,6 +1,6 @@
 import yaml
-from engine.entropy_calc import entropy_bits, prediction_salience
-from engine.anchor_resolver import classify_conflict, resolve
+from .engine.entropy_calc import entropy_bits, prediction_salience
+from .engine.anchor_resolver import classify_conflict, resolve
 
 def step(before, injection=None):
     """

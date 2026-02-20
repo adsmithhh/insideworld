@@ -1,0 +1,38 @@
+# Sandbox intro scenario for MAE
+# Three agents, 20 ticks:
+#   - one IRM-backed agent (functional state management)
+#   - one random baseline (noise)
+#   - one scripted baseline (constant delta)
+#
+# Run from repo root:
+#   python -m evolution_chamber.MAE.cli --config evolution_chamber/MAE/scenarios/sandbox_intro.yaml
+
+scenario:
+  name: sandbox_intro
+  seed: 42
+  ticks: 20
+
+task:
+  name: shared_score_field
+  seed: 42
+
+agents:
+  - id: IRM_agent
+    kind: irm
+    line: IRM
+
+  - id: random_baseline
+    kind: random
+    line: IRM
+
+  - id: scripted_baseline
+    kind: scripted
+    line: IRM
+    delta: 0.05
+
+irm_params:
+  IRM:
+    z_dim: 8
+
+bus_acl: {}
+bus_rate_limits: {}

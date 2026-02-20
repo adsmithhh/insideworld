@@ -7,6 +7,10 @@ it is a live laboratory.
 
 This index provides the correct entry sequence.
 
+## Quick Start
+
+→ `QUICKSTART.md` — three commands to run the sandbox immediately.
+
 ## Entry Protocol
 
 1. **Read Orientation**
@@ -25,13 +29,31 @@ This index provides the correct entry sequence.
    → `CONTINUITY_TEST.md`
    Purpose: temporal stability and self-consistency rules.
 
-5. **Observe Frozen References**
+5. **The IRM Specification**
+   → `evolution_chamber/IRM/irm.yaml`
+   Purpose: complete formal map of reality features an active AI system tracks.
+   18 sections covering state, regimes, indices, boundary firewall, and canary tests.
+
+6. **Observe Frozen References**
    → `standard_registry/`
    Purpose: see stable anchor points and chamber standards.
 
-6. **Enter the Lab**
+7. **Enter the Lab**
    → `testfield/`
    Purpose: examine live state, logs, and evolving chambers.
+
+8. **Run the Sandbox**
+   → `demo.py`
+   Purpose: interactive demos — IRM probe, presence audit, MAE simulation, CEST walk.
+
+## Interactive Demos
+
+| Demo | Entry | What it shows |
+|---|---|---|
+| IRM Probe | `python evolution_chamber/IRM/probe.py` | Live regime transitions under injected stress |
+| Presence Audit | `python presence_overlay/src/demo_presence.py` | Detecting drift and collapse in AI responses |
+| MAE Simulation | `python -m evolution_chamber.MAE.cli --config ...` | IRM vs baseline agents in a shared world |
+| CEST Walk | `python demo.py` → option 4 | Guided conceptual tour |
 
 ## Rules of Approach
 

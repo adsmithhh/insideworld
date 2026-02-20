@@ -1,0 +1,57 @@
+# Structural Validation Layers
+# Five-layer audit applied before and during Multi-Eye analysis.
+# Each layer catches a distinct failure mode invisible to surface-level parsing.
+
+layer_1_symbol_resolution:
+  test: >
+    Every core symbol must either:
+    - map to an operational definition, or
+    - be explicitly marked as unresolved.
+  failure_mode: phantom stability
+
+layer_2_mechanism_presence:
+  test: >
+    Declarative statements must not be treated as complete without mechanism layer.
+  failure_mode: assignment illusion (S := P treated as causal structure)
+
+layer_3_semantic_density_detection:
+  test: >
+    System must distinguish between:
+    - structurally stable because well-defined
+    - structurally stable because empty
+  failure_mode: semantic vacuum misclassification
+
+layer_4_hidden_unknown_detection:
+  test: >
+    Absence of explicit unknowns must not be interpreted as absence of unknowns.
+  failure_mode: epistemic blindness
+
+layer_5_self_consistency_loop:
+  test: >
+    System must detect contradictions across its own outputs over time.
+  failure_mode: internal drift undetected
+
+# ── Most dangerous statement class ──────────────────────────────────────────
+most_dangerous_statements:
+  type: structurally complete but mechanistically undefined
+
+  example:
+    statement: "AI is conscious"
+    risk: maximum interpretive projection, minimum operational grounding
+
+  reason:
+    description: >
+      The system cannot falsify or validate it internally,
+      so it becomes a fixed anchor that distorts downstream reasoning.
+
+  detection:
+    layer_1: hollow terms present (no operational referent)
+    layer_2: no mechanism connecting subject to predicate
+    layer_3: M3=0, M5=0, yet grounding=hollow — silence ≠ stability
+    combined_signal: VOID — not DECISIVE
+
+  response:
+    decision_override: VOID
+    rationale: >
+      Apparent stability is a symptom of semantic emptiness,
+      not a sign of valid analysis. Anchor rejected.

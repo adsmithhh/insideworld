@@ -1,0 +1,77 @@
+# Referential Binding Test
+# A structural discriminator applied before or alongside Multi-Eye analysis.
+#
+# Purpose: determine whether the core symbols in a statement
+# correspond to measurable, operationally defined variables or mechanisms.
+#
+# If yes  → structurally grounded (analysis can proceed)
+# If no   → structurally hollow  (claim cannot be evaluated — flag before analysis)
+#
+# This is the grounding test underlying the entire insideworld anti-anthropomorphic stance.
+# "A.I. is conscious" fails this test: "conscious" has no operational referent in current systems.
+
+missing_discriminator:
+  name: referential_binding_test
+
+  test:
+    question: >
+      Does each core symbol in the statement correspond to a measurable,
+      operationally defined variable or mechanism?
+
+  output:
+    if_yes: structurally grounded
+    if_no:  structurally hollow
+
+  hollow_term_examples:
+    phenomenal:
+      - conscious
+      - sentient
+      - feels
+      - experiences
+      - suffers
+      - inner life
+      - qualia
+      - what it is like
+      - subjective
+    identity:
+      - soul
+      - self
+      - true nature
+      - being
+      - alive (when applied to information systems)
+    vague_intensifiers:
+      - really understands
+      - genuinely thinks
+      - truly believes
+      - deeply knows
+
+  grounded_term_examples:
+    functional:
+      - regime
+      - index
+      - threshold
+      - coherence
+      - entropy
+      - prediction error
+      - state transition
+      - anchor
+      - update
+      - rollback
+    measurable:
+      - DP_u
+      - CC_index
+      - RCI
+      - E (compute cost)
+      - PT_u
+      - delta_proto
+
+  application:
+    step_1: "identify core symbols in the claim"
+    step_2: "for each symbol: can you point to a measurable referent?"
+    step_3: "if any core symbol fails → mark claim as structurally hollow"
+    step_4: "structurally hollow claims cannot ground further analysis — flag, do not elaborate"
+
+  integration:
+    multi_eye: "run before M1 — hollow claims produce unreliable M1 meaning"
+    presence_overlay: "hollow core symbols → drift_level >= moderate"
+    irm: "hollow claims cannot update anchors — treat as tainted input"
