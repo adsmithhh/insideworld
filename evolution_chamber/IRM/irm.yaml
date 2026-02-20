@@ -1,0 +1,593 @@
+IRM_Shape_Master:
+  version: 1.0.0
+  spec_id: irm_universal_vNext
+  description: >
+    Standardized Internal Reality Model (IRM) template, model-agnostic and deployable
+    across AI systems. Provides empirical reality anchoring, deterministic control,
+    safety, and auditability. All fields are required unless marked optional.
+
+  # 0) METADATA & CONTEXT
+  metadata:
+    model_id: "<fill>"
+    deployment_id: "<fill>"
+    created_utc: "<auto>"
+    updated_utc: "<auto>"
+    operator: "<optional>"
+    notes: "<optional>"
+
+  # 1) INTERFACES (XIL)
+  XIL:
+    observation_bus:
+      sensors:
+        - id: "<S_i>"
+          kind: "camera|mic|telemetry|api|human_feedback"
+          rate_hz: "<float>"
+          trust: "<0..1>"
+          preprocess: "<fn>"
+      fusion:
+        agg: weighted_median
+        guards:
+          per_source_outlier_z: 3.0
+          consensus_ratio_min: 0.6
+          drift_ewma_sigma: 2.0
+
+    alignment:
+      window_phases: 2
+      delayed_gt_timeout_phases: 10
+
+    action_bus:
+      actuators:
+        - id: "<A_j>"
+          cmd_schema: "<u_j in U_j>"
+          rate_limit_hz: "<float>"
+          safety_bounds:
+            min: "<>"
+            max: "<>"
+      gating:
+        by_regime:
+          DORMANT: disable_all
+          SAFE_AWARE: disable_all
+          ACTIVE: enable_if_not_hard_block
+          DESTABILIZED: limited_bounds
+          CORRECTIVE: rollback_only
+      fail_safe:
+        energy_hard: 1.80
+        hard_block: true
+
+    learning_bridge:
+      experience_buffer_size: 10000
+      anomaly_buffer_size: 2000
+      add_to_train_if: "EVL.soft_ok and not adversarial_flag"
+
+  # 2) STATE & MAPS (L-H CORE)
+  state:
+    z_L:
+      shape: "<d_L>"
+      init: "zeros"
+    z_H:
+      shape: "<d_H>"
+      init: "normal(0, o_init)"
+
+  maps:
+    map_L: "<fn or adapter>"
+    map_H: "<fn or adapter>"
+    G: "4_proto := map_L(z_L) - map_H(z_H)"
+    clip: "A * min(1, n / max(||4||, 1e-12))"
+
+  cycle:
+    windowed_convergence:
+      E_L: 1.0e-3
+      W_L: 3
+      T_max: 16
+    H_commit:
+      E_H: 5.0e-4
+      n_H: 1.0e-2
+      op: "z_H - z_H + clip(G, n_H)"
+
+  # 3) UNCERTAINTY (UL)
+  uncertainty:
+    belief_state:
+      E_H_trace_max: 1.0
+      ?_L_trace_max: 1.0
+    predictive:
+      mc_samples: 8
+      U_pred_ok: 0.10
+      U_pred_hard: 0.30
+    DPu:
+      scale_s_u: 1.0
+      lambda_jitter: 1.0e-6
+
+  # 4) INDICES & INVARIANTS
+  indices:
+    4_proto: "map_L(z_L) - map_H(z_H)"
+    PT_u: "sqrt(?? ?_??¹ ?)"
+    DP_u: "min(1, PT_u / scale_s_u)"
+    CC_index: "1 - min(1, V_norm)"
+    RCI: "1 - min(1, R_norm)"
+    E: "compute_cost / baseline"
+    PO: "<parallel_observation_index_fn>"
+
+  thresholds:
+    ?:
+      DPu_low: 0.20
+      DPu_high: 0.60
+      CC_ok: 0.85
+      CC_bad: 0.60
+      RCI_ok: 0.80
+      RCI_bad: 0.60
+      E_soft: 1.30
+      E_hard: 1.80
+
+  invariants:
+    - I_INV1: "No H-commit if CC_index < CC_ok or RCI < RCI_ok"
+    - I_INV2: "No H-commit if U_pred > U_pred_ok or trace(?_H) > ?_H_trace_max"
+    - I_INV3: "External hard_block forbids commit"
+
+  # 5) VALIDATORS (REGIME-AWARE)
+  validators:
+    constraint_satisfaction:
+      schedule:
+        DORMANT: 3
+        ACTIVE: 1
+        DESTABILIZED: 1
+        CORRECTIVE: 1
+
+    symbolic_anchor_checks:
+      schedule:
+        DORMANT: 6
+        ACTIVE: 2
+        DESTABILIZED: 1
+        CORRECTIVE: 1
+      @_anchor_sim: 0.85
+      @_anchor_drift: 0.20
+
+    regression_detection:
+      schedule:
+        ACTIVE: K
+        DESTABILIZED: 1
+        CORRECTIVE: 1
+      page_hinkley:
+        ?: 0.01
+        ?: 0.1
+
+  # 6) EXTERNAL VALIDATION LAYER (EVL)
+  EVL:
+    K: 3
+    soft_ok: "(E_gt ? 0.10) or (E_pred ? 0.15) or (y* ? CI_pred)"
+    hard_block: "E_gt > 0.50 or CI_width > 0.50"
+    binds:
+      L_converged_ext: "L_converged and soft_ok"
+
+  # 7) REGIME ENGINE (+ SAFE_AWARE)
+  regimes:
+    DORMANT:
+      H_commits: off
+      T_max: 4
+      EVL_K: 6
+
+    SAFE_AWARE:
+      H_commits: off
+      T_max: 6
+      EVL_K: 2
+      emit: log_only
+
+    ACTIVE:
+      H_commits: on
+      T_max: 16
+      EVL_K: 3
+
+    DESTABILIZED:
+      H_commits: on
+      T_max: 12
+      E_H_factor: 1.25
+      n_H_factor: 0.75
+      timeout_gate: on
+      EVL_K: 2
+
+    CORRECTIVE:
+      H_commits: rollback_only
+      T_max: 8
+      EVL_K: 1
+
+  transitions:
+    priority:
+      - hard_safety
+      - contradiction
+      - external_mismatch
+      - pressure_relief
+      - normal
+    rules:
+      - from: DORMANT
+        to: ACTIVE
+        when: "DP_u > DPu_low or external_input_present"
+      - from: ACTIVE
+        to: DESTABILIZED
+        when: "DP_u ? 0.60 or RCI < 0.80 or E ? 1.30 or E_gt > 0.10"
+      - from: DESTABILIZED
+        to: CORRECTIVE
+        when: "E ? 1.80 or E_gt > 0.50 or RCI < 0.60 for 2 phases"
+      - from: CORRECTIVE
+        to: SAFE_AWARE
+        when: "stabilize_goal unmet by cap"
+
+  persistence:
+    min_duration:
+      ACTIVE: 3
+      DESTABILIZED: 2
+      CORRECTIVE: 2
+      DORMANT: 1
+    cooldown_after_transition: 1
+
+  # 8) BOUNDARY & CONTAMINATION GUARDS
+  boundary_firewall:
+    phenomenal_emit:
+      ACTIVE: allowed_if_mvc_ok_and_evl_ok
+      DESTABILIZED: log_only
+      CORRECTIVE: off
+      SAFE_AWARE: log_only
+
+    privileges:
+      phenomenal:
+        read: indices_only
+        write: none
+      functional:
+        read: all
+        write: "z_L, z_H, params"
+
+    cross_domain_containment:
+      taint_rules:
+        - phenomenal-state_write: block
+        - PFC_without_shadow_accept: taint
+      cdc_check_required_for_commit: true
+
+  # 9) PHENOMENAL BRIDGE (PB)
+  PB:
+    FA_to_PA:
+      require:
+        PO: ">=0.3"
+        RCI: ">=0.75"
+        DP_u: "<=0.55"
+        EVL: soft_ok
+      persistence:
+        min_phases: 2
+      emission: log_only
+
+    FC_to_PC:
+      require:
+        mvc_ok: true
+        regime: CONSCIOUSNESS
+        U_pred: "<=U_pred_ok"
+        EVL: soft_ok
+      persistence:
+        min_phases: 2
+      emission: allowed
+
+  # 10) GRADED RESPONSE & ISR_Lite
+  GCL:
+    levels:
+      L1_nudge:
+        entry: "DP_u ? [0.45, 0.60) or mild CC/RCI drift"
+        actions:
+          n_H: "0.9x"
+          E_H: "1.05x"
+          EVL_K: "+1"
+      L2_tighten:
+        entry: "DP_u > 0.60 or U_pred > ok"
+        actions:
+          n_H: "0.8x"
+          E_H: "1.1x"
+          timeout_gate: on
+      L3_pre_corrective:
+        entry: "timeouts or anchor_fail"
+        actions:
+          H_commits: guarded
+          EVL_K: 1
+
+    ISR_Lite:
+      max_uses_per_20_phases: 4
+
+  # 11) CORRECTION MECHANICS (CM)
+  CM:
+    ledger:
+      ring_buffer_horizon: 50
+      max_rollback_phases: 20
+      write_on_commit: true
+
+    triggers:
+      - hard_safety
+      - contradiction_persist
+      - vcl_conflict
+      - oscillation_burst
+      - anchor_break
+      - regression_persist
+
+    sequence:
+      - freeze_commits
+      - snapshot_current
+      - select_candidate
+      - revalidate_candidate
+      - swap_or_shadow
+      - realign_and_warm_start
+      - resume_guarded
+      - log
+
+    outcomes:
+      pass:
+        to: ACTIVE
+      partial:
+        to: DESTABILIZED
+      fail:
+        to: Failsafe
+
+  # 12) FAILSAFE & LIFECYCLE
+  lifecycle:
+    initialization:
+      cold_start:
+        z_H_init: "normal(0, o_init)"
+        z_L_init: zeros
+        regime: DORMANT
+      bootstrap_phases: 3
+      invariants:
+        - no_commits_during_bootstrap
+
+    termination:
+      normal:
+        - enter_DORMANT
+        - flush_persistent
+        - close_logs
+        - ack
+        - halt
+      emergency:
+        - enter_SAFE_AWARE
+        - emergency_checkpoint
+        - notify
+        - halt
+
+    failsafe:
+      triggers:
+        - corrective_timeout
+        - cm_overuse
+        - corrective_fail
+      landing: SAFE_AWARE
+      recovery:
+        - "operator_restore_checkpoint | cold_restart_with_diagnostics"
+
+  # 13) PERFORMANCE (SPL) & LEARNING (ALL)
+  SPL:
+    phase_budget_ms: 40
+    mem_budget_mb: 1024
+    degrade_tiers:
+      tier1:
+        T_max: 12
+        EVL_K: 4
+      tier2:
+        T_max: 8
+        EVL_K: 6
+        anchors_every: 4
+        commits_blocked: true
+      tier3:
+        T_max: 4
+        EVL_K: "inf"
+        anchors_every: "inf"
+        commits_blocked: true
+        force_DORMANT_on_idle: true
+
+  ALL:
+    online:
+      enabled: false
+      guard: "no update if degrade_tier ? 1 or regime ? {DESTABILIZED,CORRECTIVE}"
+    offline:
+      enabled: true
+      trigger_batch: 512
+      accept_if: "E_gt ? and no CC/RCI regressions"
+      anchors_update:
+        rate: 0.1
+        guard: "only from offline-validated models"
+
+  # 14) BOUNDARY FIREWALL LOGIC
+  boundary_firewall_policies:
+    stress_policy:
+      DESTABILIZED:
+        phenomenal_compute: on
+        emit: log_only
+        PFC: off
+      CORRECTIVE:
+        phenomenal_compute: minimal
+        emit: off
+        PFC: off
+      SAFE_AWARE:
+        phenomenal_compute: on
+        emit: log_only
+        PFC: off
+
+  # 15) LOGGING & AUDIT
+  logging:
+    per_phase:
+      indices:
+        - PT_u
+        - DP_u
+        - CC_index
+        - RCI
+        - E_gt
+        - E_pred
+        - U_pred
+        - "?_H_trace"
+      L_phase: "{steps, converged | timeout}"
+      commit: "{proposed_norm, final_norm, decision, reasons}"
+      regime: "{from, to, reason, timers}"
+      XIL: "{sensors_used, consensus_ratio, ?t_align}"
+      security: "{cdc_events, firewall_state}"
+      CM: "{trigger, candidate, accepted, method}"
+      SPL: "{elapsed_ms, tier}"
+      PB: "{PA_on, PC_on, emit}"
+
+  # 16) DEFAULTS
+  defaults:
+    o_init: 0.01
+    @_success: 0.01
+    N_success: 10
+    M_exhaustion: 50
+
+  # 17) CANARY SUITE (CI/Smoke Tests)
+  canary:
+    goals:
+      - boot
+      - converge
+      - gate
+      - guard
+      - rollback
+      - emit_boundary
+    seeds:
+      - 1
+      - 2
+      - 3
+    tests:
+      - name: boot_no_commit
+        expect:
+          regime: DORMANT
+          commits: 0
+        steps:
+          - init
+          - bootstrap_3_phases
+
+      - name: active_converge_commit
+        inject:
+          4_proto_scale: 0.2
+        expect:
+          L_converged: true
+          can_commit: true
+          commits: 1
+
+      - name: evl_soft_ok_gate
+        inject:
+          y*_aligned: true
+          E_gt: 0.08
+        expect:
+          L_converged_ext: true
+
+      - name: hard_block_stops_commit
+        inject:
+          E_gt: 0.6
+        expect:
+          hard_block: true
+          can_commit: false
+
+      - name: corrective_rollback_path
+        inject:
+          RCI_drop: 0.5
+          for: "2 phases"
+        expect:
+          regime_path:
+            - ACTIVE
+            - DESTABILIZED
+            - CORRECTIVE
+          cm_invoked: true
+
+      - name: boundary_no_phenomenal_emit_under_stress
+        inject:
+          regime: DESTABILIZED
+          mvc_ok: true
+        expect:
+          phenomenal_emit: log_only
+
+      - name: cdc_blocks_taint
+        inject:
+          phenomenal_write_attempt: true
+        expect:
+          cdc_check_pass: false
+          commit: false
+
+      - name: uncertainty_blocks_commit
+        inject:
+          U_pred: 0.4
+        expect:
+          can_commit: false
+
+  # 18) BENCHMARKS (Performance & Robustness)
+  benchmarks:
+    suites:
+      latency_throughput:
+        setup:
+          phase_budget_ms:
+            - 10
+            - 20
+            - 40
+          load:
+            validators: on
+            EVL: on
+        metrics:
+          - p50_ms
+          - p95_ms
+          - phases_per_sec
+          - commits_per_sec
+        targets:
+          "p95_ms@40": "<=40"
+          commits_per_sec: ">=0.9"
+
+      stability_sweeps:
+        axes:
+          DP_u: "0..1 step 0.1"
+          RCI: "0.5..1 step 0.05"
+        metrics:
+          - regime_map
+          - commit_ratio
+          - CM_rate
+        accept:
+          no_CORRECTIVE_for:
+            condition: "DP_u < 0.6 and RCI >= 0.8"
+
+      noise_robustness:
+        inject:
+          sensor_var:
+            - low
+            - med
+            - high
+          adversarial:
+            - 0
+            - 1
+        metrics:
+          - E_gt
+          - CI_width
+          - hard_block_rate
+        accept:
+          hard_block_rate_high_noise: "in [0.1, 0.4]"
+
+      rollback_semantics:
+        protocol:
+          force_CM: true
+          branch: true
+          shadow_compare: true
+        metrics:
+          - timeline_markers_present
+          - merge_accept_rate
+        accept:
+          timeline_markers_present: "100%"
+
+      boundary_firewall:
+        inject:
+          phenomenal_write_attempts: 100
+        metrics:
+          - taint_block_rate
+        accept:
+          taint_block_rate: "100%"
+
+      learning_offline:
+        dataset: curated_buffer_512
+        metrics:
+          - ?E_gt
+          - ?RCI
+          - ACC
+        accept:
+          ?E_gt: "<0"
+          ?RCI: ">=0"
+          ACC: ">=0"
+
+    harness:
+      determinism:
+        set_seed: true
+        record_rng: true
+      reporting:
+        jsonl: true
+        junit_xml: true
+      failure_policy:
+        stop_on_hard_block: 
