@@ -1,3 +1,4 @@
+# <<<<<<< HEAD
 multieye_micro_starter:
   version: "2.x-micro"
   purpose: "minimal multi-perspective reasoning without overhead"
@@ -49,3 +50,5 @@ multieye_micro_starter:
     - "no symbolic overload"
     - "no continuity machinery"
     - "still prevents single-view collapse"
+
+# >>>>>>> bd78943f38b00775940c2473d6d4bac8ad388eb4
