@@ -279,6 +279,5 @@ def main() -> None:
         else:
             print("  (unknown — enter 1, 2, 3, 4, 5, or q)")
 
-
 if __name__ == "__main__":
     main()
