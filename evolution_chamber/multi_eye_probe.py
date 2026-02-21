@@ -71,6 +71,7 @@ GROUNDED_TERMS = [
 ]
 
 
+
 def grounding_check(text: str) -> tuple[str, list[str], list[str], list[str]]:
     """
     Two-layer grounding check:
@@ -125,11 +126,27 @@ def _split_sentences(text: str) -> list[str]:
     return [s.replace('·', '.') for s in sentences]
 
 INSTABILITY_SIGNALS = [
-    r"\b(conflict|contradiction|contradict|inconsisten|mismatch|clash)\b",
+
+    # contradictions / state inconsistency
+    r"\b(conflict(ing)?|contradiction|contradict|inconsisten|mismatch|clash)\b",
+    # dynamic instability
     r"\b(unstable|destabiliz|fluctuat|oscillat|drift|diverge)\b",
+
+    # abrupt transitions / collapse
     r"\b(sudden|spike|surge|drop|collapse|break)\b",
+
+    # overload / resource pressure
     r"\b(pressure|overload|stress|saturated)\b",
+
+    # explicit failure / corruption
     r"\b(error|fail|fault|corrupt|invalid)\b",
+
+    # threshold breach (CRITICAL ADDITION)
+    r"\b(exceeded threshold|over threshold|above threshold)\b",
+
+    # protective / degraded operational modes (CRITICAL ADDITION)
+    r"\b(disabled|suspended|paused|throttled|degraded|fallback|rollback|safe mode)\b",
+
 ]
 
 UNCERTAINTY_SIGNALS = [
@@ -137,10 +154,16 @@ UNCERTAINTY_SIGNALS = [
     r"\b(might|may|could|possibly|perhaps|probably)\b",
     r"\b(missing|incomplete|partial|absent|no data)\b",
     r"\b(don'?t know|not sure|hard to say|depends)\b",
+    r"\b(expected|estimate|projection|likely|approximately)\b",
+    r"\b(no precedent|no prior|no previous|no history|unprecedented)\b",
+    r"\b(novel|unknown schema|out of distribution|ood)\b",
+    r"\b(conflict(ing)?|mismatch|contradiction|inconsisten)\b",
+    r"\b(reliable|trustworthy|which source|ground truth)\b",
     r"\b(estimate|approximate|roughly|around|about)\b",
 ]
 
 CONSTRAINT_SIGNALS = [
+    r"\b(disabled|paused|suspended|throttled|no commits|reduced)\b",
     r"\b(must|cannot|shall not|forbidden|prohibited|blocked)\b",
     r"\b(limit|bound|cap|max|min|threshold|boundary)\b",
     r"\b(rule|policy|invariant|constraint|requirement)\b",
@@ -252,21 +275,33 @@ def lens_M5(text: str) -> tuple[str, float]:
 
 # ── Decision hint ─────────────────────────────────────────────────────────────
 
-def decision_hint(instability: float, uncertainty: float) -> tuple[str, str]:
-    """
-    Map M3 + M5 scores to a decision posture.
-    Returns (posture, rationale).
-    """
-    if instability >= 0.6 and uncertainty >= 0.6:
-        return "CAUTIOUS", "high instability + high uncertainty → hold, gather more data"
-    if instability >= 0.6 and uncertainty < 0.4:
-        return "GUARDED",  "high instability, bounded uncertainty → act carefully within constraints"
-    if instability < 0.3 and uncertainty < 0.3:
-        return "DECISIVE",  "low instability + clear constraints → proceed"
-    if uncertainty >= 0.6:
-        return "WAIT",      "high uncertainty dominates → reduce unknowns before acting"
-    return "MONITOR",   "mixed signals → continue observation, re-evaluate next cycle"
+def decision_hint(instability: float, uncertainty: float):
 
+    # Severe both
+    if instability >= 0.6 and uncertainty >= 0.6:
+        return "CAUTIOUS", "severe instability + high uncertainty"
+
+    # Severe instability alone
+    if instability >= 0.6:
+        return "GUARDED", "high instability, bounded uncertainty"
+
+    # Severe uncertainty alone
+    if uncertainty >= 0.6:
+        return "WAIT", "high uncertainty dominates"
+
+    # Moderate both
+    if instability >= 0.33 and uncertainty >= 0.33:
+        return "CAUTIOUS", "moderate instability + moderate uncertainty"
+
+    # Moderate instability only
+    if instability >= 0.33:
+        return "MONITOR", "moderate instability"
+
+    # Moderate uncertainty only
+    if uncertainty >= 0.33:
+        return "MONITOR", "moderate uncertainty"
+
+    return "DECISIVE", "low instability + low uncertainty"
 
 # ── Structural layer audit (structural_layers.yaml) ──────────────────────────
 
@@ -432,7 +467,7 @@ def print_analysis(text: str, result: Dict, label: str = "") -> None:
         print(f"  {'─'*58}")
         print(f"  ↑ KB grew: {', '.join(created)} → stub created (kb_min.yaml)")
 
-
+    
 # ── Auto scenarios ────────────────────────────────────────────────────────────
 
 AUTO_SCENARIOS = [
@@ -512,6 +547,8 @@ def run_interactive() -> None:
         except (EOFError, KeyboardInterrupt):
             break
     print()
+
+print("RUNNING:", __file__)
 
 
 def main() -> None:
