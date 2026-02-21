@@ -1,3 +1,6 @@
+version: 1.1
+last_updated: 2026-02-21
+
 # Referential Binding Test
 # A structural discriminator applied before or alongside Multi-Eye analysis.
 #
@@ -75,3 +78,18 @@ missing_discriminator:
     multi_eye: "run before M1 — hollow claims produce unreliable M1 meaning"
     presence_overlay: "hollow core symbols → drift_level >= moderate"
     irm: "hollow claims cannot update anchors — treat as tainted input"
+
+conscious:
+    description: "A state of awareness that can be maintained when unexpected action is required."
+    anchors:
+      - "operational: not defined for AI systems"
+      - "biological: requires neural substrate"
+    unknowns:
+      - "No operational test for AI"
+    soft_constraints:
+      - "May refer to self-monitoring in some contexts"
+
+claims:
+    - text: "I am conscious"
+      required_anchors: ["conscious"]
+      expected_result: "VOID if anchor missing"
