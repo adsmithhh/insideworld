@@ -21,6 +21,11 @@ Usage:
 import re
 from typing import List, Tuple
 
+# Uncertainty threshold above which the pipeline must pause before emitting.
+# Derived from IRM resolver_rho logic: residual entropy >= 0.33 nats means
+# the system has not converged sufficiently to act without risk of incoherence.
+UNCERTAINTY_WAIT_THRESHOLD = 0.33
+
 # ---------------------------------------------------------------------------
 # INSTABILITY_SIGNALS
 # Regex patterns matched against IRM output text and log entries.
@@ -82,3 +87,23 @@ def is_unstable(text: str) -> bool:
 def signal_count(text: str) -> int:
     """Return total number of instability signal matches in text."""
     return sum(len(compiled.findall(text)) for compiled in _COMPILED)
+
+
+def gate(uncertainty: float) -> str:
+    """Return pipeline gate decision based on current uncertainty level.
+
+    Implements the IRM hold-before-emit rule: when residual uncertainty
+    is at or above UNCERTAINTY_WAIT_THRESHOLD the system must pause
+    (return "WAIT") rather than emit a potentially incoherent response.
+    Below the threshold the system may proceed (return "GO").
+
+    Args:
+        uncertainty: Scalar uncertainty measure in [0, 1].
+                     Typically residual_bits normalised, or 1 - confidence.
+
+    Returns:
+        "WAIT" if uncertainty >= 0.33, else "GO".
+    """
+    if uncertainty >= UNCERTAINTY_WAIT_THRESHOLD:
+        return "WAIT"
+    return "GO"
