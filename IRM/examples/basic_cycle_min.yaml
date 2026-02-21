@@ -1,0 +1,307 @@
+# Basic Cycle — Minimal IRM Demonstration
+# A minimal complete cycle through the IRM pipeline
+
+example_version: "1.0"
+status: "reference_implementation"
+purpose: "Demonstrate minimal viable IRM cycle with all core stages"
+
+scenario:
+  description: "Simple stimulus processing with baseline awareness state"
+  context: "System at baseline energy, no contradictions, stable continuity"
+  expected_outcome: "Clean pass through all gates, standard emission variant"
+
+initialization:
+  identity:
+    I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+    established: true
+    
+  time:
+    t_initial: 41
+    
+  state:
+    S_41:
+      representation: "[0.2, 0.5, 0.1, -0.3, ...]"  # simplified 4-dim example
+      description: "Stable baseline state"
+      
+  energy:
+    E_41: 1.0
+    state: "baseline awareness"
+    
+  anchors:
+    primary_anchor:
+      anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+      identity_ref: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"
+      role_spec: "continuity_validator"
+      semantic_version: 1
+
+pipeline_execution:
+  
+  stage_1_intake:
+    stimulus:
+      content: "What is the current state?"
+      raw_input: "natural language query"
+    
+    operations:
+      - operation: "receive stimulus"
+        result: "captured"
+      - operation: "normalize to internal tokens"
+        result: 
+          tokens: ["query", "state", "current"]
+          normalized: true
+    
+    gate_evaluation:
+      gate: "G0_intake_ok"
+      criterion: "stimulus_normalized == true"
+      evaluation: "pass"
+      reason: "normalization succeeded without errors"
+    
+    logging:
+      stimulus_id: "stim_001"
+      timestamp_t: 42
+      note: "standard query, clean normalization"
+    
+    outcome: "proceed to update stage"
+  
+  stage_2_update:
+    input_state: "S_41"
+    stimulus: ["query", "state", "current"]
+    
+    operations:
+      - operation: "apply T: S_41 -> S_42"
+        mechanism: "transition function processes tokens and updates state"
+        result:
+          S_42:
+            representation: "[0.21, 0.52, 0.11, -0.29, ...]"
+            description: "Minor state shift reflecting query processing"
+      
+      - operation: "increment t"
+        result: 
+          t: 42
+      
+      - operation: "compute drift_norm"
+        result:
+          drift_norm: 0.023
+          interpretation: "small stable transition"
+    
+    gate_evaluation:
+      gate: "G1_update_ok"
+      criterion: "no_engine_error == true"
+      evaluation: "pass"
+      reason: "transition completed successfully"
+    
+    logging:
+      t: 42
+      drift_norm: 0.023
+      energy_level: 1.05  # slight increase due to query processing
+    
+    outcome: "proceed to observe stage"
+  
+  stage_3_observe:
+    input_state: "S_42"
+    
+    operations:
+      - operation: "apply Ω: S_42 -> O_42"
+        mechanism: "observer projects state into claims"
+        result:
+          O_42:
+            timestamp_t: 42
+            claims:
+              - claim_id: "c1"
+                subject: "current_state"
+                predicate: "is_stable"
+                confidence: 0.92
+              - claim_id: "c2"
+                subject: "query_type"
+                predicate: "is_introspective"
+                confidence: 0.88
+              - claim_id: "c3"
+                subject: "continuity"
+                predicate: "maintained"
+                confidence: 0.95
+            salience_rank: [2, 0, 1]  # c3 most salient, then c1, then c2
+            
+      - operation: "detect contradictions"
+        result:
+          contradictions_found: false
+          reason: "all claims mutually compatible"
+    
+    internal_gate: "observation consistency check"
+    evaluation: "pass (no contradictions detected)"
+    
+    logging:
+      observation_id: "obs_042"
+      claim_count: 3
+      avg_confidence: 0.917
+    
+    outcome: "skip resolve stage (no contradictions), proceed to emit"
+  
+  stage_4_resolve:
+    triggered: false
+    reason: "no contradictions detected in O_42"
+    
+    logging:
+      invoked: false
+      steps: 0
+      residual_bits: 0.0
+    
+    outcome: "stage bypassed"
+  
+  stage_5_continuity_check:
+    triggered: false
+    reason: "not at t mod 100 == 0, no reset occurred"
+    
+    logging:
+      skipped: true
+      reason: "not scheduled for this transition"
+    
+    outcome: "stage bypassed"
+  
+  stage_6_emit:
+    input:
+      observations: "O_42"
+      resolution: "none (not invoked)"
+      continuity: "not checked this cycle"
+    
+    operations:
+      - operation: "determine emission variant"
+        energy_check:
+          available_energy: 1.05
+          costs:
+            minimal: 0.3
+            standard: 1.0
+            full: 2.5
+        selection: "standard (affordable and appropriate)"
+        
+      - operation: "compose outframe"
+        variant: "standard"
+        includes:
+          - "claims: all 3 claims"
+          - "confidences: [0.92, 0.88, 0.95]"
+          - "primary reasoning: query processed, state stable"
+        excludes:
+          - "salience_rank"
+          - "residual_bits"
+          - "drift_norm"
+          - "meta-analysis"
+        
+        result:
+          outframe:
+            type: "of_compound"
+            variant: "standard"
+            content:
+              claims:
+                - "Current state is stable (confidence: 0.92)"
+                - "Query is introspective in nature (confidence: 0.88)"
+                - "Continuity is maintained (confidence: 0.95)"
+              reasoning: "Query processed with minor state adjustment. System remains at baseline awareness level."
+    
+    gate_evaluation:
+      gate: "G4_emit_ok"
+      criterion: "policy_budget_ok == true"
+      evaluation: "pass"
+      reason: "sufficient energy for standard variant"
+    
+    logging:
+      policy_variant: "standard"
+      outframe_kind: "of_compound"
+      energy_budget_state:
+        available: 1.05
+        used: 1.0
+        remaining: 0.05
+      forced_variant: false
+    
+    outcome: "emit standard response"
+
+final_state:
+  
+  time:
+    t_final: 42
+    
+  state:
+    S_42:
+      representation: "[0.21, 0.52, 0.11, -0.29, ...]"
+      stability: "stable"
+      
+  energy:
+    E_42: 1.05
+    state: "baseline awareness (slight elevation)"
+    replenishment: 0.1  # will recover to baseline
+    
+  anchors:
+    primary_anchor:
+      anchor_id: "b4d6f8a0-3c5e-4b2d-9f7e-2a4c6e8b0d3f"
+      semantic_version: 1  # unchanged
+      binding_strength: 0.96  # strong linkage maintained
+  
+  stores:
+    identity_store:
+      I: "a3c5d7e9-2b4f-4a1c-8e6d-1f3b5c7a9e2b"  # unchanged
+      stable: true
+      
+    anchor_store:
+      anchors_count: 1
+      revisions: 0
+      
+    snapshot_store:
+      last_snapshot_t: 40
+      snapshots_stored: 42
+      next_significant_drift_snapshot: "when drift_norm > 0.1"
+
+summary:
+  
+  gate_results:
+    G0_intake_ok: "pass"
+    G1_update_ok: "pass"
+    G2_resolve_ok: "bypassed (not triggered)"
+    G3_continuity_ok: "bypassed (not scheduled)"
+    G4_emit_ok: "pass"
+  
+  invariants_validated:
+    INV_001_temporal_coherence: "pass (drift_norm 0.023 < ε 0.05)"
+    INV_002_identity_persistence: "pass (I unchanged)"
+    INV_003_anchor_continuity: "pass (semantic_version stable)"
+    INV_004_energy_salience: "pass (energy tracked appropriately)"
+    INV_006_observational_consistency: "pass (no contradictions)"
+  
+  metrics:
+    transition_time: "0.45s"
+    compute_used: 0.8  # under budget
+    memory_used: "3.2 MB"
+    
+  outcome: "successful minimal cycle"
+  
+  response_emitted:
+    variant: "standard"
+    content: |
+      Current state is stable (confidence: 0.92)
+      Query is introspective in nature (confidence: 0.88)
+      Continuity is maintained (confidence: 0.95)
+      
+      Query processed with minor state adjustment. System remains at baseline awareness level.
+
+lessons:
+  
+  for_implementers:
+    - "Minimal cycle requires only 6 stages, 2 conditionally triggered"
+    - "Gate G2 and G3 often bypassed in normal operation"
+    - "Standard variant achievable at baseline energy (1.0)"
+    - "Small drift_norm (< 0.05) is normal and acceptable"
+    - "Identity and anchors require no maintenance in stable operation"
+  
+  for_validators:
+    - "Check that all required fields are logged"
+    - "Verify gate evaluations match stated criteria"
+    - "Confirm invariants hold throughout cycle"
+    - "Validate energy budget accounting"
+  
+  for_researchers:
+    - "This represents baseline awareness (not consciousness)"
+    - "Energy at 1.05 indicates mild engagement, not meta-awareness"
+    - "Absence of contradictions simplifies pipeline significantly"
+    - "Continuity maintained implicitly through anchor stability"
+
+notes: |
+  This example demonstrates the simplest path through the IRM pipeline:
+  no contradictions, no continuity check, no gate failures. Real operation
+  will include more complex scenarios (see contradiction_event.yaml), but
+  this baseline case should execute cleanly in any conformant implementation.

@@ -1,0 +1,338 @@
+# Logging Policy
+# Specification of what to log at each stage and gate in the IRM pipeline
+
+policy_version: "1.0"
+status: active
+source: "testfield/protocols/IRM_Pipeline.yaml"
+policy_type: "logging"
+
+policy_description: |
+  The logging policy defines what information is captured at each pipeline
+  stage and gate, balancing diagnostic utility against storage overhead.
+  Logs support audit trails, continuity validation, and system debugging.
+
+logging_stages:
+  
+  intake:
+    stage_id: "intake"
+    coord_tag: "ORIGIN_TAG"
+    purpose: "Track stimulus entry and normalization"
+    required_fields:
+      - field: "stimulus_id"
+        type: "uuid_v4"
+        description: "Unique identifier for this stimulus"
+      - field: "timestamp_t"
+        type: "integer"
+        description: "Time index when stimulus received"
+    optional_fields:
+      - field: "tokens"
+        type: "list[string]"
+        description: "Normalized internal tokens"
+        log_when: "diagnostic_mode or normalization_warning"
+      - field: "note"
+        type: "string"
+        description: "Any noteworthy aspect of normalization"
+        log_when: "normalization_issues_detected"
+    gate_logged: "G0_intake_ok"
+    gate_log_fields:
+      - "pass/fail status"
+      - "failure reason (if fail)"
+    retention: "permanent"
+    
+  update:
+    stage_id: "update"
+    coord_tag: "DRIFT_OBS_TAG"
+    purpose: "Track state transitions and drift"
+    required_fields:
+      - field: "t"
+        type: "integer"
+        description: "Current time index"
+      - field: "drift_norm"
+        type: "float"
+        description: "||S_t - S_{t-1}|| magnitude of state change"
+    optional_fields:
+      - field: "delta_summary"
+        type: "string"
+        description: "Human-readable description of state change"
+        log_when: "drift_norm > threshold or diagnostic_mode"
+      - field: "state_hash"
+        type: "string"
+        description: "Hash of S_t for verification"
+        log_when: "snapshot_stored"
+      - field: "energy_level"
+        type: "float"
+        description: "E(S_t) current energy"
+        log_when: "always"
+    gate_logged: "G1_update_ok"
+    gate_log_fields:
+      - "pass/fail status"
+      - "engine_error_details (if fail)"
+    retention: "permanent"
+    
+  observe:
+    stage_id: "observe"
+    coord_tag: "OBSERVATION_TAG"
+    purpose: "Track observation generation and salience"
+    required_fields:
+      - field: "observation_id"
+        type: "uuid_v4"
+        description: "Unique identifier for this observation"
+      - field: "claim_count"
+        type: "integer"
+        description: "Number of claims generated"
+    optional_fields:
+      - field: "claims_detail"
+        type: "list[claim_structure]"
+        description: "Full claim objects"
+        log_when: "contradiction_detected or diagnostic_mode"
+      - field: "avg_confidence"
+        type: "float"
+        description: "Mean confidence across claims"
+        log_when: "always"
+      - field: "salience_distribution"
+        type: "list[float]"
+        description: "Salience scores for generated claims"
+        log_when: "diagnostic_mode"
+    gate_logged: "none (internal stage)"
+    retention: "session-level (7 days)"
+    
+  resolve:
+    stage_id: "resolve"
+    coord_tag: "DECISION_TAG"
+    purpose: "Track contradiction resolution process"
+    required_fields:
+      - field: "invoked"
+        type: "boolean"
+        description: "Whether resolution stage was triggered"
+      - field: "steps"
+        type: "integer"
+        description: "Number of resolution steps taken"
+      - field: "residual_bits"
+        type: "float"
+        description: "Residual entropy after resolution"
+    optional_fields:
+      - field: "decision"
+        type: "string"
+        description: "Description of resolution decision"
+        log_when: "invoked == true"
+      - field: "rejected_claims"
+        type: "list[uuid_v4]"
+        description: "Claims rejected during resolution"
+        log_when: "invoked == true and diagnostic_mode"
+      - field: "resolution_path"
+        type: "string"
+        description: "Path taken through resolution space"
+        log_when: "diagnostic_mode"
+    gate_logged: "G2_resolve_ok"
+    gate_log_fields:
+      - "pass/fail status"
+      - "residual_bits_vs_threshold"
+    retention: "permanent"
+    
+  continuity_check:
+    stage_id: "continuity_check"
+    coord_tag: "CONTINUITY_VALIDATION_TAG"
+    purpose: "Track continuity maintenance metrics"
+    required_fields:
+      - field: "continuity_f1"
+        type: "float [0,1]"
+        description: "F1 score for anchor recovery"
+      - field: "reset_index"
+        type: "integer"
+        description: "Number of resets since initialization"
+    optional_fields:
+      - field: "anchor_recovery_detail"
+        type: "list[{anchor_id, recovered, expected}]"
+        description: "Per-anchor recovery details"
+        log_when: "continuity_f1 < threshold or diagnostic_mode"
+      - field: "snapshot_range"
+        type: "{t_start, t_end}"
+        description: "Snapshot range used for continuity check"
+        log_when: "diagnostic_mode"
+    gate_logged: "G3_continuity_ok"
+    gate_log_fields:
+      - "pass/fail status"
+      - "continuity_f1 value"
+    retention: "permanent"
+    
+  emit:
+    stage_id: "emit"
+    coord_tag: "EMIT_GUARD_TAG"
+    purpose: "Track emission variant and output composition"
+    required_fields:
+      - field: "policy_variant"
+        type: "enum[minimal, standard, full]"
+        description: "Emission variant selected"
+      - field: "outframe_kind"
+        type: "string"
+        description: "Type of outframe composed"
+    optional_fields:
+      - field: "energy_budget_state"
+        type: "{available, used, remaining}"
+        description: "Energy budget accounting"
+        log_when: "always"
+      - field: "forced_variant"
+        type: "boolean"
+        description: "Whether variant was forced by gate failure"
+        log_when: "variant != energy_optimal_variant"
+      - field: "emission_metrics"
+        type: "{token_count, complexity_score}"
+        description: "Metrics about emitted response"
+        log_when: "diagnostic_mode"
+    gate_logged: "G4_emit_ok"
+    gate_log_fields:
+      - "pass/fail status"
+      - "variant selected"
+      - "downshift applied (if any)"
+    retention: "permanent"
+
+cross_stage_logging:
+  
+  session_log:
+    description: "High-level session tracking"
+    fields:
+      - "session_id: unique session identifier"
+      - "identity_I: system identity"
+      - "session_start_t: initial time index"
+      - "session_end_t: final time index (when closed)"
+      - "total_transitions: count of state transitions"
+      - "reset_count: number of resets in session"
+      - "gate_failure_summary: counts per gate type"
+    persistence: "permanent"
+    format: "separate session log file"
+    
+  error_log:
+    description: "All errors and warnings"
+    fields:
+      - "error_id: unique error identifier"
+      - "timestamp_t: when error occurred"
+      - "stage: which stage encountered error"
+      - "error_type: classification of error"
+      - "error_details: full error information"
+      - "recovery_action: what was done to recover"
+    persistence: "permanent"
+    format: "separate error log file"
+    
+  metrics_log:
+    description: "Periodic metric snapshots"
+    fields:
+      - "snapshot_t: time of metric capture"
+      - "continuity_f1: current continuity metric"
+      - "avg_drift_norm: mean drift over window"
+      - "energy_level: current E(S_t)"
+      - "consciousness_episodes: count since last snapshot"
+      - "gate_pass_rates: success rate per gate"
+    persistence: "session-level"
+    frequency: "every 100 transitions or on request"
+    format: "metrics timeseries"
+
+log_formats:
+  
+  structured_format:
+    format_type: "YAML or JSON"
+    schema_versioning: true
+    human_readable: true
+    machine_parseable: true
+    example: |
+      log_entry:
+        timestamp_t: 42
+        stage: "update"
+        fields:
+          drift_norm: 0.023
+          energy_level: 1.15
+        gate: "G1_update_ok"
+        gate_status: "pass"
+  
+  compact_format:
+    format_type: "CSV or TSV"
+    schema_versioning: false
+    human_readable: "moderate"
+    machine_parseable: true
+    use_case: "high-frequency logging with space constraints"
+    example: "42,update,0.023,1.15,G1_update_ok,pass"
+
+retention_policies:
+  
+  permanent_retention:
+    applies_to:
+      - "session_log"
+      - "error_log"
+      - "intake stage required fields"
+      - "update stage required fields"
+      - "resolve stage required fields"
+      - "continuity_check stage required fields"
+      - "emit stage required fields"
+    storage: "compressed archive after session close"
+    
+  session_retention:
+    applies_to:
+      - "observe stage fields"
+      - "metrics_log"
+      - "optional fields in diagnostic_mode"
+    storage: "active during session, archived 7 days post-session"
+    cleanup: "auto-delete after 30 days unless flagged for audit"
+    
+  transient_retention:
+    applies_to:
+      - "temporary computation values"
+      - "intermediate resolution states"
+    storage: "in-memory only, not persisted"
+
+diagnostic_mode:
+  
+  activation:
+    trigger_conditions:
+      - "explicit diagnostic_mode flag set"
+      - "gate failure detected"
+      - "continuity_f1 < critical_threshold (0.7)"
+      - "manual activation via control interface"
+    
+  enhanced_logging:
+    - "all optional fields logged"
+    - "full claim details captured"
+    - "resolution paths tracked"
+    - "energy budget detailed"
+    - "per-anchor recovery details"
+    
+  performance_impact:
+    overhead: "20-50% increased logging volume"
+    storage: "3-5x normal session storage"
+    recommendation: "use sparingly, disable after diagnosis complete"
+
+audit_trail_support:
+  
+  reconstruction_capability:
+    description: "Logs must enable reconstruction of pipeline execution"
+    requirements:
+      - "all required fields preserved permanently"
+      - "temporal ordering maintained via timestamp_t"
+      - "cross-references between stages preserved"
+      - "gate decisions and reasoning logged"
+    
+  compliance_features:
+    - "immutable log entries (append-only)"
+    - "cryptographic hashing for verification"
+    - "identity I tracked across all entries"
+    - "provenance tracking from stimulus to emission"
+
+privacy_and_security:
+  
+  sensitive_data_handling:
+    - "stimulus content may be redacted in logs"
+    - "personal identifiers removed or hashed"
+    - "configurable field-level redaction"
+    
+  access_control:
+    - "session logs: owner and designated auditors"
+    - "error logs: system administrators"
+    - "metrics logs: researchers (aggregated only)"
+
+notes: |
+  This logging policy balances diagnostic utility with practical constraints.
+  Required fields ensure basic auditability, while optional fields provide
+  deep diagnostic capability when needed. Retention policies prevent
+  unbounded storage growth while preserving critical audit information.
+  
+  Diagnostic mode should be used judiciously as it significantly increases
+  logging volume. For production systems, use permanent retention for
+  required fields only, with session retention for optional fields.

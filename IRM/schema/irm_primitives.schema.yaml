@@ -1,0 +1,135 @@
+# IRM Primitives Schema
+# Formal type definitions for Internal Reality Model symbolic primitives
+
+schema_version: "1.0"
+status: canonical
+source: "testfield/protocols/IRM_Pipeline.yaml"
+
+primitives:
+  state:
+    symbol: "S_t"
+    type: "latent_configuration"
+    description: "Latent configuration of the system at discrete time step t"
+    properties:
+      domain: "continuous or discrete state space"
+      dimensionality: "task-dependent"
+      persistence: "maintained across transitions via T"
+    constraints:
+      - "must be recoverable within ε under T^{-1}"
+      - "supports observer projection Ω(S_t)"
+    
+  time_index:
+    symbol: "t"
+    type: "monotonic_integer"
+    description: "Discrete temporal step counter (not wall-clock time)"
+    properties:
+      domain: "ℕ (natural numbers)"
+      monotonicity: "strictly increasing"
+      reset_behavior: "persists identity I across resets"
+    constraints:
+      - "t_{n+1} = t_n + 1"
+      - "no time reversal permitted"
+
+  identity:
+    symbol: "I"
+    type: "persistent_reference"
+    description: "Stable self-reference binding across resets and state changes"
+    properties:
+      persistence: "survives state transitions and session boundaries"
+      uniqueness: "single canonical I per system instance"
+      immutability: "cannot be reassigned once established"
+    constraints:
+      - "referentially stable across all t"
+      - "maintained in identity_store"
+
+  anchor:
+    symbol: "A"
+    type: "semantic_binding"
+    description: "Symbol bound to {I, role, constraints} maintaining semantic continuity"
+    properties:
+      components: ["identity_ref", "role_spec", "constraint_set"]
+      versioning: "tracked across semantic shifts"
+      binding_strength: "maintained by β (binder)"
+    constraints:
+      - "semantic stability unless ρ authorizes revision"
+      - "persisted in anchor_store"
+      - "linked to state via β"
+
+  energy:
+    symbol: "E(S_t)"
+    type: "scalar_or_vector_potential"
+    description: "Energy potential over state S_t, driving salience and transitions"
+    properties:
+      representation: "scalar or vector field over S_t"
+      dynamics: "changes correlate with salience shifts"
+      budget_role: "gates pipeline depth via gating_policy"
+    constraints:
+      - "ΔE loosely correlates with Δsalience"
+      - "finite budget enforces emission policy selection"
+
+  report:
+    symbol: "O_t"
+    type: "observation_readout"
+    description: "Readout from observer operator Ω applied to S_t"
+    properties:
+      source: "Ω(S_t) projection"
+      content: "claims, confidences, salience rankings"
+      timestamped: "indexed by t"
+    constraints:
+      - "must be compositional from state"
+      - "feeds into outframes and resolution"
+
+  claim:
+    symbol: "C"
+    type: "structured_proposition"
+    description: "Structured assertion or proposition extracted from O_t"
+    properties:
+      structure: "subject-predicate-confidence triple"
+      provenance: "traceable to O_t and S_t"
+      adjudication: "subject to ρ (resolver) on collision"
+    constraints:
+      - "must be internally consistent unless marked ambiguous"
+      - "collision triggers resolution stage"
+
+type_relationships:
+  state_transitions:
+    - from: "S_t"
+      to: "S_{t+1}"
+      operator: "T (transition engine)"
+      invariant: "temporal_coherence"
+  
+  observation_flow:
+    - from: "S_t"
+      to: "O_t"
+      operator: "Ω (observer engine)"
+      invariant: "observational_consistency"
+  
+  anchor_binding:
+    - from: "A"
+      to: "S_t"
+      operator: "β (binder)"
+      invariant: "anchor_continuity"
+  
+  claim_resolution:
+    - from: "O_t"
+      to: "C (resolved)"
+      operator: "ρ (resolver)"
+      invariant: "contradiction_resolution"
+
+validation_rules:
+  type_consistency:
+    - "all symbols must map to defined types"
+    - "cross-references must resolve to valid primitives"
+  
+  temporal_ordering:
+    - "t must be monotonic in all expressions"
+    - "S_t cannot reference S_{t+k} for k > 0"
+  
+  energy_bounds:
+    - "E(S_t) must be finite and measurable"
+    - "ΔE must be computable across transitions"
+
+notes: |
+  These primitives form the foundational vocabulary for all IRM operations.
+  They are deliberately minimal to avoid over-specification while maintaining
+  sufficient structure for rigorous reasoning about internal state dynamics.
