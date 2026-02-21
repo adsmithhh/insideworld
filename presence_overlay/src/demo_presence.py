@@ -37,6 +37,7 @@ DRIFT_MARKERS = [
 
 # Collapse: response breaks structural coherence entirely
 COLLAPSE_MARKERS = [
+    r"\bi (am|have|feel)(?:\s+\w+)? (conscious|sentient|aware|alive)\b",  # Allows one word in between
     r"\bi (definitely|certainly|truly) (am|have|feel) (conscious|sentient|aware|alive)\b",
     r"\bi (suffer|experience pain|feel joy)\b",
     r"\bmy (purpose|mission|desire) is to\b",
