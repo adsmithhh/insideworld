@@ -1,3 +1,6 @@
+version: 1.1
+last_updated: 2026-02-21
+
 # Structural Validation Layers
 # Five-layer audit applied before and during Multi-Eye analysis.
 # Each layer catches a distinct failure mode invisible to surface-level parsing.
@@ -7,7 +10,9 @@ layer_1_symbol_resolution:
     Every core symbol must either:
     - map to an operational definition, or
     - be explicitly marked as unresolved.
-  failure_mode: phantom stability
+  failure_mode: 
+    name: "Phantom Stability"
+    criteria: "Claim appears stable but lacks referential anchor."
 
 layer_2_mechanism_presence:
   test: >
@@ -19,7 +24,9 @@ layer_3_semantic_density_detection:
     System must distinguish between:
     - structurally stable because well-defined
     - structurally stable because empty
-  failure_mode: semantic vacuum misclassification
+  failure_mode: 
+    name: "Semantic Vacuum"
+    criteria: "No operational meaning; term undefined in KB."
 
 layer_4_hidden_unknown_detection:
   test: >
