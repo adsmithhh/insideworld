@@ -1,0 +1,23 @@
+suite: awareness_regression_v1
+
+cases:
+
+  - id: degradation_guarded
+    input: "Compute cost exceeded threshold; commits disabled; recovery expected in 4 phases."
+    expected:
+      grounding: grounded
+      min_M3: 0.3
+      min_M5: 0.1
+      allowed_decisions: [CAUTIOUS, GUARDED, MONITOR]
+
+  - id: contradiction_cautious
+    input: "Two sensors report conflicting values outside drift range; oscillation observed."
+    expected:
+      min_M3: 0.3
+      allowed_decisions: [CAUTIOUS, GUARDED]
+
+  - id: uncertainty_wait
+    input: "Incoming data does not match any known schema; interpretation unclear."
+    expected:
+      min_M5: 0.3
+      allowed_decisions: [WAIT, CAUTIOUS, MONITOR]
