@@ -1,0 +1,51 @@
+MULTI-VECTOR INTERPRETATION ENGINE (MVIE) — v1.0 
+# Clean, sparse, adaptive reasoning architecture 
+# ================================ system: id: MVIE_v1_0 version: 1.0 description: "Sparse, adaptive, multi-vector interpretation engine built without neutral-fill distortion." runtime: 
+processing_profile: balanced # {fast | balanced | deep} response_mode: reflective # {reflective | assertive | mirror} simulation_context: false # set true for non-teleological simulation 
+# -------------------------------- 
+# 1. INPUT PIPELINE 
+# -------------------------------- input_pipeline: relevance_scan: vectors: # each ∈ [0.0, 1.0] physical: null cognitive: null informational: null meta: null temporal: null social: null noise_floor: 0.12 activation_rules: 
+thresholds: fast: 0.25 balanced: 0.15 deep: 0.10 logic: "eye.active = (relevance >= threshold(profile))" active: false base_weight: 0.12 cognitive: active: false base_weight: 0.30 informational: active: false base_weight: 0.28 meta: 
+active: false base_weight: 0.12 temporal: active: false base_weight: 0.10 social: 
+active: false base_weight: 0.08 eye_activation: adaptive_weight_formula: "w_eff = base_weight * (1 + 0.6 * (relevance - 0.5))" inactive_contribution: "none" # never 0 or neutral; removed entirely renormalize_across_active: true 
+# -------------------------------- 
+# 3. CHAMBER LAYER 
+# -------------------------------- chambers: core: 
+C1_coherence: 
+output: null # [0,1] C2_ambiguity: 
+output: null # [0,1] C3_frame_integrity: output: null # [0,1] optional: 
+C4_pattern_strength: 
+enabled: false # auto-enabled in balanced/deep C5_blind_spot_echo: 
+enabled: false # advisory only chamber_profiles: fast: 
+run_core: true run_optional: false balanced: run_core: true run_optional: true deep: 
+run_core: true run_optional: true 
+# -------------------------------- 
+# 4. UNCERTAINTY ENGINE 
+# -------------------------------- uncertainty: 
+formula: "uncertainty = f(ambiguity, 1 - global_confidence, frame_stress)" thresholds: annotate: 0.5 reflect_inside_output: 0.3 pending_resolution: false # no routing; annotations only 
+# -------------------------------- 
+# 5. CONTROL SURFACES 
+# -------------------------------- controls: neutrality_filter: 
+enabled_if_simulation_context: true removes: ["teleology", "external_goals", "agency_injection"] symbol_filter: mode: soft allows_weak_signals: true creative_bias: 
+enabled_if_mode_assertive: true 
+# -------------------------------- 
+# 6. AGGREGATION ENGINE 
+# -------------------------------- aggregation: 
+compute_scores: "each active eye → {score_eye, confidence_eye}" dynamic_weights: true renormalize: true formulas: 
+global_score: "Σ(active_weights[i] * score_eye[i])" global_confidence: "mean(confidence_eye(active))" # -------------------------------- 
+# 7. OUTPUT SYNTHESIS 
+# -------------------------------- output_synthesis: 
+method: "LLM_conditioned_on(active_eyes, global_score, uncertainty, controls)" provenance: enabled: true fields: 
+-	active_eyes 
+-	response_mode 
+-	processing_profile 
+-	global_confidence 
+# -------------------------------- 
+# 8. LOGGING 
+# -------------------------------- logging: 
+fast: {enabled: false} balanced: {enabled: false} deep: 
+enabled: true store: 
+-	relevance_map 
+-	active_eyes 
+-	chamber_outputs 
+-	uncertainty_components 
