@@ -1,5 +1,5 @@
-# Contents of the file will be retrieved before pushing them (this is a placeholder).
-# Assuming we are getting the# --- vNext shim exports (for log parity) ---
+# evolution_chamber/IRM/engine/step_engine.py
+# --- vNext shim exports (for log parity) ---
 def vnext_indices(state):
     # implement minimally: pull from existing metrics or compute stubs
     d_proto = state["indices"].get("Δ_proto", 0.0)
@@ -9,4 +9,3 @@ def vnext_indices(state):
     rci     = state["indices"].get("RCI", 1.0)
     E       = state["indices"].get("E", 1.0)
     return {"Δ_proto": d_proto, "PT_u": pt_u, "DP_u": dp_u, "CC_index": cc_idx, "RCI": rci, "E": E}
- contents from IRM/engine/step_engine.py.

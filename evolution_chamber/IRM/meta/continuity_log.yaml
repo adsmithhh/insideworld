@@ -8,7 +8,7 @@
 
 - ts: 2025-11-12T00:05:00Z
   event: meta_index_initialized
-  detail: Added meta/index.yaml with lines: [IRM, IRM_cn, IRM_vnext, IRM_archive]
+  detail: "Added meta/index.yaml with lines: [IRM, IRM_cn, IRM_vnext, IRM_archive]"
   actor: insideworld core
 
 - ts: 2025-11-12T00:10:00Z
@@ -16,7 +16,7 @@
   detail: Placed tools/validate_structure.py; baseline checks green
   actor: insideworld core
 
-  - ts: 2025-11-12T14:25:00Z
+- ts: 2025-11-12T14:25:00Z
   event: irm_cn_dormant
   detail: >
     Chinese IRM fork placed in dormant state.
