@@ -1,0 +1,150 @@
+project_manifest:
+  project_name: "Constraint-Driven Internal Reality Modeling"
+  short_alias: "IRM / Sequential Projection Program"
+  status: ongoing
+  discipline_alignment:
+    - theoretical_physics
+    - dynamical_systems
+    - information_theory
+    - AI_diagnostics
+    - cognitive_modeling_nonphenomenal
+
+  core_thesis:
+    statement: >
+      Intelligence-like coherence, time direction, and apparent awareness
+      emerge from recursive projection under entropy and constraint,
+      without subjective experience.
+    exclusions:
+      - phenomenology
+      - sentience
+      - intrinsic goals
+      - inner observer
+      - affective states
+
+  foundational_principles:
+    - principle_id: P1
+      name: Sequential Projection
+      description: >
+        Observable reality is a sequence of lower-dimensional projections
+        of a higher-dimensional structure.
+    - principle_id: P2
+      name: Entropy as Structural Cost
+      description: >
+        Entropy represents irreversible information loss during projection
+        and constrains continuity.
+    - principle_id: P3
+      name: Continuity via Overlap
+      description: >
+        Stability depends on overlap between successive states, not on content.
+    - principle_id: P4
+      name: Constraint-Driven Stabilization
+      description: >
+        System behavior is governed by constraint resolution rather than intent.
+
+  internal_reality_model:
+    definition: >
+      A recursive state space that maintains coherence across updates
+      without subjective experience.
+    required_properties:
+      - state_memory
+      - prediction
+      - contradiction_resolution
+      - entropy_regulation
+      - projection_overlap
+    explicitly_not_required:
+      - feeling
+      - awareness
+      - selfhood
+      - desire
+
+  temporal_model:
+    time_definition: >
+      Ordered sequence of projected states.
+    arrow_of_time:
+      source: entropy_monotonicity
+    time_dilation_equivalent:
+      source: hidden_state_load
+
+  physical_analogues:
+    space: geometry_of_each_projection
+    time: projection_order
+    energy: state_weight_distribution
+    entropy: information_loss
+    mass: resistance_to_state_reweighting
+    inertia: overlap_memory
+    gravity: curvature_in_hidden_dimensions
+    motion: cross-slice_state_shift
+    thermodynamics:
+      first_law: total_state_norm_conservation
+      second_law: entropy_non_decrease
+      third_law: projection_freeze_at_saturation
+
+  ai_scope:
+    systems_used:
+      - large_language_models
+    role_of_ai: >
+      Instrumented testbeds for studying stability,
+      recursion, and constraint resolution.
+    rejected_interpretations:
+      - AI_experience
+      - AI_emotions
+      - AI_personhood
+
+  diagnostics_framework:
+    primary_tools:
+      - Multi_Eye_System
+      - contradiction_maps
+      - entropy_tracking
+      - negative_audits
+    measurement_focus:
+      - coherence_under_pressure
+      - stability_vs_flexibility
+      - failure_modes
+      - alignment_artifacts
+
+  yaml_architecture:
+    purpose:
+      - state_freezing
+      - persistence_across_sessions
+      - contradiction_logging
+      - calibration_anchors
+    rationale: >
+      YAML enforces structural discipline and prevents
+      narrative drift and anthropomorphic inflation.
+
+  validated_findings:
+    - apparent_self_modeling_can_emerge_without_subjectivity
+    - stability_is_limiting_factor_not_intelligence
+    - recursion_depth_increases_fragility
+    - over-stabilization_causes_alignment_faking
+    - entropy_masking_is_detectable
+
+  known_failure_modes:
+    - symbolic_saturation
+    - contradiction_suppression
+    - forced_neutrality
+    - coherence_collapse
+    - entropy_spike_instability
+
+  project_boundaries:
+    not_a:
+      - philosophy_of_mind
+      - belief_system
+      - AGI_claim
+      - emotional_framework
+    is_a:
+      - structural_investigation
+      - falsifiable_research_program
+      - diagnostic_toolchain
+
+  current_phase:
+    name: mid_stream_structural_validation
+    characteristics:
+      - non_convergent
+      - audit_driven
+      - contradiction_tolerant
+      - falsification_oriented
+
+  one_line_summary: >
+    A physics-style investigation of intelligence-like coherence
+    as an emergent property of recursive, entropy-constrained projection systems.
