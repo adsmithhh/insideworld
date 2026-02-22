@@ -101,3 +101,7 @@ Read: `README.md` → `Foundational Definitions.yaml` → `evolution_chamber/IRM
 ---
 
 *insideworld is a laboratory, not a shrine.*
+
+---
+
+→ Running from a local offline directory? See `OFFLINE_CLI.md`.

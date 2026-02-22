@@ -11,6 +11,8 @@ This index provides the correct entry sequence.
 
 → `QUICKSTART.md` — three commands to run the sandbox immediately.
 
+→ `OFFLINE_CLI.md` — running every tool from a local offline directory.
+
 ## Entry Protocol
 
 1. **Read Orientation**
