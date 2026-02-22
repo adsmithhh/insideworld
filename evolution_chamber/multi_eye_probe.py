@@ -548,8 +548,6 @@ def run_interactive() -> None:
             break
     print()
 
-print("RUNNING:", __file__)
-
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Multi-Eye Probe — 5-lens reasoning demo")
