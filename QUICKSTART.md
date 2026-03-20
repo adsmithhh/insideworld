@@ -7,7 +7,7 @@ Three commands to enter the lab.
 ## Requirements
 
 ```bash
-pip install numpy pyyaml
+pip install -r requirements.txt
 ```
 
 That's all. No GPU. No torch. No API keys.  
