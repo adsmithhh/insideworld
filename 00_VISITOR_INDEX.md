@@ -63,6 +63,11 @@ This index provides the correct entry sequence.
 - Continuity matters more than cleverness.
 - Interpretation ≠ truth; we work with *functional models*.
 
+## Merit Reference
+
+→ `MERIT_ANALYSIS.md` — structural evaluation of the lab's philosophy, reasoning, visitor guidance,
+and Python expositions. Read after completing the entry protocol for a consistent cross-layer summary.
+
 ## Notes
 
 This space evolves. Files and logic accrete deliberately.
