@@ -292,7 +292,7 @@ but to build **mechanistic criteria** for how systems generate and maintain inte
 
 ```
 0. README.md                 ← You Are Here
-1. Foundational_Definitions.yaml
+1. Foundational Definitions.yaml
 2. CEST Paper (original framework)
 3. CONTINUITY_TEST.md
 4. standard_registry/
@@ -374,6 +374,13 @@ This pipeline trains visitors to avoid **hallucinating cognition** into AI and i
 * Self-audit logs allowed to be declarative
 
 This repository exists to teach the observer **epistemic discipline**, not to claim emergent cognitive life.
+
+---
+
+# **Merit Reference**
+
+→ `MERIT_ANALYSIS.md` — structural evaluation of the lab's philosophy, reasoning, visitor guidance,
+and Python expositions. Read after completing the entry protocol for a consistent cross-layer summary.
 
 ---
 

@@ -18,7 +18,7 @@ This index provides the correct entry sequence.
    Purpose: understand intent, cadence, and scope.
 
 2. **Ground in Definitions**
-   → `Foundational_Definitions.yaml`
+   → `Foundational Definitions.yaml`
    Purpose: internal vocabulary, symbolic primitives, and ontology boundaries.
 
 3. **Review Theory Core**
