@@ -18,4 +18,5 @@ policies:
 
 links:
   repo: https://github.com/adsmithhh/insideworld
-  
+  offline_dir: "C:/.github/whereareyoudash/insideworld"
+
