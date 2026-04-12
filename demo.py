@@ -16,7 +16,7 @@ Pick an experience:
 
 No anthropomorphic projection. No inner life. Just structure.
 
-Requirements: pip install numpy pyyaml
+Requirements: pip install -r requirements.txt
 """
 import sys
 import os
